@@ -9,14 +9,26 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        primary: '#3B82F6',
-        secondary: '#10B981',
-        accent: '#F59E0B',
-        dark: '#1F2937',
-        light: '#F3F4F6',
+        'bg-primary': '#0B0F19',
+        'bg-card': '#111827',
+        'bg-border': '#1F2937',
+        'primary': '#3B82F6',
+        'primary-hover': '#2563EB',
+        'text-primary': '#FFFFFF',
+        'text-secondary': '#9CA3AF',
       },
       fontFamily: {
         sans: ['system-ui', 'sans-serif'],
+      },
+      backgroundColor: {
+        dark: '#0B0F19',
+        card: '#111827',
+      },
+      borderColor: {
+        dark: '#1F2937',
+      },
+      textColor: {
+        secondary: '#9CA3AF',
       },
     },
   },

@@ -4,6 +4,8 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import toast from 'react-hot-toast';
+import { motion } from 'framer-motion';
+import Button from '@/components/Button';
 
 export default function Signup() {
   const router = useRouter();
@@ -46,13 +48,32 @@ export default function Signup() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-primary to-blue-600">
-      <div className="bg-white rounded-lg shadow-xl p-8 max-w-md w-full">
-        <h1 className="text-3xl font-bold text-center mb-8">UpskillBay</h1>
-        
+    <div className="min-h-screen flex items-center justify-center bg-[#0B0F19]">
+      <motion.div
+        className="bg-[#111827] border border-[#1F2937] rounded-2xl shadow-2xl p-8 max-w-md w-full"
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+      >
+        <motion.div
+          className="text-center mb-8"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.2, duration: 0.4 }}
+        >
+          <h1 className="text-3xl font-bold bg-gradient-to-r from-[#3B82F6] to-[#1E40AF] bg-clip-text text-transparent">
+            UpskillBay
+          </h1>
+          <p className="text-[#9CA3AF] text-sm mt-2">Start your journey</p>
+        </motion.div>
+
         <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium mb-2">Full Name</label>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.3 }}
+          >
+            <label className="block text-sm font-medium text-white mb-2">Full Name</label>
             <input
               type="text"
               value={name}
@@ -61,10 +82,14 @@ export default function Signup() {
               placeholder="John Doe"
               required
             />
-          </div>
+          </motion.div>
 
-          <div>
-            <label className="block text-sm font-medium mb-2">Email</label>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.35 }}
+          >
+            <label className="block text-sm font-medium text-white mb-2">Email</label>
             <input
               type="email"
               value={email}
@@ -73,10 +98,14 @@ export default function Signup() {
               placeholder="you@example.com"
               required
             />
-          </div>
+          </motion.div>
 
-          <div>
-            <label className="block text-sm font-medium mb-2">Password</label>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.4 }}
+          >
+            <label className="block text-sm font-medium text-white mb-2">Password</label>
             <input
               type="password"
               value={password}
@@ -85,10 +114,14 @@ export default function Signup() {
               placeholder="••••••••"
               required
             />
-          </div>
+          </motion.div>
 
-          <div>
-            <label className="block text-sm font-medium mb-2">Confirm Password</label>
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.45 }}
+          >
+            <label className="block text-sm font-medium text-white mb-2">Confirm Password</label>
             <input
               type="password"
               value={confirmPassword}
@@ -97,24 +130,36 @@ export default function Signup() {
               placeholder="••••••••"
               required
             />
-          </div>
+          </motion.div>
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="btn-primary w-full"
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.5 }}
           >
-            {loading ? 'Creating account...' : 'Sign Up'}
-          </button>
+            <Button
+              type="submit"
+              variant="primary"
+              disabled={loading}
+              className="w-full"
+            >
+              {loading ? 'Creating account...' : 'Sign Up'}
+            </Button>
+          </motion.div>
         </form>
 
-        <p className="text-center mt-6 text-sm text-gray-600">
+        <motion.p
+          className="text-center mt-6 text-sm text-[#9CA3AF]"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.6 }}
+        >
           Already have an account?{' '}
-          <Link href="/auth/login" className="text-primary font-medium hover:underline">
+          <Link href="/auth/login" className="text-[#3B82F6] font-medium hover:underline">
             Sign in
           </Link>
-        </p>
-      </div>
+        </motion.p>
+      </motion.div>
     </div>
   );
 }
