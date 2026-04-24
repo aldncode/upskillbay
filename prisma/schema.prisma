@@ -1,0 +1,183 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String    @unique
+  emailVerified DateTime?
+  password      String?   // for email/password auth
+  image         String?
+  role          Role      @default(USER)
+  
+  // Relations
+  accounts      Account[]
+  sessions      Session[]
+  enrollments   Enrollment[]
+  submissions   Submission[]
+  applications  Application[]
+  portfolio     Portfolio?
+  
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+model Account {
+  id                 String  @id @default(cuid())
+  userId             String
+  type               String
+  provider           String
+  providerAccountId  String
+  refresh_token      String?  @db.Text
+  access_token       String?  @db.Text
+  expires_at         Int?
+  token_type         String?
+  scope              String?
+  id_token           String?  @db.Text
+  session_state      String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+// Main models
+
+model Capsule {
+  id          String    @id @default(cuid())
+  title       String
+  description String    @db.Text
+  imageUrl    String?
+  level       String    @default("beginner") // beginner, intermediate, advanced
+  status      String    @default("published") // draft, published, archived
+  
+  tasks       Task[]
+  enrollments Enrollment[]
+  
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Task {
+  id              String    @id @default(cuid())
+  capsuleId       String
+  title           String
+  instructions    String    @db.Text
+  submissionType  String    // text, file, link
+  order           Int       @default(0)
+  
+  capsule         Capsule   @relation(fields: [capsuleId], references: [id], onDelete: Cascade)
+  submissions     Submission[]
+  
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+}
+
+model Enrollment {
+  id        String   @id @default(cuid())
+  userId    String
+  capsuleId String
+  status    String   @default("active") // active, completed, dropped
+  
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  capsule   Capsule  @relation(fields: [capsuleId], references: [id], onDelete: Cascade)
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  @@unique([userId, capsuleId])
+}
+
+model Submission {
+  id          String    @id @default(cuid())
+  userId      String
+  taskId      String
+  content     String    @db.Text
+  fileUrl     String?
+  status      String    @default("pending") // pending, approved, rejected
+  feedback    String?   @db.Text
+  
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  task        Task      @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  portfolio   Portfolio? @relation(fields: [portfolioId], references: [id])
+  portfolioId String?
+  
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  
+  @@unique([userId, taskId])
+}
+
+model Portfolio {
+  id        String      @id @default(cuid())
+  userId    String      @unique
+  title     String      @default("My Portfolio")
+  bio       String?     @db.Text
+  
+  user      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  submissions Submission[]
+  
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+}
+
+model Gig {
+  id          String        @id @default(cuid())
+  title       String
+  description String        @db.Text
+  budget      Float         // in cents/lowest denomination
+  deadline    DateTime
+  status      String        @default("open") // open, closed, completed
+  
+  applications Application[]
+  
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+}
+
+model Application {
+  id      String   @id @default(cuid())
+  userId  String
+  gigId   String
+  message String   @db.Text
+  status  String   @default("pending") // pending, accepted, rejected, withdrawn
+  
+  user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  gig     Gig      @relation(fields: [gigId], references: [id], onDelete: Cascade)
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  @@unique([userId, gigId])
+}
+
+enum Role {
+  USER
+  ADMIN
+  COMPANY
+}
