@@ -37,3 +37,9 @@ lerna-debug.log*
 
 # OS
 Thumbs.db
+
+# AI / instruction files
+instructions/
+prompts/
+notes/
+*.md

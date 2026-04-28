@@ -89,7 +89,7 @@ export default function TaskDetail({ params }: { params: { id: string } }) {
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-8">
-      <Link href={`/capsules/${task.capsule.id}`} className="text-primary hover:underline mb-4 inline-block">
+      <Link href={`/career-tracks/${task.capsule.id}`} className="text-primary hover:underline mb-4 inline-block">
         ← Back to {task.capsule.title}
       </Link>
 

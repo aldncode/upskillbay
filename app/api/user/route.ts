@@ -26,6 +26,11 @@ export async function GET(request: NextRequest) {
         },
         applications: true,
         portfolio: true,
+        careerTrackEnrollments: {
+          include: {
+            careerTrack: true,
+          },
+        },
       },
     });
 

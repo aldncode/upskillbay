@@ -71,8 +71,8 @@ export default function CapsuleDetail({ params }: { params: { id: string } }) {
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
-      <Link href="/capsules" className="text-primary hover:underline mb-4 inline-block">
-        ← Back to Capsules
+      <Link href="/career-tracks" className="text-primary hover:underline mb-4 inline-block">
+        ← Back to Career Tracks
       </Link>
 
       <div className="grid md:grid-cols-3 gap-8">

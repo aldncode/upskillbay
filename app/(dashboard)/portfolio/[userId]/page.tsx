@@ -34,7 +34,7 @@ export default function Portfolio({ params }: { params: { userId: string } }) {
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-12">
-      <Link href="/capsules" className="text-primary hover:underline mb-4 inline-block">
+      <Link href="/career-tracks" className="text-primary hover:underline mb-4 inline-block">
         ← Back
       </Link>
 

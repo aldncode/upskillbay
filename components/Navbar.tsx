@@ -18,7 +18,7 @@ export default function Navbar() {
 
           {/* Desktop Menu */}
           <div className="hidden md:flex gap-8 items-center">
-            <Link href="/capsules" className="text-[#9CA3AF] hover:text-white transition-colors">
+            <Link href="/career-tracks" className="text-[#9CA3AF] hover:text-white transition-colors">
               Career Tracks
             </Link>
             <Link href="/gigs" className="text-[#9CA3AF] hover:text-white transition-colors">
@@ -53,7 +53,7 @@ export default function Navbar() {
         {/* Mobile Menu */}
         {isOpen && (
           <div className="md:hidden pb-4 space-y-2 border-t border-[#1F2937]">
-            <Link href="/capsules" className="block text-[#9CA3AF] hover:text-white py-2">
+            <Link href="/career-tracks" className="block text-[#9CA3AF] hover:text-white py-2">
               Career Tracks
             </Link>
             <Link href="/gigs" className="block text-[#9CA3AF] hover:text-white py-2">

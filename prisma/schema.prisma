@@ -26,6 +26,8 @@ model User {
   submissions   Submission[]
   applications  Application[]
   portfolio     Portfolio?
+  profile       Profile?
+  careerTrackEnrollments CareerTrackEnrollment[] @relation("careerTrackEnrollments")
   
   createdAt     DateTime  @default(now())
   updatedAt     DateTime  @updatedAt
@@ -81,6 +83,41 @@ model Capsule {
   
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
+}
+
+// Career Tracks Model
+model CareerTrack {
+  id                String    @id @default(cuid())
+  title             String
+  description       String    @db.Text
+  outcome           String    @db.Text    // e.g., "Earn your first ₹5000 in 7 days"
+  duration          String    // e.g., "7 days", "14 days"
+  earningPotential  String    // e.g., "₹5K–₹20K per project"
+  skills            String[]  @default([])
+  level             String    @default("beginner") // beginner, intermediate, advanced
+  imageUrl          String?
+  status            String    @default("published") // draft, published, archived
+  
+  enrollments       CareerTrackEnrollment[]
+  
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+}
+
+// Career Track Enrollment Model
+model CareerTrackEnrollment {
+  id            String   @id @default(cuid())
+  userId        String
+  careerTrackId String
+  status        String   @default("active") // active, completed, dropped
+  
+  user          User     @relation("careerTrackEnrollments", fields: [userId], references: [id], onDelete: Cascade)
+  careerTrack   CareerTrack @relation(fields: [careerTrackId], references: [id], onDelete: Cascade)
+  
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  
+  @@unique([userId, careerTrackId])
 }
 
 model Task {
@@ -144,6 +181,40 @@ model Portfolio {
   
   createdAt DateTime    @default(now())
   updatedAt DateTime    @updatedAt
+}
+
+// Progressive Profile Model
+model Profile {
+  id                    String    @id @default(cuid())
+  userId                String    @unique
+  
+  // Stage 2: Career Setup
+  interest              String?   // Digital Marketing, Data, Dev, Design, Product, Other
+  experienceLevel       String?   // Beginner, Intermediate, Advanced
+  goal                  String?   // Earn Money, Get Job, Freelance, Build Skills
+  
+  // Stage 3: Skills
+  skills                String[]  @default([])   // Array of skill strings
+  toolsKnown            String[]  @default([])   // Array of tool names
+  availability          Int?      // hours per week
+  
+  // Stage 4: Proof/Work
+  portfolioLinks        String[]  @default([])   // Array of portfolio URLs
+  pastWorkDescription   String?   @db.Text
+  
+  // Stage 5: Hiring Data
+  resumeURL             String?
+  linkedinURL           String?
+  location              String?
+  expectedSalary        Float?    // in thousands
+  
+  // Completion tracking
+  profileCompletion     Int       @default(20) // starts at 20% (basic info)
+  
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
 }
 
 model Gig {

@@ -65,7 +65,7 @@ export default function Hero() {
           <Button variant="primary" size="lg" href="/auth/signup">
             Start Your First Project
           </Button>
-          <Button variant="outline" size="lg" href="/capsules">
+          <Button variant="outline" size="lg" href="/career-tracks">
             Explore Career Tracks
           </Button>
         </motion.div>

@@ -41,11 +41,19 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    // Also create a portfolio for the user
+    // Create portfolio for the user
     await prisma.portfolio.create({
       data: {
         userId: user.id,
         title: `${name}'s Portfolio`,
+      },
+    });
+
+    // Create profile for progressive profile system
+    await prisma.profile.create({
+      data: {
+        userId: user.id,
+        profileCompletion: 20, // Basic info complete after signup
       },
     });
 

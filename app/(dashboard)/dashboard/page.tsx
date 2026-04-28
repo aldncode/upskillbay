@@ -7,11 +7,25 @@ import toast from 'react-hot-toast';
 import { motion } from 'framer-motion';
 import Card from '@/components/Card';
 import Button from '@/components/Button';
+import CareerTrackCard from '@/components/CareerTrackCard';
+
+interface CareerTrack {
+  id: string;
+  title: string;
+  description: string;
+  outcome: string;
+  duration: string;
+  earningPotential: string;
+  skills: string[];
+  level: string;
+  enrollments?: { userId: string }[];
+}
 
 interface DashboardData {
   enrollments: any[];
   submissions: any[];
   applications: any[];
+  careerTrackEnrollments?: any[];
 }
 
 export default function Dashboard() {
@@ -20,9 +34,12 @@ export default function Dashboard() {
     enrollments: [],
     submissions: [],
     applications: [],
+    careerTrackEnrollments: [],
   });
+  const [careerTracks, setCareerTracks] = useState<CareerTrack[]>([]);
   const [loading, setLoading] = useState(true);
 
+  // Fetch dashboard data
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -33,6 +50,7 @@ export default function Dashboard() {
           enrollments: userData.enrollments || [],
           submissions: userData.submissions || [],
           applications: userData.applications || [],
+          careerTrackEnrollments: userData.careerTrackEnrollments || [],
         });
       } catch (error) {
         toast.error('Failed to load dashboard');
@@ -46,6 +64,22 @@ export default function Dashboard() {
     }
   }, [session]);
 
+  // Fetch career tracks
+  useEffect(() => {
+    const fetchCareerTracks = async () => {
+      try {
+        const res = await fetch('/api/career-tracks');
+        const tracks = await res.json();
+        // Show top 3 career tracks
+        setCareerTracks(tracks.slice(0, 3));
+      } catch (error) {
+        console.error('Error fetching career tracks:', error);
+      }
+    };
+
+    fetchCareerTracks();
+  }, []);
+
   if (loading) {
     return <div className="p-8 text-center text-[#9CA3AF]">Loading...</div>;
   }
@@ -53,6 +87,9 @@ export default function Dashboard() {
   const user = session?.user as any;
   const approvedCount = data.submissions.filter((s) => s.status === 'approved').length;
   const pendingCount = data.submissions.filter((s) => s.status === 'pending').length;
+  const enrolledTracksSet = new Set(
+    data.careerTrackEnrollments?.map((e: any) => e.careerTrackId) || []
+  );
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -97,7 +134,7 @@ export default function Dashboard() {
           <Card>
             <div className="text-center">
               <div className="text-3xl font-bold text-[#3B82F6]">{data.enrollments.length}</div>
-              <p className="text-[#9CA3AF] mt-2">Capsules Enrolled</p>
+              <p className="text-[#9CA3AF] mt-2">Career Tracks Enrolled</p>
             </div>
           </Card>
         </motion.div>
@@ -130,6 +167,59 @@ export default function Dashboard() {
         </motion.div>
       </motion.div>
 
+      {/* Recommended Career Tracks Section */}
+      {careerTracks.length > 0 && (
+        <motion.div
+          className="mb-12"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, delay: 0.1 }}
+        >
+          <div className="flex items-center justify-between mb-6">
+            <div>
+              <h2 className="text-2xl font-bold text-white mb-2">
+                🚀 Recommended Career Tracks
+              </h2>
+              <p className="text-[#9CA3AF]">
+                Build skills, complete projects, and start earning
+              </p>
+            </div>
+            <Link
+              href="/career-tracks"
+              className="text-[#3B82F6] font-semibold hover:text-[#60A5FA] transition-colors"
+            >
+              View All →
+            </Link>
+          </div>
+          <div className="grid md:grid-cols-3 gap-6">
+            {careerTracks.map((track) => (
+              <CareerTrackCard
+                key={track.id}
+                track={track}
+                enrolled={enrolledTracksSet.has(track.id)}
+                onEnroll={async (trackId) => {
+                  try {
+                    const res = await fetch(`/api/career-tracks/${trackId}/enroll`, {
+                      method: 'POST',
+                    });
+                    if (!res.ok) {
+                      const error = await res.json();
+                      throw new Error(error.error || 'Failed to enroll');
+                    }
+                    toast.success('Successfully enrolled!');
+                    // Refresh the page or update state
+                    window.location.reload();
+                  } catch (error: any) {
+                    toast.error(error.message);
+                    throw error;
+                  }
+                }}
+              />
+            ))}
+          </div>
+        </motion.div>
+      )}
+
       {/* Main Content */}
       <div className="grid md:grid-cols-3 gap-8">
         {/* Active Capsules */}
@@ -140,12 +230,12 @@ export default function Dashboard() {
           transition={{ duration: 0.4, delay: 0.2 }}
         >
           <Card>
-            <h2 className="text-2xl font-bold mb-6 text-white">Your Active Capsules</h2>
+            <h2 className="text-2xl font-bold mb-6 text-white">Your Active Career Tracks</h2>
             {data.enrollments.length === 0 ? (
               <p className="text-[#9CA3AF] mb-4">
-                You haven't enrolled in any capsules yet.{' '}
-                <Link href="/capsules" className="text-[#3B82F6] font-medium hover:underline">
-                  Browse capsules
+                You haven't enrolled in any career tracks yet.{' '}
+                <Link href="/career-tracks" className="text-[#3B82F6] font-medium hover:underline">
+                  Browse career tracks
                 </Link>
               </p>
             ) : (
@@ -162,7 +252,7 @@ export default function Dashboard() {
                       {enrollment.capsule.description.substring(0, 100)}...
                     </p>
                     <Link
-                      href={`/capsules/${enrollment.capsule.id}`}
+                      href={`/career-tracks/${enrollment.capsule.id}`}
                       className="text-[#3B82F6] text-sm font-medium hover:underline"
                     >
                       Continue learning →
@@ -185,8 +275,8 @@ export default function Dashboard() {
           <Card>
             <h2 className="text-xl font-bold mb-4 text-white">Quick Actions</h2>
             <div className="space-y-3">
-              <Button variant="primary" href="/capsules">
-                Browse Capsules
+              <Button variant="primary" href="/career-tracks">
+                Explore Career Tracks
               </Button>
               <Button variant="secondary" href="/gigs">
                 Browse Projects

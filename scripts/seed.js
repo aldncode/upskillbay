@@ -9,12 +9,15 @@ async function main() {
   // Clear existing data
   await prisma.application.deleteMany();
   await prisma.submission.deleteMany();
+  await prisma.careerTrackEnrollment.deleteMany();
   await prisma.enrollment.deleteMany();
   await prisma.task.deleteMany();
   await prisma.gig.deleteMany();
   await prisma.portfolio.deleteMany();
+  await prisma.profile.deleteMany();
   await prisma.user.deleteMany();
   await prisma.capsule.deleteMany();
+  await prisma.careerTrack.deleteMany();
 
   // Create admin user
   const adminUser = await prisma.user.create({
@@ -285,6 +288,71 @@ export default Greeting;`,
       gigId: gig2.id,
       message: 'I specialize in React and have built several dashboard components. Check my portfolio for examples.',
       status: 'accepted',
+    },
+  });
+
+  // Create Career Tracks
+  const careerTrack1 = await prisma.careerTrack.create({
+    data: {
+      title: 'Website Builder',
+      description: 'Build simple websites without coding',
+      outcome: 'Earn your first ₹5000 in 7 days',
+      duration: '7 days',
+      earningPotential: '₹5K–₹20K per project',
+      skills: ['Web Design', 'No-Code Tools', 'Client Communication'],
+      level: 'beginner',
+      status: 'published',
+    },
+  });
+
+  const careerTrack2 = await prisma.careerTrack.create({
+    data: {
+      title: 'Instagram Growth',
+      description: 'Grow pages and monetize content',
+      outcome: 'Reach 10K followers and earn',
+      duration: '14 days',
+      earningPotential: '₹3K–₹15K/month',
+      skills: ['Content Creation', 'Growth Hacking', 'Monetization'],
+      level: 'beginner',
+      status: 'published',
+    },
+  });
+
+  const careerTrack3 = await prisma.careerTrack.create({
+    data: {
+      title: 'AI Automation',
+      description: 'Automate business tasks using AI tools',
+      outcome: 'Get clients for automation work',
+      duration: '14 days',
+      earningPotential: '₹5K–₹30K per client',
+      skills: ['AI Tools', 'Automation', 'Client Management'],
+      level: 'beginner',
+      status: 'published',
+    },
+  });
+
+  // Enroll users in career tracks
+  await prisma.careerTrackEnrollment.create({
+    data: {
+      userId: users[0].id,
+      careerTrackId: careerTrack1.id,
+      status: 'active',
+    },
+  });
+
+  await prisma.careerTrackEnrollment.create({
+    data: {
+      userId: users[1].id,
+      careerTrackId: careerTrack2.id,
+      status: 'active',
+    },
+  });
+
+  await prisma.careerTrackEnrollment.create({
+    data: {
+      userId: users[2].id,
+      careerTrackId: careerTrack3.id,
+      status: 'active',
     },
   });
 

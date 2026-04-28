@@ -105,8 +105,8 @@ export default function CapsulesList() {
                   {capsule.tasks.length} tasks
                 </span>
               </div>
-              <Link href={`/capsules/${capsule.id}`} className="btn btn-primary w-full text-center">
-                View Capsule
+              <Link href={`/career-tracks`} className="btn btn-primary w-full text-center">
+                View Career Tracks
               </Link>
             </div>
           ))}
