@@ -43,3 +43,5 @@ instructions/
 prompts/
 notes/
 *.md
+# BUT keep README.md
+!README.md

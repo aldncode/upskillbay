@@ -25,6 +25,7 @@ model User {
   enrollments   Enrollment[]
   submissions   Submission[]
   applications  Application[]
+  trackApplications TrackApplication[] @relation("trackApplications")
   portfolio     Portfolio?
   profile       Profile?
   careerTrackEnrollments CareerTrackEnrollment[] @relation("careerTrackEnrollments")
@@ -245,6 +246,30 @@ model Application {
   updatedAt DateTime @updatedAt
   
   @@unique([userId, gigId])
+}
+
+// For Career Tracks and Projects enrollment
+model TrackApplication {
+  id                String   @id @default(cuid())
+  userId            String
+  type              String   // "track" or "project"
+  targetId          String   // careerTrackId or projectId
+  
+  name              String
+  email             String
+  phone             String
+  experience        String   @db.Text
+  motivation        String   @db.Text
+  
+  agreedToTerms     Boolean  @default(false)
+  status            String   @default("pending") // pending, approved, rejected
+  
+  user              User     @relation("trackApplications", fields: [userId], references: [id], onDelete: Cascade)
+  
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  
+  @@unique([userId, type, targetId])
 }
 
 enum Role {

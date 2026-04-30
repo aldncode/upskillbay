@@ -57,12 +57,13 @@ export default function CareerTracksPage() {
       if (!session?.user) return;
 
       try {
-        const res = await fetch('/api/user');
-        const userData = await res.json();
+        const res = await fetch('/api/enrollments');
+        const data = await res.json();
         const enrolledTrackIds = new Set(
-          userData.careerTrackEnrollments?.map((e: any) => e.careerTrackId) || []
+          data.enrollments?.map((e: any) => e.careerTrackId) || []
         );
         setUserEnrollments(enrolledTrackIds);
+        console.log('User enrollments:', enrolledTrackIds);
       } catch (error) {
         console.error('Error fetching enrollments:', error);
       }
@@ -79,8 +80,11 @@ export default function CareerTracksPage() {
     }
 
     try {
-      const res = await fetch(`/api/career-tracks/${trackId}/enroll`, {
+      console.log('Enrolling in track:', trackId);
+      const res = await fetch('/api/enroll', {
         method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ careerTrackId: trackId }),
       });
 
       if (!res.ok) {
@@ -88,12 +92,20 @@ export default function CareerTracksPage() {
         throw new Error(error.error || 'Failed to enroll');
       }
 
+      const data = await res.json();
+      console.log('Enrollment response:', data);
+
       // Update local state
       setUserEnrollments((prev) => new Set([...prev, trackId]));
-      toast.success('Successfully enrolled!');
+      toast.success('Successfully enrolled! Redirecting to dashboard...');
+
+      // Redirect to dashboard after a short delay
+      setTimeout(() => {
+        window.location.href = '/dashboard';
+      }, 1500);
     } catch (error: any) {
+      console.error('Enrollment error:', error);
       toast.error(error.message);
-      throw error;
     }
   };
 
