@@ -9,9 +9,9 @@ interface CardProps {
 }
 
 export default function Card({ children, className = '', clickable = false }: CardProps) {
-  const hoverClass = clickable ? 'cursor-pointer hover:scale-105' : '';
+  const hoverClass = clickable ? 'cursor-pointer hover:border-[#3B82F6]/50 hover:shadow-lg hover:shadow-[#3B82F6]/10 hover:-translate-y-1' : '';
   return (
-    <div className={`card ${hoverClass} ${className}`}>
+    <div className={`bg-[#111827] border border-[#1F2937] rounded-xl p-6 transition-all duration-200 ${hoverClass} ${className}`}>
       {children}
     </div>
   );

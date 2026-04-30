@@ -1,0 +1,61 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:16-alpine
+    container_name: upskillbay-db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: UpSkillBay@2025
+      POSTGRES_DB: upskillbay
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - upskillbay-network
+
+  # Redis Cache (Optional)
+  redis:
+    image: redis:7-alpine
+    container_name: upskillbay-redis
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - upskillbay-network
+
+  # Next.js Application
+  app:
+    build: .
+    container_name: upskillbay-app
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: postgresql://postgres:UpSkillBay@2025@postgres:5432/upskillbay
+      NEXTAUTH_URL: http://localhost:3000
+      NEXTAUTH_SECRET: your-secret-key-here-change-in-production
+    ports:
+      - "3000:3000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - upskillbay-network
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+
+networks:
+  upskillbay-network:
+    driver: bridge

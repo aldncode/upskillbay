@@ -3,8 +3,6 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import toast from 'react-hot-toast';
-import Button from '@/components/Button';
-import SkillBadge from '@/components/SkillBadge';
 
 interface CareerTrack {
   id: string;
@@ -56,103 +54,103 @@ export default function CareerTrackCard({
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
-      whileHover={{ y: -8, boxShadow: '0 20px 40px rgba(59, 130, 246, 0.2)' }}
+      whileHover={{ y: -4 }}
       className="h-full"
     >
-      <div className="relative h-full bg-gradient-to-br from-[#0F172A] to-[#0B0F19] border border-[#1E293B] rounded-xl overflow-hidden group hover:border-[#3B82F6] transition-all duration-300">
-        {/* Background Glow Effect */}
-        <div className="absolute inset-0 bg-gradient-to-br from-[#3B82F6]/5 via-transparent to-[#8B5CF6]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-
+      <div className="relative h-full bg-[#111827] border border-[#1F2937] rounded-xl overflow-hidden group hover:border-[#3B82F6]/50 hover:shadow-lg hover:shadow-[#3B82F6]/10 transition-all duration-200 p-6 flex flex-col">
         {/* Level Badge */}
         <div className="absolute top-4 right-4 z-10">
           <span
-            className={`inline-block px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider ${
+            className={`inline-block px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider ${
               levelColors[track.level.toLowerCase()] || 'text-[#9CA3AF]'
-            } bg-[#1E293B]/80 backdrop-blur-sm border border-[#334155]`}
+            } bg-[#0B0F19] border border-[#1F2937]`}
           >
             {track.level}
           </span>
         </div>
 
-        {/* Content */}
-        <div className="relative p-6 flex flex-col h-full">
-          {/* Title */}
-          <h3 className="text-xl font-bold text-white mb-3 pr-20 group-hover:text-[#3B82F6] transition-colors duration-300">
-            {track.title}
-          </h3>
+        {/* Title */}
+        <h3 className="text-xl font-bold text-white mb-2 pr-16">
+          {track.title}
+        </h3>
 
-          {/* Description */}
-          <p className="text-[#9CA3AF] text-sm mb-4 line-clamp-2 flex-grow">
-            {track.description}
+        {/* Description */}
+        <p className="text-[#9CA3AF] text-sm mb-6 line-clamp-2 flex-grow">
+          {track.description}
+        </p>
+
+        {/* Outcome */}
+        <div className="mb-6 pb-6 border-b border-[#1F2937]">
+          <p className="text-xs text-[#6B7280] font-semibold mb-2 uppercase tracking-wide">
+            Outcome
           </p>
-
-          {/* Outcome - Highlighted */}
-          <div className="mb-6 p-4 bg-[#1E293B]/60 border-l-4 border-[#3B82F6] rounded-lg">
-            <p className="text-xs text-[#64748B] font-semibold mb-1 uppercase tracking-wide">
-              🎯 Your Outcome
-            </p>
-            <p className="text-sm font-bold text-[#E2E8F0]">
-              {track.outcome}
-            </p>
-          </div>
-
-          {/* Skills */}
-          <div className="mb-6">
-            <p className="text-xs text-[#64748B] font-semibold mb-2 uppercase tracking-wide">
-              Skills You'll Learn
-            </p>
-            <div className="flex flex-wrap gap-2">
-              {track.skills.slice(0, 3).map((skill, idx) => (
-                <SkillBadge key={idx} skill={skill} variant="default" />
-              ))}
-              {track.skills.length > 3 && (
-                <span className="text-xs text-[#64748B] flex items-center">
-                  +{track.skills.length - 3} more
-                </span>
-              )}
-            </div>
-          </div>
-
-          {/* Info Grid */}
-          <div className="grid grid-cols-2 gap-3 mb-6 pb-6 border-b border-[#1E293B]">
-            <div>
-              <p className="text-xs text-[#64748B] font-semibold uppercase tracking-wide mb-1">
-                Duration
-              </p>
-              <p className="text-sm font-bold text-[#E2E8F0]">
-                {track.duration}
-              </p>
-            </div>
-            <div>
-              <p className="text-xs text-[#64748B] font-semibold uppercase tracking-wide mb-1">
-                Earning Potential
-              </p>
-              <p className="text-sm font-bold text-[#10B981]">
-                {track.earningPotential}
-              </p>
-            </div>
-          </div>
-
-          {/* CTA Button */}
-          <div className="mt-auto">
-            <Button
-              onClick={handleEnroll}
-              disabled={enrolled || isEnrolling}
-              variant={enrolled ? 'secondary' : 'primary'}
-              className="w-full justify-center"
-            >
-              {isEnrolling && (
-                <span className="inline-block animate-spin mr-2">⚙️</span>
-              )}
-              {enrolled ? '✓ Enrolled' : 'Start Track'}
-            </Button>
-          </div>
-
-          {/* Enrollment Count */}
-          <p className="text-xs text-[#64748B] text-center mt-3">
-            {track.enrollments?.length || 0} people enrolled
+          <p className="text-sm text-[#E2E8F0] font-medium">
+            {track.outcome}
           </p>
         </div>
+
+        {/* Skills */}
+        <div className="mb-6 pb-6 border-b border-[#1F2937]">
+          <p className="text-xs text-[#6B7280] font-semibold mb-3 uppercase tracking-wide">
+            Skills
+          </p>
+          <div className="flex flex-wrap gap-2">
+            {track.skills.slice(0, 3).map((skill, idx) => (
+              <span
+                key={idx}
+                className="inline-block px-3 py-1 bg-[#0B0F19] text-[#3B82F6] text-xs font-medium rounded-lg border border-[#1F2937]"
+              >
+                {skill}
+              </span>
+            ))}
+            {track.skills.length > 3 && (
+              <span className="text-xs text-[#6B7280] flex items-center">
+                +{track.skills.length - 3}
+              </span>
+            )}
+          </div>
+        </div>
+
+        {/* Info Grid */}
+        <div className="grid grid-cols-2 gap-4 mb-6 pb-6 border-b border-[#1F2937]">
+          <div>
+            <p className="text-xs text-[#6B7280] font-semibold uppercase tracking-wide mb-2">
+              Duration
+            </p>
+            <p className="text-sm font-bold text-white">
+              {track.duration}
+            </p>
+          </div>
+          <div>
+            <p className="text-xs text-[#6B7280] font-semibold uppercase tracking-wide mb-2">
+              Earning
+            </p>
+            <p className="text-sm font-bold text-[#10B981]">
+              {track.earningPotential}
+            </p>
+          </div>
+        </div>
+
+        {/* Enrollment Count */}
+        <p className="text-xs text-[#6B7280] mb-6">
+          {track.enrollments?.length || 0} people enrolled
+        </p>
+
+        {/* CTA Button */}
+        <button
+          onClick={handleEnroll}
+          disabled={enrolled || isEnrolling}
+          className={`w-full px-4 py-3 rounded-lg font-medium transition-all duration-200 ${
+            enrolled
+              ? 'bg-[#0B0F19] border border-[#1F2937] text-[#10B981] cursor-default'
+              : 'bg-[#111827] border border-[#3B82F6] text-white hover:shadow-lg hover:shadow-[#3B82F6]/20 hover:-translate-y-1'
+          } ${isEnrolling ? 'opacity-75' : ''}`}
+        >
+          {isEnrolling && (
+            <span className="inline-block animate-spin mr-2">⚙️</span>
+          )}
+          {enrolled ? '✓ Enrolled' : 'Start Track'}
+        </button>
       </div>
     </motion.div>
   );

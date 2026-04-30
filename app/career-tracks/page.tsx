@@ -6,6 +6,8 @@ import Link from 'next/link';
 import toast from 'react-hot-toast';
 import { motion } from 'framer-motion';
 import CareerTrackCard from '@/components/CareerTrackCard';
+import Navbar from '@/components/Navbar';
+import Footer from '@/components/Footer';
 
 interface CareerTrack {
   id: string;
@@ -144,138 +146,142 @@ export default function CareerTracksPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#0B0F19] via-[#0F172A] to-[#0B0F19]">
-      {/* Hero Section */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6 }}
-        className="bg-gradient-to-r from-[#3B82F6]/20 via-transparent to-[#8B5CF6]/20 border-b border-[#1E293B]"
-      >
-        <div className="max-w-7xl mx-auto px-6 py-16 text-center">
-          <h1 className="text-5xl md:text-6xl font-bold text-white mb-4">
-            Career Tracks
-          </h1>
-          <p className="text-xl text-[#9CA3AF] max-w-2xl mx-auto">
-            Master in-demand skills and launch your freelance career. Choose a track, complete modules, and start earning.
-          </p>
-        </div>
-      </motion.div>
-
-      {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-6 py-12">
-        {/* Filters */}
+    <>
+      <Navbar />
+      <div className="min-h-screen bg-[#0B0F19]">
+        {/* Hero Section */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4, delay: 0.1 }}
-          className="mb-12 bg-[#0F172A] border border-[#1E293B] rounded-xl p-6"
+          transition={{ duration: 0.6 }}
+          className="border-b border-[#1F2937] py-16"
         >
-          <div className="grid md:grid-cols-2 gap-6">
-            {/* Search */}
-            <div>
-              <label className="block text-sm font-semibold text-[#E2E8F0] mb-3">
-                🔍 Search Tracks
-              </label>
-              <input
-                type="text"
-                placeholder="Search career tracks..."
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                className="w-full px-4 py-3 bg-[#0B0F19] border border-[#334155] rounded-lg text-white placeholder-[#64748B] focus:border-[#3B82F6] focus:ring-1 focus:ring-[#3B82F6] transition-all duration-300"
-              />
-            </div>
-
-            {/* Level Filter */}
-            <div>
-              <label className="block text-sm font-semibold text-[#E2E8F0] mb-3">
-                📊 Difficulty Level
-              </label>
-              <select
-                value={level}
-                onChange={(e) => setLevel(e.target.value)}
-                className="w-full px-4 py-3 bg-[#0B0F19] border border-[#334155] rounded-lg text-white focus:border-[#3B82F6] focus:ring-1 focus:ring-[#3B82F6] transition-all duration-300"
-              >
-                <option value="">All Levels</option>
-                <option value="beginner">Beginner</option>
-                <option value="intermediate">Intermediate</option>
-                <option value="advanced">Advanced</option>
-              </select>
-            </div>
+          <div className="max-w-6xl mx-auto px-6 text-center">
+            <h1 className="text-5xl md:text-6xl font-bold text-white mb-4 tracking-tight">
+              Career Tracks
+            </h1>
+            <p className="text-lg text-[#9CA3AF] max-w-2xl mx-auto leading-relaxed">
+              Master in-demand skills and launch your freelance career. Choose a track, complete modules, and start earning.
+            </p>
           </div>
         </motion.div>
 
-        {/* Tracks Grid */}
-        {careerTracks.length === 0 ? (
+        {/* Main Content */}
+        <div className="max-w-6xl mx-auto px-6 py-16">
+          {/* Filters */}
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.4 }}
-            className="text-center py-16"
-          >
-            <div className="text-5xl mb-4">🚀</div>
-            <p className="text-xl text-[#9CA3AF] mb-8">
-              No career tracks found. Try adjusting your filters.
-            </p>
-            <Link
-              href="/career-tracks"
-              onClick={() => {
-                setSearch('');
-                setLevel('');
-              }}
-              className="inline-block px-6 py-3 bg-[#3B82F6] text-white font-semibold rounded-lg hover:bg-[#2563EB] transition-all duration-300"
-            >
-              View All Tracks
-            </Link>
-          </motion.div>
-        ) : (
-          <motion.div
-            className="grid md:grid-cols-3 gap-6"
-            variants={containerVariants}
-            initial="hidden"
-            animate="visible"
-          >
-            {careerTracks.map((track) => (
-              <motion.div key={track.id} variants={itemVariants}>
-                <CareerTrackCard
-                  track={track}
-                  onEnroll={handleEnroll}
-                  enrolled={userEnrollments.has(track.id)}
-                />
-              </motion.div>
-            ))}
-          </motion.div>
-        )}
-
-        {/* CTA Section */}
-        {careerTracks.length > 0 && (
-          <motion.div
-            initial={{ opacity: 0, y: 40 }}
+            initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.3 }}
-            className="mt-16 bg-gradient-to-r from-[#3B82F6]/20 via-[#8B5CF6]/20 to-[#3B82F6]/20 border border-[#3B82F6]/30 rounded-xl p-8 text-center"
+            transition={{ duration: 0.4, delay: 0.1 }}
+            className="mb-12 bg-[#111827] border border-[#1F2937] rounded-xl p-6 hover:border-[#3B82F6]/50 transition-all duration-200"
           >
-            <h3 className="text-2xl font-bold text-white mb-3">
-              Ready to level up your career?
-            </h3>
-            <p className="text-[#9CA3AF] mb-6 max-w-2xl mx-auto">
-              Pick a track, complete the modules, build projects, and start earning money within weeks.
-            </p>
-            {!session?.user ? (
-              <Link
-                href="/auth/signup"
-                className="inline-block px-8 py-3 bg-[#3B82F6] text-white font-bold rounded-lg hover:bg-[#2563EB] transition-all duration-300 hover:shadow-lg hover:shadow-[#3B82F6]/50"
-              >
-                Get Started Free
-              </Link>
-            ) : (
-              <p className="text-[#10B981] font-semibold">
-                ✓ You're all set! Start a track above.
-              </p>
-            )}
+            <div className="grid md:grid-cols-2 gap-6">
+              {/* Search */}
+              <div>
+                <label className="block text-sm font-semibold text-[#E2E8F0] mb-3">
+                  Search Tracks
+                </label>
+                <input
+                  type="text"
+                  placeholder="Search career tracks..."
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  className="w-full px-4 py-3 bg-[#0B0F19] border border-[#1F2937] rounded-lg text-white placeholder-[#6B7280] focus:border-[#3B82F6] focus:ring-1 focus:ring-[#3B82F6]/50 transition-all duration-200"
+                />
+              </div>
+
+              {/* Level Filter */}
+              <div>
+                <label className="block text-sm font-semibold text-[#E2E8F0] mb-3">
+                  Difficulty Level
+                </label>
+                <select
+                  value={level}
+                  onChange={(e) => setLevel(e.target.value)}
+                  className="w-full px-4 py-3 bg-[#0B0F19] border border-[#1F2937] rounded-lg text-white focus:border-[#3B82F6] focus:ring-1 focus:ring-[#3B82F6]/50 transition-all duration-200"
+                >
+                  <option value="">All Levels</option>
+                  <option value="beginner">Beginner</option>
+                  <option value="intermediate">Intermediate</option>
+                  <option value="advanced">Advanced</option>
+                </select>
+              </div>
+            </div>
           </motion.div>
-        )}
+
+          {/* Tracks Grid */}
+          {careerTracks.length === 0 ? (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.4 }}
+              className="text-center py-20"
+            >
+              <div className="text-6xl mb-6">🚀</div>
+              <p className="text-lg text-[#9CA3AF] mb-8">
+                No career tracks found. Try adjusting your filters.
+              </p>
+              <button
+                onClick={() => {
+                  setSearch('');
+                  setLevel('');
+                }}
+                className="px-6 py-3 bg-[#111827] border border-[#3B82F6] text-white font-medium rounded-lg hover:shadow-lg hover:shadow-[#3B82F6]/20 hover:-translate-y-1 transition-all duration-200"
+              >
+                View All Tracks
+              </button>
+            </motion.div>
+          ) : (
+            <motion.div
+              className="grid md:grid-cols-3 gap-6"
+              variants={containerVariants}
+              initial="hidden"
+              animate="visible"
+            >
+              {careerTracks.map((track) => (
+                <motion.div key={track.id} variants={itemVariants}>
+                  <CareerTrackCard
+                    track={track}
+                    onEnroll={handleEnroll}
+                    enrolled={userEnrollments.has(track.id)}
+                  />
+                </motion.div>
+              ))}
+            </motion.div>
+          )}
+
+          {/* CTA Section */}
+          {careerTracks.length > 0 && (
+            <motion.div
+              initial={{ opacity: 0, y: 40 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+              className="mt-16 bg-[#111827] border border-[#1F2937] rounded-xl p-8 text-center"
+            >
+              <h3 className="text-3xl font-bold text-white mb-3 tracking-tight">
+                Ready to level up your career?
+              </h3>
+              <p className="text-[#9CA3AF] mb-8 max-w-2xl mx-auto leading-relaxed">
+                Pick a track, complete the modules, build projects, and start earning money within weeks.
+              </p>
+              {!session?.user ? (
+                <Link
+                  href="/auth/signup"
+                  className="inline-block px-8 py-3 bg-[#111827] border border-[#3B82F6] text-white font-medium rounded-lg hover:shadow-lg hover:shadow-[#3B82F6]/20 hover:-translate-y-1 transition-all duration-200"
+                >
+                  Get Started Free
+                </Link>
+              ) : (
+                <p className="text-[#10B981] font-medium">
+                  ✓ You're all set! Start a track above.
+                </p>
+              )}
+            </motion.div>
+          )}
+        </div>
       </div>
-    </div>
+      <Footer />
+    </>
   );
 }
+

@@ -23,16 +23,17 @@ export default function Button({
   className = '',
   type = 'button',
 }: ButtonProps) {
-  const baseClass = 'btn';
+  const baseClass = 'font-medium rounded-lg transition-all duration-200 inline-flex items-center justify-center';
+  
   const variantClass = {
-    primary: 'btn-primary',
-    secondary: 'btn-secondary',
-    outline: 'btn-outline',
+    primary: 'bg-[#111827] border border-[#3B82F6] text-white hover:shadow-lg hover:shadow-[#3B82F6]/20 hover:-translate-y-1 disabled:opacity-60 disabled:cursor-not-allowed',
+    secondary: 'bg-[#0B0F19] border border-[#1F2937] text-[#9CA3AF] hover:border-[#3B82F6]/30',
+    outline: 'bg-transparent border border-[#1F2937] text-white hover:border-[#3B82F6]',
   }[variant];
 
   const sizeClass = {
     sm: 'px-4 py-2 text-sm',
-    md: 'px-6 py-3',
+    md: 'px-6 py-3 text-base',
     lg: 'px-8 py-4 text-lg',
   }[size];
 

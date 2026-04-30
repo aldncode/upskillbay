@@ -111,7 +111,7 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-6 py-12">
+    <div className="max-w-6xl mx-auto px-6 py-12">
       {/* Welcome Section */}
       <motion.div
         className="mb-12"
@@ -119,8 +119,8 @@ export default function Dashboard() {
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4 }}
       >
-        <h1 className="text-4xl font-bold text-white mb-2">Welcome back, {user?.name}! 👋</h1>
-        <p className="text-[#9CA3AF]">Build your skills, earn from projects, and get hired</p>
+        <h1 className="text-4xl font-bold text-white mb-2 tracking-tight">Welcome back, {user?.name}! 👋</h1>
+        <p className="text-lg text-[#9CA3AF]">Build your skills, earn from projects, and get hired</p>
       </motion.div>
 
       {/* Stats Grid */}
@@ -133,8 +133,8 @@ export default function Dashboard() {
         <motion.div variants={itemVariants}>
           <Card>
             <div className="text-center">
-              <div className="text-3xl font-bold text-[#3B82F6]">{data.enrollments.length}</div>
-              <p className="text-[#9CA3AF] mt-2">Career Tracks Enrolled</p>
+              <div className="text-4xl font-bold text-[#3B82F6]">{data.enrollments.length}</div>
+              <p className="text-[#9CA3AF] mt-3 text-sm">Career Tracks Enrolled</p>
             </div>
           </Card>
         </motion.div>
@@ -142,8 +142,8 @@ export default function Dashboard() {
         <motion.div variants={itemVariants}>
           <Card>
             <div className="text-center">
-              <div className="text-3xl font-bold text-[#3B82F6]">{approvedCount}</div>
-              <p className="text-[#9CA3AF] mt-2">Completed Tasks</p>
+              <div className="text-4xl font-bold text-[#10B981]">{approvedCount}</div>
+              <p className="text-[#9CA3AF] mt-3 text-sm">Completed Tasks</p>
             </div>
           </Card>
         </motion.div>
@@ -151,8 +151,8 @@ export default function Dashboard() {
         <motion.div variants={itemVariants}>
           <Card>
             <div className="text-center">
-              <div className="text-3xl font-bold text-[#3B82F6]">{pendingCount}</div>
-              <p className="text-[#9CA3AF] mt-2">Pending Review</p>
+              <div className="text-4xl font-bold text-[#F59E0B]">{pendingCount}</div>
+              <p className="text-[#9CA3AF] mt-3 text-sm">Pending Review</p>
             </div>
           </Card>
         </motion.div>
@@ -160,8 +160,8 @@ export default function Dashboard() {
         <motion.div variants={itemVariants}>
           <Card>
             <div className="text-center">
-              <div className="text-3xl font-bold text-[#3B82F6]">$0.00</div>
-              <p className="text-[#9CA3AF] mt-2">Earnings</p>
+              <div className="text-4xl font-bold text-[#EC4899]">$0.00</div>
+              <p className="text-[#9CA3AF] mt-3 text-sm">Total Earnings</p>
             </div>
           </Card>
         </motion.div>
@@ -175,10 +175,10 @@ export default function Dashboard() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.4, delay: 0.1 }}
         >
-          <div className="flex items-center justify-between mb-6">
+          <div className="flex items-center justify-between mb-8">
             <div>
-              <h2 className="text-2xl font-bold text-white mb-2">
-                🚀 Recommended Career Tracks
+              <h2 className="text-3xl font-bold text-white mb-2 tracking-tight">
+                Recommended Tracks
               </h2>
               <p className="text-[#9CA3AF]">
                 Build skills, complete projects, and start earning
@@ -186,7 +186,7 @@ export default function Dashboard() {
             </div>
             <Link
               href="/career-tracks"
-              className="text-[#3B82F6] font-semibold hover:text-[#60A5FA] transition-colors"
+              className="text-[#3B82F6] font-medium hover:text-[#60A5FA] transition-colors duration-200"
             >
               View All →
             </Link>
@@ -222,7 +222,7 @@ export default function Dashboard() {
 
       {/* Main Content */}
       <div className="grid md:grid-cols-3 gap-8">
-        {/* Active Capsules */}
+        {/* Active Tracks */}
         <motion.div
           className="md:col-span-2"
           initial={{ opacity: 0, y: 20 }}
@@ -230,7 +230,7 @@ export default function Dashboard() {
           transition={{ duration: 0.4, delay: 0.2 }}
         >
           <Card>
-            <h2 className="text-2xl font-bold mb-6 text-white">Your Active Career Tracks</h2>
+            <h2 className="text-2xl font-bold mb-6 text-white tracking-tight">Your Active Tracks</h2>
             {data.enrollments.length === 0 ? (
               <p className="text-[#9CA3AF] mb-4">
                 You haven't enrolled in any career tracks yet.{' '}
@@ -243,17 +243,17 @@ export default function Dashboard() {
                 {data.enrollments.map((enrollment) => (
                   <motion.div
                     key={enrollment.id}
-                    className="p-4 bg-[#1F2937] border border-[#374151] rounded-xl hover:border-[#3B82F6] transition-colors"
-                    whileHover={{ scale: 1.02 }}
+                    className="p-4 bg-[#0B0F19] border border-[#1F2937] rounded-lg hover:border-[#3B82F6]/50 transition-all duration-200 group cursor-pointer"
+                    whileHover={{ scale: 1.01 }}
                     transition={{ duration: 0.2 }}
                   >
-                    <h3 className="font-semibold text-white">{enrollment.capsule.title}</h3>
-                    <p className="text-sm text-[#9CA3AF] mb-3">
+                    <h3 className="font-semibold text-white group-hover:text-[#3B82F6] transition-colors">{enrollment.capsule.title}</h3>
+                    <p className="text-sm text-[#9CA3AF] mt-2 mb-3">
                       {enrollment.capsule.description.substring(0, 100)}...
                     </p>
                     <Link
                       href={`/career-tracks/${enrollment.capsule.id}`}
-                      className="text-[#3B82F6] text-sm font-medium hover:underline"
+                      className="text-[#3B82F6] text-sm font-medium hover:text-[#60A5FA] transition-colors"
                     >
                       Continue learning →
                     </Link>
@@ -273,23 +273,32 @@ export default function Dashboard() {
         >
           {/* Quick Actions */}
           <Card>
-            <h2 className="text-xl font-bold mb-4 text-white">Quick Actions</h2>
+            <h2 className="text-xl font-bold mb-4 text-white tracking-tight">Quick Actions</h2>
             <div className="space-y-3">
-              <Button variant="primary" href="/career-tracks">
-                Explore Career Tracks
-              </Button>
-              <Button variant="secondary" href="/gigs">
+              <Link
+                href="/career-tracks"
+                className="block w-full px-4 py-3 bg-[#111827] border border-[#3B82F6] text-white rounded-lg hover:shadow-lg hover:shadow-[#3B82F6]/20 hover:-translate-y-1 transition-all duration-200 font-medium text-center"
+              >
+                Explore Tracks
+              </Link>
+              <Link
+                href="/gigs"
+                className="block w-full px-4 py-3 bg-[#111827] border border-[#1F2937] text-[#9CA3AF] rounded-lg hover:border-[#3B82F6]/30 transition-all duration-200 font-medium text-center"
+              >
                 Browse Projects
-              </Button>
-              <Button variant="outline" href={`/portfolio/${user?.id}`}>
+              </Link>
+              <Link
+                href={`/portfolio/${user?.id}`}
+                className="block w-full px-4 py-3 bg-[#111827] border border-[#1F2937] text-[#9CA3AF] rounded-lg hover:border-[#3B82F6]/30 transition-all duration-200 font-medium text-center"
+              >
                 View Portfolio
-              </Button>
+              </Link>
             </div>
           </Card>
 
           {/* Recent Submissions */}
           <Card>
-            <h3 className="font-bold mb-4 text-white">Recent Submissions</h3>
+            <h3 className="font-bold mb-4 text-white tracking-tight">Recent Submissions</h3>
             {data.submissions.length === 0 ? (
               <p className="text-sm text-[#9CA3AF]">No submissions yet</p>
             ) : (
@@ -297,7 +306,7 @@ export default function Dashboard() {
                 {data.submissions.slice(0, 3).map((sub) => (
                   <motion.div
                     key={sub.id}
-                    className="text-sm p-3 bg-[#1F2937] rounded-lg"
+                    className="text-sm p-3 bg-[#0B0F19] border border-[#1F2937] rounded-lg"
                     whileHover={{ scale: 1.02 }}
                   >
                     <p className="font-medium text-white truncate">{sub.task.title}</p>

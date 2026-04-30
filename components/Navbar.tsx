@@ -12,31 +12,31 @@ export default function Navbar() {
       <div className="max-w-6xl mx-auto px-6">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
-          <Link href="/" className="text-2xl font-bold bg-gradient-to-r from-[#3B82F6] to-[#1E40AF] bg-clip-text text-transparent">
+          <Link href="/" className="text-2xl font-bold text-white hover:text-[#3B82F6] transition-colors duration-200">
             UpskillBay
           </Link>
 
           {/* Desktop Menu */}
           <div className="hidden md:flex gap-8 items-center">
-            <Link href="/career-tracks" className="text-[#9CA3AF] hover:text-white transition-colors">
+            <Link href="/career-tracks" className="text-[#9CA3AF] hover:text-white transition-colors duration-200">
               Career Tracks
             </Link>
-            <Link href="/gigs" className="text-[#9CA3AF] hover:text-white transition-colors">
+            <Link href="/gigs" className="text-[#9CA3AF] hover:text-white transition-colors duration-200">
               Projects
             </Link>
-            <Link href="/dashboard" className="text-[#9CA3AF] hover:text-white transition-colors">
+            <Link href="/dashboard" className="text-[#9CA3AF] hover:text-white transition-colors duration-200">
               Dashboard
             </Link>
           </div>
 
           {/* Desktop Auth Buttons */}
-          <div className="hidden md:flex gap-4 items-center">
-            <Link href="/auth/login" className="text-[#9CA3AF] hover:text-white transition-colors">
+          <div className="hidden md:flex gap-3 items-center">
+            <Link href="/auth/login" className="px-6 py-2 text-[#9CA3AF] hover:text-white transition-colors duration-200">
               Login
             </Link>
-            <Button variant="primary" size="sm" href="/auth/signup">
+            <Link href="/auth/signup" className="px-6 py-2 bg-[#111827] border border-[#3B82F6] text-white rounded-lg hover:shadow-lg hover:shadow-[#3B82F6]/20 hover:-translate-y-1 transition-all duration-200 font-medium">
               Sign Up
-            </Button>
+            </Link>
           </div>
 
           {/* Mobile Menu Button */}
@@ -53,20 +53,20 @@ export default function Navbar() {
         {/* Mobile Menu */}
         {isOpen && (
           <div className="md:hidden pb-4 space-y-2 border-t border-[#1F2937]">
-            <Link href="/career-tracks" className="block text-[#9CA3AF] hover:text-white py-2">
+            <Link href="/career-tracks" className="block text-[#9CA3AF] hover:text-white py-2 transition-colors duration-200">
               Career Tracks
             </Link>
-            <Link href="/gigs" className="block text-[#9CA3AF] hover:text-white py-2">
+            <Link href="/gigs" className="block text-[#9CA3AF] hover:text-white py-2 transition-colors duration-200">
               Projects
             </Link>
-            <Link href="/dashboard" className="block text-[#9CA3AF] hover:text-white py-2">
+            <Link href="/dashboard" className="block text-[#9CA3AF] hover:text-white py-2 transition-colors duration-200">
               Dashboard
             </Link>
-            <div className="flex gap-4 pt-4">
-              <Link href="/auth/login" className="flex-1 text-center btn btn-secondary">
+            <div className="flex gap-3 pt-4">
+              <Link href="/auth/login" className="flex-1 text-center px-4 py-2 border border-[#1F2937] text-white rounded-lg hover:border-[#3B82F6]/30 transition-all duration-200">
                 Login
               </Link>
-              <Link href="/auth/signup" className="flex-1 btn btn-primary">
+              <Link href="/auth/signup" className="flex-1 text-center px-4 py-2 bg-[#111827] border border-[#3B82F6] text-white rounded-lg hover:shadow-lg hover:shadow-[#3B82F6]/20 transition-all duration-200 font-medium">
                 Sign Up
               </Link>
             </div>
