@@ -29,6 +29,7 @@
     "react-dom": "^18.3.1",
     "react-hot-toast": "^2.4.1",
     "tailwindcss": "^3.3.6",
+    "ts-node": "^10.9.2",
     "typescript": "^5.3.3",
     "zod": "^3.22.4"
   },
@@ -42,5 +43,8 @@
     "eslint": "^8.56.0",
     "eslint-config-next": "^14.0.4",
     "postcss": "^8.4.32"
+  },
+  "prisma": {
+    "seed": "npx ts-node prisma/seed.ts"
   }
 }
