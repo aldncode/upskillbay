@@ -5,7 +5,7 @@ import { errorResponse, successResponse } from '@/lib/utils';
 
 // GET task details
 export async function GET(
-  request: NextRequest,
+  _: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
@@ -69,7 +69,7 @@ export async function PUT(
 
 // DELETE task (admin only)
 export async function DELETE(
-  request: NextRequest,
+  _: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {

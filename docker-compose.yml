@@ -41,7 +41,7 @@ services:
     container_name: upskillbay-app
     environment:
       NODE_ENV: production
-      DATABASE_URL: postgresql://postgres:UpSkillBay@2025@postgres:5432/upskillbay
+      DATABASE_URL: postgresql://postgres:UpSkillBay%402025@postgres:5432/upskillbay
       NEXTAUTH_URL: http://localhost:3000
       NEXTAUTH_SECRET: your-secret-key-here-change-in-production
     ports:

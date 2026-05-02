@@ -1,6 +1,6 @@
 import { NextRequest } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { getSession, requireRole } from '@/lib/auth';
+import { getSession } from '@/lib/auth';
 import { errorResponse, successResponse } from '@/lib/utils';
 
 // GET all capsules or search

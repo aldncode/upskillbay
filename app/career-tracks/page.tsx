@@ -59,8 +59,8 @@ export default function CareerTracksPage() {
       try {
         const res = await fetch('/api/enrollments');
         const data = await res.json();
-        const enrolledTrackIds = new Set(
-          data.enrollments?.map((e: any) => e.careerTrackId) || []
+        const enrolledTrackIds = new Set<string>(
+          (data.enrollments?.map((e: any) => e.careerTrackId as string) || []) as string[]
         );
         setUserEnrollments(enrolledTrackIds);
         console.log('User enrollments:', enrolledTrackIds);
@@ -72,42 +72,7 @@ export default function CareerTracksPage() {
     fetchUserEnrollments();
   }, [session]);
 
-  // Handle enrollment
-  const handleEnroll = async (trackId: string) => {
-    if (!session?.user) {
-      toast.error('Please sign in to enroll');
-      return;
-    }
 
-    try {
-      console.log('Enrolling in track:', trackId);
-      const res = await fetch('/api/enroll', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ careerTrackId: trackId }),
-      });
-
-      if (!res.ok) {
-        const error = await res.json();
-        throw new Error(error.error || 'Failed to enroll');
-      }
-
-      const data = await res.json();
-      console.log('Enrollment response:', data);
-
-      // Update local state
-      setUserEnrollments((prev) => new Set([...prev, trackId]));
-      toast.success('Successfully enrolled! Redirecting to dashboard...');
-
-      // Redirect to dashboard after a short delay
-      setTimeout(() => {
-        window.location.href = '/dashboard';
-      }, 1500);
-    } catch (error: any) {
-      console.error('Enrollment error:', error);
-      toast.error(error.message);
-    }
-  };
 
   if (loading) {
     return (
@@ -254,7 +219,6 @@ export default function CareerTracksPage() {
                 <motion.div key={track.id} variants={itemVariants}>
                   <CareerTrackCard
                     track={track}
-                    onEnroll={handleEnroll}
                     enrolled={userEnrollments.has(track.id)}
                   />
                 </motion.div>

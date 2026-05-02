@@ -4,7 +4,7 @@ import { getSession } from '@/lib/auth';
 import { errorResponse, successResponse } from '@/lib/utils';
 
 // GET all gigs
-export async function GET(request: NextRequest) {
+export async function GET(_: NextRequest) {
   try {
     const gigs = await prisma.gig.findMany({
       where: { status: 'open' },

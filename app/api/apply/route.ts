@@ -1,6 +1,6 @@
 import { NextRequest } from 'next/server';
 import { prisma } from '@/lib/prisma';
-import { getSession, requireAuth } from '@/lib/auth';
+import { getSession } from '@/lib/auth';
 import { errorResponse, successResponse } from '@/lib/utils';
 
 // POST create application for track/project
@@ -106,7 +106,6 @@ export async function GET(request: NextRequest) {
     }
 
     const { searchParams } = new URL(request.url);
-    const userId = searchParams.get('userId');
     const type = searchParams.get('type');
 
     let where: any = { userId: user.id };

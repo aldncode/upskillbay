@@ -5,14 +5,13 @@ import Link from 'next/link';
 import toast from 'react-hot-toast';
 
 export default function ManageTasks() {
-  const [tasks, setTasks] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchTasks = async () => {
       try {
         // Note: We don't have a general tasks endpoint, but you can implement one
-        toast.info('Tasks are managed per capsule. Go to a capsule to manage its tasks.');
+        toast.success('Tasks are managed per capsule. Go to a capsule to manage its tasks.');
         setLoading(false);
       } catch (error) {
         toast.error('Failed to load tasks');

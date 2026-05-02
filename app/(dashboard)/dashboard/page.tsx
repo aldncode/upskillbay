@@ -6,7 +6,6 @@ import Link from 'next/link';
 import toast from 'react-hot-toast';
 import { motion } from 'framer-motion';
 import Card from '@/components/Card';
-import Button from '@/components/Button';
 import CareerTrackCard from '@/components/CareerTrackCard';
 
 interface CareerTrack {
@@ -178,7 +177,7 @@ export default function Dashboard() {
         <motion.div variants={itemVariants}>
           <Card>
             <div className="text-center">
-              <div className="text-4xl font-bold text-[#3B82F6]">{data.careerTrackEnrollments.length}</div>
+              <div className="text-4xl font-bold text-[#3B82F6]">{(data.careerTrackEnrollments?.length) ?? 0}</div>
               <p className="text-[#9CA3AF] mt-3 text-sm">Career Tracks Enrolled</p>
             </div>
           </Card>
@@ -205,7 +204,7 @@ export default function Dashboard() {
         <motion.div variants={itemVariants}>
           <Card>
             <div className="text-center">
-              <div className="text-4xl font-bold text-[#EC4899]">{data.applications.length}</div>
+              <div className="text-4xl font-bold text-[#EC4899]">{(data.applications?.length) ?? 0}</div>
               <p className="text-[#9CA3AF] mt-3 text-sm">Applications Sent</p>
             </div>
           </Card>
@@ -242,23 +241,6 @@ export default function Dashboard() {
                 key={track.id}
                 track={track}
                 enrolled={enrolledTracksSet.has(track.id)}
-                onEnroll={async (trackId) => {
-                  try {
-                    const res = await fetch(`/api/career-tracks/${trackId}/enroll`, {
-                      method: 'POST',
-                    });
-                    if (!res.ok) {
-                      const error = await res.json();
-                      throw new Error(error.error || 'Failed to enroll');
-                    }
-                    toast.success('Successfully enrolled!');
-                    // Refresh the page or update state
-                    window.location.reload();
-                  } catch (error: any) {
-                    toast.error(error.message);
-                    throw error;
-                  }
-                }}
               />
             ))}
           </div>
@@ -277,7 +259,7 @@ export default function Dashboard() {
           {/* Your Active Tracks */}
           <Card>
             <h2 className="text-2xl font-bold mb-6 text-white tracking-tight">Your Active Tracks</h2>
-            {data.careerTrackEnrollments.length === 0 ? (
+            {(data.careerTrackEnrollments?.length ?? 0) === 0 ? (
               <p className="text-[#9CA3AF] mb-4">
                 You haven't enrolled in any career tracks yet.{' '}
                 <Link href="/career-tracks" className="text-[#3B82F6] font-medium hover:underline">
@@ -286,7 +268,7 @@ export default function Dashboard() {
               </p>
             ) : (
               <div className="space-y-4">
-                {data.careerTrackEnrollments.map((enrollment: any) => (
+                {(data.careerTrackEnrollments || []).map((enrollment: any) => (
                   <motion.div
                     key={enrollment.id}
                     className="p-4 bg-[#0B0F19] border border-[#1F2937] rounded-lg hover:border-[#3B82F6]/50 transition-all duration-200 group cursor-pointer"
@@ -312,7 +294,7 @@ export default function Dashboard() {
           {/* My Applications */}
           <Card>
             <h2 className="text-2xl font-bold mb-6 text-white tracking-tight">My Applications</h2>
-            {data.applications.length === 0 ? (
+            {(data.applications?.length ?? 0) === 0 ? (
               <p className="text-[#9CA3AF]">
                 You haven't applied to any career tracks yet.{' '}
                 <Link href="/career-tracks" className="text-[#3B82F6] font-medium hover:underline">
@@ -321,7 +303,7 @@ export default function Dashboard() {
               </p>
             ) : (
               <div className="space-y-4">
-                {data.applications.map((app: any) => (
+                {(data.applications || []).map((app: any) => (
                   <motion.div
                     key={app.id}
                     className="p-4 bg-[#0B0F19] border border-[#1F2937] rounded-lg hover:border-[#3B82F6]/50 transition-all duration-200"

@@ -1,18 +1,19 @@
 import { prisma } from '@/lib/prisma';
 import { getServerSession } from 'next-auth/next';
-import { authOptions } from '@/app/api/auth/[...nextauth]/route';
+import { authOptions } from '@/lib/auth';
 import { NextRequest, NextResponse } from 'next/server';
 import { calculateProfileCompletion } from '@/lib/profileCompletion';
 
-export async function GET(request: NextRequest) {
+export async function GET(_: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
-    if (!session?.user?.id) {
+    const user = session?.user as any;
+    if (!user?.id) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     const profile = await prisma.profile.findUnique({
-      where: { userId: session.user.id },
+      where: { userId: user.id },
       include: {
         user: {
           select: { name: true, email: true, image: true },
@@ -40,7 +41,8 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
-    if (!session?.user?.id) {
+    const user = session?.user as any;
+    if (!user?.id) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -62,7 +64,7 @@ export async function POST(request: NextRequest) {
 
     // Update or create profile
     const profile = await prisma.profile.upsert({
-      where: { userId: session.user.id },
+      where: { userId: user.id },
       update: {
         interest: interest || undefined,
         experienceLevel: experienceLevel || undefined,
@@ -78,7 +80,7 @@ export async function POST(request: NextRequest) {
         expectedSalary: expectedSalary || undefined,
       },
       create: {
-        userId: session.user.id,
+        userId: user.id,
         interest: interest || null,
         experienceLevel: experienceLevel || null,
         goal: goal || null,

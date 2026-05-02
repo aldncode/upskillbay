@@ -65,7 +65,7 @@ export async function POST(request: NextRequest) {
 }
 
 // GET user submissions
-export async function GET(request: NextRequest) {
+export async function GET(_: NextRequest) {
   try {
     const session = await getSession();
     const user = session?.user as any;

@@ -19,31 +19,16 @@ interface CareerTrack {
 
 interface CareerTrackCardProps {
   track: CareerTrack;
-  onEnroll?: (trackId: string) => Promise<void>;
   enrolled?: boolean;
 }
 
 export default function CareerTrackCard({
   track,
-  onEnroll,
   enrolled = false,
 }: CareerTrackCardProps) {
-  const [isEnrolling, setIsEnrolling] = useState(false);
+  const [isEnrolling] = useState(false);
   const [isApplyModalOpen, setIsApplyModalOpen] = useState(false);
 
-  const handleEnroll = async () => {
-    if (!onEnroll) return;
-
-    try {
-      setIsEnrolling(true);
-      await onEnroll(track.id);
-      toast.success('Successfully enrolled in this career track!');
-    } catch (error: any) {
-      toast.error(error.message || 'Failed to enroll');
-    } finally {
-      setIsEnrolling(false);
-    }
-  };
 
   const levelColors: Record<string, string> = {
     beginner: 'text-[#10B981]',

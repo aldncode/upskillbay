@@ -1,6 +1,6 @@
 import { NextRequest } from 'next/server';
-import { prisma } from '@/lib/prisma';
 import { getSession } from '@/lib/auth';
+import { prisma } from '@/lib/prisma';
 import { errorResponse, successResponse } from '@/lib/utils';
 
 // GET all applications (admin only)

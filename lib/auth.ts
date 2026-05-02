@@ -1,44 +1,147 @@
+import { type NextAuthOptions } from "next-auth";
+import CredentialsProvider from "next-auth/providers/credentials";
+import GoogleProvider from "next-auth/providers/google";
+import { PrismaAdapter } from "@next-auth/prisma-adapter";
+import { prisma } from "@/lib/prisma";
+import bcrypt from "bcryptjs";
+
+export const authOptions: NextAuthOptions = {   // ✅ MUST HAVE "export"
+  adapter: PrismaAdapter(prisma),
+  providers: [
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID || "",
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
+    }),
+    CredentialsProvider({
+      name: "Credentials",
+      credentials: {
+        email: { label: "Email", type: "email" },
+        password: { label: "Password", type: "password" },
+      },
+      async authorize(credentials) {
+        if (!credentials?.email || !credentials?.password) {
+          throw new Error("Invalid credentials");
+        }
+
+        const user = await prisma.user.findUnique({
+          where: { email: credentials.email },
+        });
+
+        if (!user || !user.password) {
+          throw new Error("User not found");
+        }
+
+        const isPasswordValid = await bcrypt.compare(
+          credentials.password,
+          user.password
+        );
+
+        if (!isPasswordValid) {
+          throw new Error("Invalid password");
+        }
+
+        return {
+          id: user.id,
+          email: user.email,
+          name: user.name,
+          image: user.image,
+          role: user.role,
+        };
+      },
+    }),
+  ],
+  pages: {
+    signIn: "/auth/login",
+    error: "/auth/error",
+  },
+  callbacks: {
+    async jwt({ token, user }) {
+      if (user) {
+        const customUser = user as any;
+        token.id = customUser.id;
+        token.role = customUser.role;
+      }
+
+      if ((!token.id || !token.role) && token.email) {
+        const dbUser = await prisma.user.findUnique({
+          where: { email: token.email },
+          select: { id: true, role: true },
+        });
+
+        if (dbUser) {
+          token.id = dbUser.id;
+          token.role = dbUser.role;
+        }
+      }
+
+      return token;
+    },
+    async session({ session, token }) {
+      if (session.user) {
+        const sessionUser = session.user as any;
+        sessionUser.id = token.id as string;
+        if (token.role) {
+          sessionUser.role = token.role as string;
+        }
+      }
+      return session;
+    },
+  },
+  events: {
+    async createUser({ user }) {
+      if (!user.id) return;
+
+      await prisma.portfolio.upsert({
+        where: { userId: user.id },
+        update: {},
+        create: {
+          userId: user.id,
+          title: `${user.name || 'User'}'s Portfolio`,
+        },
+      });
+
+      await prisma.profile.upsert({
+        where: { userId: user.id },
+        update: {},
+        create: {
+          userId: user.id,
+          profileCompletion: 20,
+        },
+      });
+    },
+  },
+  session: {
+    strategy: "jwt",
+  },
+  secret: process.env.NEXTAUTH_SECRET,
+};
+
 import { getServerSession } from 'next-auth/next';
-import { authOptions } from '@/app/api/auth/[...nextauth]/route';
-import { NextResponse } from 'next/server';
 
-export async function getSession() {
+export const getSession = () => getServerSession(authOptions);
+
+export const requireRole = async (requiredRole: string) => {
   const session = await getServerSession(authOptions);
-  return session;
-}
-
-export async function requireAuth() {
-  const session = await getSession();
-  if (!session || !session.user) {
-    return null;
+  const user = session?.user as any;
+  
+  if (!user) {
+    throw new Error('Unauthorized');
   }
-  return session;
-}
-
-export async function requireRole(role: string) {
-  const session = await getSession();
-  if (!session || !session.user || (session.user as any).role !== role) {
-    return null;
+  
+  if (user.role !== requiredRole) {
+    throw new Error('Forbidden');
   }
-  return session;
-}
+  
+  return user;
+};
 
-export function unauthorized() {
-  return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-}
-
-export function forbidden() {
-  return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
-}
-
-export function notFound() {
-  return NextResponse.json({ error: 'Not found' }, { status: 404 });
-}
-
-export function badRequest(message: string) {
-  return NextResponse.json({ error: message }, { status: 400 });
-}
-
-export function internalError() {
-  return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
-}
+export const requireAuth = async () => {
+  const session = await getServerSession(authOptions);
+  const user = session?.user as any;
+  
+  if (!user) {
+    throw new Error('Unauthorized');
+  }
+  
+  return user;
+};

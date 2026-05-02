@@ -50,7 +50,7 @@ export async function POST(request: NextRequest) {
 }
 
 // GET user applications
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     const session = await getSession();
     const user = session?.user as any;

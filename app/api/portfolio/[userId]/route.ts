@@ -4,7 +4,7 @@ import { errorResponse, successResponse } from '@/lib/utils';
 
 // GET portfolio by user ID (public)
 export async function GET(
-  request: NextRequest,
+  _: NextRequest,
   { params }: { params: { userId: string } }
 ) {
   try {

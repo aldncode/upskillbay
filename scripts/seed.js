@@ -291,9 +291,9 @@ export default Greeting;`,
     },
   });
 
-  // Create Career Tracks
-  const careerTrack1 = await prisma.careerTrack.create({
-    data: {
+  // Create/Update Career Tracks using upsert to avoid duplicates
+  const careerTracksData = [
+    {
       title: 'Website Builder',
       description: 'Build simple websites without coding',
       outcome: 'Earn your first ₹5000 in 7 days',
@@ -303,10 +303,7 @@ export default Greeting;`,
       level: 'beginner',
       status: 'published',
     },
-  });
-
-  const careerTrack2 = await prisma.careerTrack.create({
-    data: {
+    {
       title: 'Instagram Growth',
       description: 'Grow pages and monetize content',
       outcome: 'Reach 10K followers and earn',
@@ -316,10 +313,7 @@ export default Greeting;`,
       level: 'beginner',
       status: 'published',
     },
-  });
-
-  const careerTrack3 = await prisma.careerTrack.create({
-    data: {
+    {
       title: 'AI Automation',
       description: 'Automate business tasks using AI tools',
       outcome: 'Get clients for automation work',
@@ -329,13 +323,123 @@ export default Greeting;`,
       level: 'beginner',
       status: 'published',
     },
+    {
+      title: 'Salesforce Admin',
+      description: 'Manage CRM systems',
+      outcome: 'Get Salesforce job',
+      duration: '30-45 days',
+      earningPotential: '₹20K–₹60K/month',
+      skills: ['Salesforce', 'CRM', 'Configuration'],
+      level: 'intermediate',
+      status: 'published',
+    },
+    {
+      title: 'Data Analyst',
+      description: 'Excel + SQL + dashboards',
+      outcome: 'Get analyst job',
+      duration: '30 days',
+      earningPotential: '₹25K–₹80K/month',
+      skills: ['Excel', 'SQL', 'Data Visualization', 'Dashboards'],
+      level: 'intermediate',
+      status: 'published',
+    },
+    {
+      title: 'Digital Marketing',
+      description: 'Run ads & grow brands',
+      outcome: 'Get freelance clients',
+      duration: '14 days',
+      earningPotential: '₹10K–₹50K/month',
+      skills: ['Google Ads', 'Facebook Ads', 'Social Media', 'Analytics'],
+      level: 'beginner',
+      status: 'published',
+    },
+    {
+      title: 'UI/UX Designer',
+      description: 'Design apps in Figma',
+      outcome: 'Get design projects',
+      duration: '30 days',
+      earningPotential: '₹15K–₹70K/month',
+      skills: ['Figma', 'Design', 'Prototyping', 'User Research'],
+      level: 'beginner',
+      status: 'published',
+    },
+    {
+      title: 'Frontend Developer',
+      description: 'React + Next.js',
+      outcome: 'Get dev job/freelance',
+      duration: '45 days',
+      earningPotential: '₹30K–₹1L/month',
+      skills: ['React', 'Next.js', 'JavaScript', 'TypeScript'],
+      level: 'intermediate',
+      status: 'published',
+    },
+    {
+      title: 'AI Content Creator',
+      description: 'Create content with AI',
+      outcome: 'Monetize content',
+      duration: '14 days',
+      earningPotential: '₹5K–₹50K/month',
+      skills: ['AI Tools', 'Content Writing', 'Social Media'],
+      level: 'beginner',
+      status: 'published',
+    },
+    {
+      title: 'Automation Specialist',
+      description: 'Zapier/Make workflows',
+      outcome: 'Get automation clients',
+      duration: '14 days',
+      earningPotential: '₹10K–₹40K/client',
+      skills: ['Zapier', 'Make', 'Automation', 'APIs'],
+      level: 'beginner',
+      status: 'published',
+    },
+    {
+      title: 'WordPress Developer',
+      description: 'Build client websites',
+      outcome: 'Freelance projects',
+      duration: '10 days',
+      earningPotential: '₹5K–₹30K/project',
+      skills: ['WordPress', 'PHP', 'Web Development', 'Plugins'],
+      level: 'beginner',
+      status: 'published',
+    },
+    {
+      title: 'Sales & Closing',
+      description: 'Close deals & earn',
+      outcome: 'Commission income',
+      duration: '7 days',
+      earningPotential: '₹10K–₹1L/month',
+      skills: ['Sales', 'Negotiation', 'CRM', 'Closing Techniques'],
+      level: 'beginner',
+      status: 'published',
+    },
+  ];
+
+  const createdTracks = [];
+  for (const trackData of careerTracksData) {
+    const track = await prisma.careerTrack.upsert({
+      where: { title: trackData.title },
+      update: {}, // Don't update if it already exists
+      create: trackData,
+    });
+    createdTracks.push(track);
+  }
+
+  // Enroll users in career tracks (only first 3 original tracks)
+  const trackIds = createdTracks.slice(0, 3).map((t) => t.id);
+  
+  // Clear existing enrollments first
+  await prisma.careerTrackEnrollment.deleteMany({
+    where: {
+      userId: { in: users.map((u) => u.id) },
+    },
   });
 
-  // Enroll users in career tracks
+  // Create enrollments
   await prisma.careerTrackEnrollment.create({
     data: {
       userId: users[0].id,
-      careerTrackId: careerTrack1.id,
+      careerTrackId: trackIds[0],
       status: 'active',
     },
   });
@@ -343,7 +447,7 @@ export default Greeting;`,
   await prisma.careerTrackEnrollment.create({
     data: {
       userId: users[1].id,
-      careerTrackId: careerTrack2.id,
+      careerTrackId: trackIds[1],
       status: 'active',
     },
   });
@@ -351,7 +455,7 @@ export default Greeting;`,
   await prisma.careerTrackEnrollment.create({
     data: {
       userId: users[2].id,
-      careerTrackId: careerTrack3.id,
+      careerTrackId: trackIds[2],
       status: 'active',
     },
   });

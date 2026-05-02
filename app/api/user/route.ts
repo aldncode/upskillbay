@@ -1,10 +1,12 @@
+export const dynamic = 'force-dynamic';
+
 import { NextRequest } from 'next/server';
 import { prisma } from '@/lib/prisma';
 import { getSession } from '@/lib/auth';
 import { errorResponse, successResponse } from '@/lib/utils';
 
 // GET current user profile
-export async function GET(request: NextRequest) {
+export async function GET(_: NextRequest) {
   try {
     const session = await getSession();
     const user = session?.user as any;
@@ -15,7 +17,14 @@ export async function GET(request: NextRequest) {
 
     const profile = await prisma.user.findUnique({
       where: { id: user.id },
-      include: {
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        image: true,
+        role: true,
+        createdAt: true,
+        updatedAt: true,
         enrollments: {
           include: {
             capsule: true,

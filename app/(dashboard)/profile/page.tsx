@@ -45,8 +45,11 @@ export default function ProfilePage() {
   }, [status, router]);
 
   useEffect(() => {
-    if (session?.user?.id) {
-      fetchProfile();
+    if (session?.user) {
+      const user = session.user as any;
+      if (user?.id || user?.email) {
+        fetchProfile();
+      }
     }
   }, [session]);
 
@@ -77,11 +80,12 @@ export default function ProfilePage() {
 
   const completion = profile.profileCompletion;
 
-  const careerComplete = profile.interest && profile.experienceLevel && profile.goal;
-  const skillsComplete =
-    profile.skills.length > 0 && profile.toolsKnown.length > 0 && profile.availability;
-  const proofComplete = profile.portfolioLinks.length > 0 || profile.pastWorkDescription;
-  const hiringComplete = profile.resumeURL || profile.linkedinURL || profile.location;
+  const careerComplete = !!(profile.interest && profile.experienceLevel && profile.goal);
+  const skillsComplete = !!(
+    profile.skills.length > 0 && profile.toolsKnown.length > 0 && profile.availability
+  );
+  const proofComplete = !!(profile.portfolioLinks.length > 0 || profile.pastWorkDescription);
+  const hiringComplete = !!(profile.resumeURL || profile.linkedinURL || profile.location);
 
   return (
     <div className="min-h-screen bg-[#0B0F19] text-white">

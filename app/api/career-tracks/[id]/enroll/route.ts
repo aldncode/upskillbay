@@ -4,7 +4,7 @@ import { getSession } from '@/lib/auth';
 import { errorResponse, successResponse } from '@/lib/utils';
 
 export async function POST(
-  request: NextRequest,
+  _: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {

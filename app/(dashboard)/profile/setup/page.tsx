@@ -5,7 +5,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import ProgressBar from '@/components/ProgressBar';
 import toast from 'react-hot-toast';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 
 interface ProfileData {
   interest: string;
@@ -39,8 +39,11 @@ function SetupContent() {
   }, [status, router]);
 
   useEffect(() => {
-    if (session?.user?.id) {
-      fetchProfile();
+    if (session?.user) {
+      const user = session.user as any;
+      if (user?.id || user?.email) {
+        fetchProfile();
+      }
     }
   }, [session]);
 

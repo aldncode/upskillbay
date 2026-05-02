@@ -5,7 +5,7 @@ import { errorResponse, successResponse } from '@/lib/utils';
 
 // GET single gig
 export async function GET(
-  request: NextRequest,
+  _: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
@@ -73,7 +73,7 @@ export async function PUT(
 
 // DELETE gig (admin only)
 export async function DELETE(
-  request: NextRequest,
+  _: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {

@@ -5,7 +5,7 @@ import { errorResponse, successResponse } from '@/lib/utils';
 
 // POST enroll in capsule
 export async function POST(
-  request: NextRequest,
+  _: NextRequest,
   { params }: { params: { id: string } }
 ) {
   try {
