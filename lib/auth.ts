@@ -3,9 +3,10 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { prisma } from "@/lib/prisma";
+import { authSchema, getZodErrorMessage } from "@/lib/validations/auth";
 import bcrypt from "bcryptjs";
 
-export const authOptions: NextAuthOptions = {   // ✅ MUST HAVE "export"
+export const authOptions: NextAuthOptions = {
   adapter: PrismaAdapter(prisma),
   providers: [
     GoogleProvider({
@@ -19,12 +20,16 @@ export const authOptions: NextAuthOptions = {   // ✅ MUST HAVE "export"
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        if (!credentials?.email || !credentials?.password) {
-          throw new Error("Invalid credentials");
+        const result = authSchema.safeParse(credentials);
+
+        if (!result.success) {
+          throw new Error(getZodErrorMessage(result.error));
         }
 
+        const { email, password } = result.data;
+
         const user = await prisma.user.findUnique({
-          where: { email: credentials.email },
+          where: { email },
         });
 
         if (!user || !user.password) {
@@ -32,7 +37,7 @@ export const authOptions: NextAuthOptions = {   // ✅ MUST HAVE "export"
         }
 
         const isPasswordValid = await bcrypt.compare(
-          credentials.password,
+          password,
           user.password
         );
 

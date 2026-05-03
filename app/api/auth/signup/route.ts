@@ -1,19 +1,21 @@
 import { prisma } from '@/lib/prisma';
+import { getZodErrorMessage, signupSchema } from '@/lib/validations/auth';
 import bcrypt from 'bcryptjs';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { email, password, name } = body;
+    const result = signupSchema.safeParse(body);
 
-    // Validation
-    if (!email || !password || !name) {
+    if (!result.success) {
       return NextResponse.json(
-        { error: 'Missing required fields' },
+        { error: getZodErrorMessage(result.error) },
         { status: 400 }
       );
     }
+
+    const { email, password, name } = result.data;
 
     // Check if user already exists
     const existingUser = await prisma.user.findUnique({

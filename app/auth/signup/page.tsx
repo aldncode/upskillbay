@@ -1,11 +1,12 @@
 'use client';
 
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import toast from 'react-hot-toast';
 import { motion } from 'framer-motion';
 import Button from '@/components/Button';
+import { getZodErrorMessage, signupSchema } from '@/lib/validations/auth';
 
 export default function Signup() {
   const router = useRouter();
@@ -14,16 +15,39 @@ export default function Signup() {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const [apiError, setApiError] = useState('');
+
+  const validation = useMemo(
+    () => signupSchema.safeParse({ name, email, password }),
+    [name, email, password]
+  );
+  const fieldErrors = validation.success ? undefined : validation.error.flatten().fieldErrors;
+  const nameError = name ? fieldErrors?.name?.[0] : '';
+  const emailError = email ? fieldErrors?.email?.[0] : '';
+  const passwordError = password ? fieldErrors?.password?.[0] : '';
+  const confirmPasswordError = confirmPassword && password !== confirmPassword
+    ? 'Passwords do not match'
+    : '';
+  const isFormInvalid = !validation.success || password !== confirmPassword;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
+    setApiError('');
 
-    if (password !== confirmPassword) {
-      toast.error('Passwords do not match');
-      setLoading(false);
+    if (!validation.success) {
+      const errorMessage = getZodErrorMessage(validation.error);
+      setApiError(errorMessage);
+      toast.error(errorMessage);
       return;
     }
+
+    if (password !== confirmPassword) {
+      setApiError('Passwords do not match');
+      toast.error('Passwords do not match');
+      return;
+    }
+
+    setLoading(true);
 
     try {
       const res = await fetch('/api/auth/signup', {
@@ -35,12 +59,15 @@ export default function Signup() {
       const data = await res.json();
 
       if (!res.ok) {
-        toast.error(data.error);
+        const errorMessage = data.error || 'Signup failed';
+        setApiError(errorMessage);
+        toast.error(errorMessage);
       } else {
         toast.success('Account created! Please sign in.');
         router.push('/auth/login');
       }
-    } catch (error) {
+    } catch {
+      setApiError('An error occurred');
       toast.error('An error occurred');
     } finally {
       setLoading(false);
@@ -82,6 +109,9 @@ export default function Signup() {
               placeholder="John Doe"
               required
             />
+            {nameError && (
+              <p className="mt-2 text-sm text-red-400">{nameError}</p>
+            )}
           </motion.div>
 
           <motion.div
@@ -98,6 +128,9 @@ export default function Signup() {
               placeholder="you@example.com"
               required
             />
+            {emailError && (
+              <p className="mt-2 text-sm text-red-400">{emailError}</p>
+            )}
           </motion.div>
 
           <motion.div
@@ -111,9 +144,12 @@ export default function Signup() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="input"
-              placeholder="••••••••"
+              placeholder="Password"
               required
             />
+            {passwordError && (
+              <p className="mt-2 text-sm text-red-400">{passwordError}</p>
+            )}
           </motion.div>
 
           <motion.div
@@ -127,10 +163,17 @@ export default function Signup() {
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               className="input"
-              placeholder="••••••••"
+              placeholder="Confirm password"
               required
             />
+            {confirmPasswordError && (
+              <p className="mt-2 text-sm text-red-400">{confirmPasswordError}</p>
+            )}
           </motion.div>
+
+          {apiError && (
+            <p className="text-sm text-red-400">{apiError}</p>
+          )}
 
           <motion.div
             initial={{ opacity: 0 }}
@@ -140,7 +183,7 @@ export default function Signup() {
             <Button
               type="submit"
               variant="primary"
-              disabled={loading}
+              disabled={loading || isFormInvalid}
               className="w-full"
             >
               {loading ? 'Creating account...' : 'Sign Up'}

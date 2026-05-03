@@ -1,21 +1,40 @@
 'use client';
 
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import toast from 'react-hot-toast';
 import { motion } from 'framer-motion';
 import Button from '@/components/Button';
+import { authSchema, getZodErrorMessage } from '@/lib/validations/auth';
 
 export default function Login() {
   const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const [apiError, setApiError] = useState('');
+
+  const validation = useMemo(
+    () => authSchema.safeParse({ email, password }),
+    [email, password]
+  );
+  const fieldErrors = validation.success ? undefined : validation.error.flatten().fieldErrors;
+  const emailError = email ? fieldErrors?.email?.[0] : '';
+  const passwordError = password ? fieldErrors?.password?.[0] : '';
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setApiError('');
+
+    if (!validation.success) {
+      const errorMessage = getZodErrorMessage(validation.error);
+      setApiError(errorMessage);
+      toast.error(errorMessage);
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -26,12 +45,14 @@ export default function Login() {
       });
 
       if (result?.error) {
+        setApiError(result.error);
         toast.error(result.error);
       } else {
         toast.success('Login successful!');
         router.push('/dashboard');
       }
-    } catch (error) {
+    } catch {
+      setApiError('An error occurred');
       toast.error('An error occurred');
     } finally {
       setLoading(false);
@@ -73,6 +94,9 @@ export default function Login() {
               placeholder="you@example.com"
               required
             />
+            {emailError && (
+              <p className="mt-2 text-sm text-red-400">{emailError}</p>
+            )}
           </motion.div>
 
           <motion.div
@@ -86,10 +110,17 @@ export default function Login() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               className="input"
-              placeholder="••••••••"
+              placeholder="Password"
               required
             />
+            {passwordError && (
+              <p className="mt-2 text-sm text-red-400">{passwordError}</p>
+            )}
           </motion.div>
+
+          {apiError && (
+            <p className="text-sm text-red-400">{apiError}</p>
+          )}
 
           <motion.div
             initial={{ opacity: 0 }}
@@ -99,7 +130,7 @@ export default function Login() {
             <Button
               type="submit"
               variant="primary"
-              disabled={loading}
+              disabled={loading || !validation.success}
               className="w-full"
             >
               {loading ? 'Signing in...' : 'Sign In'}
@@ -117,7 +148,6 @@ export default function Login() {
             onClick={() => signIn('google')}
             className="w-full flex items-center justify-center gap-2 px-4 py-3 border border-[#1F2937] rounded-xl text-white hover:bg-[#1F2937] transition-colors"
           >
-            <span>🔵</span>
             Continue with Google
           </button>
         </motion.div>
