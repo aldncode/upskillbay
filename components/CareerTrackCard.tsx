@@ -70,6 +70,7 @@ export default function CareerTrackCard({
 }: CareerTrackCardProps) {
   const [isEnrolling] = useState(false);
   const [isApplyModalOpen, setIsApplyModalOpen] = useState(false);
+  const [showDetails, setShowDetails] = useState(false);
 
   const levelClasses: Record<string, string> = {
     beginner: 'bg-emerald-50 text-emerald-700 border-emerald-100',
@@ -138,6 +139,57 @@ export default function CareerTrackCard({
               </span>
             )}
           </div>
+
+          <div className="mb-6 flex items-center justify-between gap-4">
+            <button
+              type="button"
+              onClick={() => setShowDetails(!showDetails)}
+              className="text-sm font-semibold text-[#4F46E5] transition-colors duration-200 hover:text-[#4338CA]"
+            >
+              {showDetails ? 'Hide details' : 'View details'}
+            </button>
+            <span className="text-xs uppercase tracking-[0.24em] text-[#6B7280]">
+              {showDetails ? 'Detailed track view' : 'Quick summary'}
+            </span>
+          </div>
+
+          {showDetails && (
+            <div className="mb-6 space-y-4 rounded-3xl border border-[#E5E7EB] bg-slate-50 p-4 text-sm text-[#475569]">
+              <div>
+                <p className="mb-2 font-semibold text-[#111827]">What you&apos;ll build</p>
+                <p>{track.description}</p>
+              </div>
+              <div>
+                <p className="mb-2 font-semibold text-[#111827]">Skills you&apos;ll gain</p>
+                <div className="flex flex-wrap gap-2">
+                  {track.skills.map((skill) => (
+                    <span
+                      key={skill}
+                      className="rounded-full bg-white px-2.5 py-1 text-xs font-medium text-[#334155] shadow-sm"
+                    >
+                      {skill}
+                    </span>
+                  ))}
+                </div>
+              </div>
+              <div>
+                <p className="mb-2 font-semibold text-[#111827]">Who it&apos;s for</p>
+                <p>
+                  {track.level.toLowerCase() === 'beginner'
+                    ? 'Learners with little or no experience who want a guided, practical launch into a new career.'
+                    : track.level.toLowerCase() === 'intermediate'
+                    ? 'Learners with basic foundations who want to level up through real projects.'
+                    : 'Experienced learners who want to speed up career growth with hands-on, income-oriented work.'}
+                </p>
+              </div>
+              <div>
+                <p className="mb-2 font-semibold text-[#111827]">Earning roadmap</p>
+                <p>
+                  {track.earningPotential}. Typically delivered through portfolio-ready assets, freelance-ready pitches, and clear milestones for your first paid work.
+                </p>
+              </div>
+            </div>
+          )}
 
           <div className="mb-6 grid grid-cols-2 gap-3 border-t border-[#E5E7EB] pt-5">
             <div className="rounded-xl bg-slate-50 p-3">

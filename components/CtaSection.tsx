@@ -5,7 +5,7 @@ import Button from './Button';
 
 export default function CtaSection() {
   return (
-    <section className="bg-white py-20">
+    <section className="bg-[#EEF2FF] py-20">
       <motion.div
         className="mx-auto max-w-[900px] px-6 text-center"
         initial={{ opacity: 0, y: 24 }}

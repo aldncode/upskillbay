@@ -47,7 +47,7 @@ export default function SolutionSection() {
   };
 
   return (
-    <AnimatedSection className="bg-white border-y border-[#E5E7EB]">
+    <AnimatedSection className="bg-[#EEF2FF] border-y border-[#E5E7EB]">
       <motion.div
         className="mb-10 max-w-2xl"
         initial={{ opacity: 0, y: 16 }}

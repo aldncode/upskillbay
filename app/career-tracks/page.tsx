@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
 import toast from 'react-hot-toast';
@@ -27,7 +27,28 @@ export default function CareerTracksPage() {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [level, setLevel] = useState('');
+  const [focus, setFocus] = useState<'all' | 'high-income' | 'fast-track'>('all');
   const [userEnrollments, setUserEnrollments] = useState<Set<string>>(new Set());
+
+  const filteredTracks = useMemo(() => {
+    return careerTracks
+      .filter((track) => {
+        if (!level) return true;
+        return track.level.toLowerCase() === level.toLowerCase();
+      })
+      .filter((track) => {
+        if (focus === 'all') return true;
+        if (focus === 'high-income') {
+          return /\$|high income|high-income|earning|income/i.test(
+            track.earningPotential
+          );
+        }
+        if (focus === 'fast-track') {
+          return /fast|4 weeks|6 weeks|8 weeks|short|rapid/i.test(track.duration);
+        }
+        return true;
+      });
+  }, [careerTracks, focus, level]);
 
   useEffect(() => {
     const fetchCareerTracks = async () => {
@@ -133,20 +154,135 @@ export default function CareerTracksPage() {
 
         <section id="tracks" className="relative mx-auto max-w-[1200px] px-6 py-12 md:py-16">
           <div className="pointer-events-none absolute -right-40 top-24 h-80 w-80 rounded-full bg-indigo-200/30 blur-3xl" />
+          <div className="relative mb-12 grid gap-6 rounded-3xl border border-white/80 bg-white/90 p-6 shadow-lg shadow-slate-200/60 backdrop-blur md:grid-cols-[1.2fr_0.8fr] md:gap-8 md:p-8">
+            <div>
+              <p className="text-sm font-semibold uppercase tracking-[0.24em] text-[#4F46E5]">
+                Start here
+              </p>
+              <h2 className="mt-3 text-3xl font-bold tracking-tight text-[#111827] md:text-4xl">
+                Pick the track that fits your next career goal.
+              </h2>
+              <p className="mt-4 max-w-xl text-base leading-7 text-[#4B5563]">
+                Our career system is built for learners who want real work, fast growth, and income-ready proof. Start with the path that matches your objective.
+              </p>
+            </div>
+            <div className="grid gap-4 sm:grid-cols-2">
+              <Link
+                href="#tracks"
+                onClick={() => {
+                  setLevel('beginner');
+                  setFocus('all');
+                }}
+                className="rounded-2xl border border-[#E5E7EB] bg-[#EEF2FF] px-5 py-4 text-left shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md"
+              >
+                <p className="text-sm font-semibold text-[#111827]">Build portfolio fast</p>
+                <p className="mt-2 text-sm leading-6 text-[#4B5563]">
+                  Ideal for beginners who want structured projects + a polished showcase.
+                </p>
+              </Link>
+              <Link
+                href="#tracks"
+                onClick={() => {
+                  setLevel('');
+                  setFocus('high-income');
+                }}
+                className="rounded-2xl border border-[#E5E7EB] bg-white px-5 py-4 text-left shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md"
+              >
+                <p className="text-sm font-semibold text-[#111827]">Launch income faster</p>
+                <p className="mt-2 text-sm leading-6 text-[#4B5563]">
+                  Great for learners focused on freelance gigs, side income, and early pay.
+                </p>
+              </Link>
+              <Link
+                href="#tracks"
+                onClick={() => {
+                  setLevel('');
+                  setFocus('fast-track');
+                }}
+                className="rounded-2xl border border-[#E5E7EB] bg-white px-5 py-4 text-left shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md"
+              >
+                <p className="text-sm font-semibold text-[#111827]">Fast-track your skill set</p>
+                <p className="mt-2 text-sm leading-6 text-[#4B5563]">
+                  Designed for motivated learners who want a shorter, outcome-driven path.
+                </p>
+              </Link>
+              <Link
+                href="#tracks"
+                onClick={() => {
+                  setLevel('intermediate');
+                  setFocus('all');
+                }}
+                className="rounded-2xl border border-[#E5E7EB] bg-[#EEF2FF] px-5 py-4 text-left shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md"
+              >
+                <p className="text-sm font-semibold text-[#111827]">Improve practical skills</p>
+                <p className="mt-2 text-sm leading-6 text-[#4B5563]">
+                  The right choice for learners ready to move beyond basics into project work.
+                </p>
+              </Link>
+            </div>
+          </div>
           <motion.div
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4, delay: 0.05, ease: 'easeOut' }}
             className="relative mb-10 rounded-2xl border border-white/80 bg-white/85 p-5 shadow-lg shadow-slate-200/70 backdrop-blur md:p-6"
           >
-            <div className="mb-5 flex flex-col justify-between gap-2 md:flex-row md:items-end">
+            <div className="mb-5 flex flex-col justify-between gap-4 md:flex-row md:items-end">
               <div>
                 <p className="text-sm font-semibold text-[#4F46E5]">Find your next move</p>
                 <h2 className="mt-1 text-2xl font-bold tracking-tight text-[#111827]">Browse career tracks</h2>
               </div>
-              <p className="text-sm text-[#6B7280]">
-                {loading ? 'Loading curated paths...' : `${careerTracks.length} track${careerTracks.length === 1 ? '' : 's'} available`}
-              </p>
+              <div className="flex flex-col items-start gap-2 text-sm text-[#6B7280] md:items-end">
+                <p>
+                  {loading
+                    ? 'Loading curated paths...'
+                    : `Showing ${filteredTracks.length} of ${careerTracks.length} tracks`}
+                </p>
+                <div className="flex flex-wrap items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setLevel('beginner');
+                      setFocus('all');
+                    }}
+                    className={`rounded-full px-4 py-2 text-sm font-semibold transition-all duration-200 ${
+                      level === 'beginner' && focus === 'all'
+                        ? 'bg-[#4F46E5] text-white shadow-sm'
+                        : 'bg-slate-100 text-[#475569] hover:bg-slate-200'
+                    }`}
+                  >
+                    Beginner
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setFocus('high-income');
+                      setLevel('');
+                    }}
+                    className={`rounded-full px-4 py-2 text-sm font-semibold transition-all duration-200 ${
+                      focus === 'high-income'
+                        ? 'bg-[#4F46E5] text-white shadow-sm'
+                        : 'bg-slate-100 text-[#475569] hover:bg-slate-200'
+                    }`}
+                  >
+                    High income
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setFocus('fast-track');
+                      setLevel('');
+                    }}
+                    className={`rounded-full px-4 py-2 text-sm font-semibold transition-all duration-200 ${
+                      focus === 'fast-track'
+                        ? 'bg-[#4F46E5] text-white shadow-sm'
+                        : 'bg-slate-100 text-[#475569] hover:bg-slate-200'
+                    }`}
+                  >
+                    Fast track
+                  </button>
+                </div>
+              </div>
             </div>
             <div className="grid gap-4 md:grid-cols-2">
               <div>
@@ -185,7 +321,7 @@ export default function CareerTracksPage() {
               <div className="mx-auto mb-4 h-10 w-10 animate-spin rounded-full border-4 border-[#E5E7EB] border-t-[#4F46E5]" />
               <p className="font-medium text-[#6B7280]">Loading career tracks...</p>
             </div>
-          ) : careerTracks.length === 0 ? (
+          ) : filteredTracks.length === 0 ? (
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -215,7 +351,7 @@ export default function CareerTracksPage() {
               initial="hidden"
               animate="visible"
             >
-              {careerTracks.map((track) => (
+              {filteredTracks.map((track) => (
                 <motion.div key={track.id} variants={itemVariants}>
                   <CareerTrackCard
                     track={track}
@@ -224,6 +360,93 @@ export default function CareerTracksPage() {
                 </motion.div>
               ))}
             </motion.div>
+          )}
+
+          {!loading && careerTracks.length > 0 && (
+            <>
+              <section className="mt-16 rounded-3xl border border-[#E5E7EB] bg-white/90 p-8 shadow-lg shadow-slate-200/60 backdrop-blur md:p-12">
+                <div className="grid gap-10 lg:grid-cols-2">
+                  <div>
+                    <p className="text-sm font-semibold uppercase tracking-[0.24em] text-[#4F46E5]">
+                      What you get
+                    </p>
+                    <h2 className="mt-4 text-3xl font-bold tracking-tight text-[#111827] md:text-4xl">
+                      Projects, proof, and income-ready support.
+                    </h2>
+                    <p className="mt-4 max-w-xl text-base leading-7 text-[#4B5563]">
+                      Each career track is designed to deliver measurable progress: a portfolio, real assignments, and the confidence to turn your work into income.
+                    </p>
+                  </div>
+
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    {[
+                      'Real project assignments that mirror client briefs',
+                      'Portfolio pieces you can share with employers and clients',
+                      'Income-focused guidance for gigs, internships, and freelance offers',
+                      'Clear milestones that keep every week goal-directed',
+                    ].map((item) => (
+                      <div key={item} className="rounded-3xl border border-[#E5E7EB] bg-[#EEF2FF] p-5 text-sm text-[#334155] shadow-sm">
+                        {item}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </section>
+
+              <section className="mt-12 grid gap-10 lg:grid-cols-3">
+                {[
+                  {
+                    title: 'Portfolio-ready outcomes',
+                    description: 'Build real deliverables that show employers and clients you can complete work end to end.',
+                  },
+                  {
+                    title: 'Freelance and gig momentum',
+                    description: 'Use your completed projects to pitch for paid work and launch a side-income track.',
+                  },
+                  {
+                    title: 'Internship and entry-level readiness',
+                    description: 'Focus on practical skills that map directly to interviews, applications, and hiring criteria.',
+                  },
+                ].map((item) => (
+                  <div key={item.title} className="rounded-3xl border border-[#E5E7EB] bg-white p-6 shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md">
+                    <h3 className="mb-3 text-xl font-semibold text-[#111827]">{item.title}</h3>
+                    <p className="text-sm leading-7 text-[#475569]">{item.description}</p>
+                  </div>
+                ))}
+              </section>
+
+              <section className="mt-12 rounded-3xl border border-[#E5E7EB] bg-[#F8FAFC] p-8 shadow-sm md:p-10">
+                <div className="mb-8 text-center">
+                  <p className="text-sm font-semibold uppercase tracking-[0.28em] text-[#4F46E5]">
+                    FAQ
+                  </p>
+                  <h2 className="mt-3 text-3xl font-bold tracking-tight text-[#111827]">
+                    Common questions from new learners.
+                  </h2>
+                </div>
+                <div className="grid gap-4 md:grid-cols-3">
+                  {[
+                    {
+                      question: 'Do I need prior experience?',
+                      answer: 'No. Each track is built for learners starting with the basics, then adding real practice and income-ready work.',
+                    },
+                    {
+                      question: 'Can I earn while learning?',
+                      answer: 'Yes. The projects and portfolio guidance are designed to help you win freelance gigs, internships, and early paid opportunities.',
+                    },
+                    {
+                      question: 'How long before I can apply?',
+                      answer: 'Most students can share portfolio-ready outcomes in weeks, and every track includes milestones so your progress stays measurable.',
+                    },
+                  ].map((item) => (
+                    <div key={item.question} className="rounded-3xl border border-[#E5E7EB] bg-white p-6 shadow-sm">
+                      <p className="mb-3 text-lg font-semibold text-[#111827]">{item.question}</p>
+                      <p className="text-sm leading-7 text-[#475569]">{item.answer}</p>
+                    </div>
+                  ))}
+                </div>
+              </section>
+            </>
           )}
 
           {!loading && careerTracks.length > 0 && (

@@ -25,7 +25,10 @@ export default function Hero() {
   };
 
   return (
-    <section className="border-b border-[#E5E7EB] bg-[#F9FAFB]">
+    <section className="relative overflow-hidden border-b border-[#E5E7EB] bg-[radial-gradient(circle_at_top_left,rgba(99,102,241,0.14),transparent_25%),linear-gradient(180deg,#EEF2FF_0%,#F3F4F6_100%)]">
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-56 bg-[radial-gradient(circle_at_center,rgba(99,102,241,0.18),transparent_40%)] opacity-90 blur-3xl" />
+      <div className="pointer-events-none absolute right-10 top-20 h-72 w-72 rounded-full bg-indigo-200/20 blur-3xl" />
+      <div className="pointer-events-none absolute left-[-8rem] top-32 h-80 w-80 rounded-full bg-slate-200/30 blur-3xl" />
       <motion.div
         className="mx-auto flex min-h-[calc(100vh-64px)] max-w-[1200px] flex-col justify-center px-6 py-20 text-center"
         variants={containerVariants}

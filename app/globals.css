@@ -3,7 +3,8 @@
 @tailwind utilities;
 
 :root {
-  --background: #F9FAFB;
+  --background: #F3F4F6;
+  --surface: #EEF2FF;
   --card: #FFFFFF;
   --border: #E5E7EB;
   --primary: #4F46E5;
@@ -22,7 +23,22 @@ html {
 }
 
 body {
-  @apply bg-[#F9FAFB] text-[#111827] antialiased;
+  @apply bg-[#F3F4F6] text-[#111827] antialiased;
+  position: relative;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background-image:
+    radial-gradient(circle at top left, rgba(99,102,241,0.16), transparent 18%),
+    radial-gradient(circle at 20% 80%, rgba(99,102,241,0.08), transparent 20%),
+    radial-gradient(circle at 85% 25%, rgba(79,70,229,0.12), transparent 15%);
+  pointer-events: none;
 }
 
 @layer components {
@@ -72,6 +88,14 @@ body {
 
   .section-container {
     @apply mx-auto max-w-[1200px] px-6 py-20;
+  }
+
+  .surface {
+    @apply bg-[#EEF2FF];
+  }
+
+  .surface-soft {
+    @apply bg-white/90;
   }
 
   h1 {

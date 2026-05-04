@@ -10,7 +10,7 @@ export default function SocialProof() {
   ];
 
   return (
-    <section className="border-b border-[#E5E7EB] bg-white py-10">
+    <section className="border-b border-[#E5E7EB] bg-[#EEF2FF] py-10">
       <div className="mx-auto max-w-[1200px] px-6">
         <motion.div
           className="flex flex-col items-center justify-between gap-6 md:flex-row"
@@ -27,7 +27,7 @@ export default function SocialProof() {
             {proofs.map((proof) => (
               <span
                 key={proof}
-                className="rounded-lg border border-[#E5E7EB] bg-[#F9FAFB] px-4 py-2 text-sm font-semibold text-[#374151]"
+                className="rounded-lg border border-[#E5E7EB] bg-white/90 px-4 py-2 text-sm font-semibold text-[#374151]"
               >
                 {proof}
               </span>
