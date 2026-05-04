@@ -9,9 +9,10 @@ interface CardProps {
 }
 
 export default function Card({ children, className = '', clickable = false }: CardProps) {
-  const hoverClass = clickable ? 'cursor-pointer hover:border-[#3B82F6]/50 hover:shadow-lg hover:shadow-[#3B82F6]/10 hover:-translate-y-1' : '';
+  const hoverClass = clickable ? 'cursor-pointer hover:-translate-y-0.5 hover:shadow-md' : '';
+
   return (
-    <div className={`bg-[#111827] border border-[#1F2937] rounded-xl p-6 transition-all duration-200 ${hoverClass} ${className}`}>
+    <div className={`rounded-xl border border-[#E5E7EB] bg-white p-6 shadow-sm transition-all duration-200 ${hoverClass} ${className}`}>
       {children}
     </div>
   );

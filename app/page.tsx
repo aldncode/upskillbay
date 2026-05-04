@@ -1,7 +1,6 @@
 import Navbar from '@/components/Navbar';
 import Hero from '@/components/Hero';
 import SocialProof from '@/components/SocialProof';
-import ProblemSection from '@/components/ProblemSection';
 import SolutionSection from '@/components/SolutionSection';
 import FeaturesSection from '@/components/FeaturesSection';
 import StatsSection from '@/components/StatsSection';
@@ -19,9 +18,8 @@ export default function Home() {
       <Navbar />
       <Hero />
       <SocialProof />
-      <ProblemSection />
-      <SolutionSection />
       <FeaturesSection />
+      <SolutionSection />
       <StatsSection />
       <CtaSection />
       <Footer />

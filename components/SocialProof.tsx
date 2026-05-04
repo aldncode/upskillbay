@@ -4,42 +4,36 @@ import { motion } from 'framer-motion';
 
 export default function SocialProof() {
   const proofs = [
-    '1000+ Active Learners',
-    '50+ Projects Live',
-    'Top Tech Skills',
+    '1000+ active learners',
+    '50+ live projects',
+    'Beginner-friendly tracks',
   ];
 
   return (
-    <section className="bg-[#111827] border-y border-[#1F2937] py-12">
-      <div className="max-w-6xl mx-auto px-6">
+    <section className="border-b border-[#E5E7EB] bg-white py-10">
+      <div className="mx-auto max-w-[1200px] px-6">
         <motion.div
-          className="text-center mb-8"
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
+          className="flex flex-col items-center justify-between gap-6 md:flex-row"
+          initial={{ opacity: 0, y: 12 }}
+          whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.5 }}
+          transition={{ duration: 0.35 }}
         >
-          <p className="text-[#9CA3AF] font-medium">
-            Trusted by students building real-world skills
+          <p className="text-center font-semibold text-[#4B5563] md:text-left">
+            Trusted by learners building practical, job-ready proof.
           </p>
-        </motion.div>
 
-        {/* Trust Badges */}
-        <div className="flex flex-wrap justify-center gap-8">
-          {proofs.map((proof, idx) => (
-            <motion.div
-              key={idx}
-              className="flex items-center gap-2"
-              initial={{ opacity: 0, scale: 0.9 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.4, delay: idx * 0.1 }}
-            >
-              <span className="w-2 h-2 bg-[#3B82F6] rounded-full" />
-              <span className="text-[#9CA3AF] text-sm font-medium">{proof}</span>
-            </motion.div>
-          ))}
-        </div>
+          <div className="flex flex-wrap justify-center gap-3">
+            {proofs.map((proof) => (
+              <span
+                key={proof}
+                className="rounded-lg border border-[#E5E7EB] bg-[#F9FAFB] px-4 py-2 text-sm font-semibold text-[#374151]"
+              >
+                {proof}
+              </span>
+            ))}
+          </div>
+        </motion.div>
       </div>
     </section>
   );

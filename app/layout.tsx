@@ -1,6 +1,9 @@
 import type { Metadata } from 'next';
+import { Inter } from 'next/font/google';
 import { Providers } from '@/app/providers';
 import './globals.css';
+
+const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
   title: 'UpskillBay - Work-Integrated Career Platform',
@@ -14,7 +17,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className="bg-[#0B0F19] text-white">
+      <body className={`${inter.className} bg-[#F9FAFB] text-[#111827]`}>
         <Providers>
           {children}
         </Providers>

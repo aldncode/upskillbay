@@ -23,12 +23,12 @@ export default function Button({
   className = '',
   type = 'button',
 }: ButtonProps) {
-  const baseClass = 'font-medium rounded-lg transition-all duration-200 inline-flex items-center justify-center';
-  
+  const baseClass = 'inline-flex items-center justify-center rounded-xl font-semibold transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-60';
+
   const variantClass = {
-    primary: 'bg-[#111827] border border-[#3B82F6] text-white hover:shadow-lg hover:shadow-[#3B82F6]/20 hover:-translate-y-1 disabled:opacity-60 disabled:cursor-not-allowed',
-    secondary: 'bg-[#0B0F19] border border-[#1F2937] text-[#9CA3AF] hover:border-[#3B82F6]/30',
-    outline: 'bg-transparent border border-[#1F2937] text-white hover:border-[#3B82F6]',
+    primary: 'bg-[#4F46E5] text-white shadow-lg shadow-indigo-500/25 hover:bg-[#4338CA] hover:-translate-y-0.5 hover:scale-[1.02] hover:shadow-xl hover:shadow-indigo-500/30 disabled:hover:scale-100 disabled:hover:translate-y-0 disabled:hover:shadow-lg',
+    secondary: 'bg-white text-[#111827] border border-[#E5E7EB] shadow-sm hover:border-[#D1D5DB] hover:-translate-y-0.5 hover:scale-[1.02] hover:shadow-md disabled:hover:scale-100 disabled:hover:translate-y-0 disabled:hover:shadow-sm',
+    outline: 'bg-white border border-[#4F46E5] text-[#4F46E5] hover:bg-[#EEF2FF] hover:-translate-y-0.5 hover:scale-[1.02] hover:shadow-sm disabled:hover:scale-100 disabled:hover:translate-y-0',
   }[variant];
 
   const sizeClass = {

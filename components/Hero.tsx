@@ -9,62 +9,55 @@ export default function Hero() {
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.1,
-        delayChildren: 0.2,
+        staggerChildren: 0.08,
+        delayChildren: 0.1,
       },
     },
   };
 
   const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
+    hidden: { opacity: 0, y: 16 },
     visible: {
       opacity: 1,
       y: 0,
-      transition: { duration: 0.5 },
+      transition: { duration: 0.45 },
     },
   };
 
   return (
-    <section className="min-h-[calc(100vh-64px)] flex items-center justify-center bg-[#0B0F19] relative overflow-hidden">
-      {/* Gradient background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-[#3B82F6]/10 via-transparent to-transparent pointer-events-none" />
-      
+    <section className="border-b border-[#E5E7EB] bg-[#F9FAFB]">
       <motion.div
-        className="max-w-4xl mx-auto px-6 text-center relative z-10"
+        className="mx-auto flex min-h-[calc(100vh-64px)] max-w-[1200px] flex-col justify-center px-6 py-20 text-center"
         variants={containerVariants}
         initial="hidden"
         animate="visible"
       >
-        {/* Headline */}
-        <motion.h1
-          className="text-6xl md:text-7xl font-bold tracking-tight mb-6 text-white leading-tight"
+        <motion.p
+          className="mb-4 text-sm font-semibold uppercase tracking-wide text-[#4F46E5]"
           variants={itemVariants}
         >
-          Stop Learning.<br />
-          <span className="bg-gradient-to-r from-[#3B82F6] to-[#1E40AF] bg-clip-text text-transparent">
-            Start Proving.
-          </span>
+          Career-focused learning
+        </motion.p>
+
+        <motion.h1
+          className="mx-auto mb-6 max-w-4xl text-5xl font-bold leading-tight tracking-tight text-[#111827] md:text-7xl"
+          variants={itemVariants}
+        >
+          Build job-ready skills and start earning through real projects.
         </motion.h1>
 
-        {/* Subheadline */}
         <motion.p
-          className="text-xl md:text-2xl text-[#9CA3AF] mb-8 max-w-2xl mx-auto leading-relaxed"
+          className="mx-auto mb-10 max-w-2xl text-lg leading-8 text-[#4B5563] md:text-xl"
           variants={itemVariants}
         >
-          Build real projects, earn your first income, and become hireable — all in one platform.
+          UpskillBay helps beginners follow structured career paths, complete practical assignments, and turn proof of work into opportunities.
         </motion.p>
 
-        {/* Trust Line */}
-        <motion.p className="text-sm text-[#6B7280] mb-12" variants={itemVariants}>
-          No experience needed • Beginner-friendly • Real outcomes
-        </motion.p>
-
-        {/* CTA Buttons */}
-        <motion.div className="flex flex-col sm:flex-row gap-4 justify-center mb-16" variants={itemVariants}>
+        <motion.div className="flex flex-col justify-center gap-4 sm:flex-row" variants={itemVariants}>
           <Button variant="primary" size="lg" href="/auth/signup">
-            Start Your First Project
+            Start Learning
           </Button>
-          <Button variant="outline" size="lg" href="/career-tracks">
+          <Button variant="secondary" size="lg" href="/career-tracks">
             Explore Career Tracks
           </Button>
         </motion.div>

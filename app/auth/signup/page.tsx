@@ -75,9 +75,9 @@ export default function Signup() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#0B0F19]">
+    <div className="min-h-screen flex items-center justify-center bg-[#F9FAFB] px-6">
       <motion.div
-        className="bg-[#111827] border border-[#1F2937] rounded-2xl shadow-2xl p-8 max-w-md w-full"
+        className="bg-white border border-[#E5E7EB] rounded-xl shadow-sm p-8 max-w-md w-full"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
@@ -88,10 +88,10 @@ export default function Signup() {
           animate={{ opacity: 1 }}
           transition={{ delay: 0.2, duration: 0.4 }}
         >
-          <h1 className="text-3xl font-bold bg-gradient-to-r from-[#3B82F6] to-[#1E40AF] bg-clip-text text-transparent">
+          <h1 className="text-3xl font-bold tracking-tight text-[#111827]">
             UpskillBay
           </h1>
-          <p className="text-[#9CA3AF] text-sm mt-2">Start your journey</p>
+          <p className="text-[#6B7280] text-sm mt-2">Start your learning journey</p>
         </motion.div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -100,7 +100,7 @@ export default function Signup() {
             animate={{ opacity: 1 }}
             transition={{ delay: 0.3 }}
           >
-            <label className="block text-sm font-medium text-white mb-2">Full Name</label>
+            <label className="block text-sm font-semibold text-[#111827] mb-2">Full Name</label>
             <input
               type="text"
               value={name}
@@ -119,7 +119,7 @@ export default function Signup() {
             animate={{ opacity: 1 }}
             transition={{ delay: 0.35 }}
           >
-            <label className="block text-sm font-medium text-white mb-2">Email</label>
+            <label className="block text-sm font-semibold text-[#111827] mb-2">Email</label>
             <input
               type="email"
               value={email}
@@ -138,7 +138,7 @@ export default function Signup() {
             animate={{ opacity: 1 }}
             transition={{ delay: 0.4 }}
           >
-            <label className="block text-sm font-medium text-white mb-2">Password</label>
+            <label className="block text-sm font-semibold text-[#111827] mb-2">Password</label>
             <input
               type="password"
               value={password}
@@ -157,7 +157,7 @@ export default function Signup() {
             animate={{ opacity: 1 }}
             transition={{ delay: 0.45 }}
           >
-            <label className="block text-sm font-medium text-white mb-2">Confirm Password</label>
+            <label className="block text-sm font-semibold text-[#111827] mb-2">Confirm Password</label>
             <input
               type="password"
               value={confirmPassword}
@@ -192,13 +192,13 @@ export default function Signup() {
         </form>
 
         <motion.p
-          className="text-center mt-6 text-sm text-[#9CA3AF]"
+          className="text-center mt-6 text-sm text-[#6B7280]"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.6 }}
         >
           Already have an account?{' '}
-          <Link href="/auth/login" className="text-[#3B82F6] font-medium hover:underline">
+          <Link href="/auth/login" className="text-[#4F46E5] font-semibold hover:underline">
             Sign in
           </Link>
         </motion.p>

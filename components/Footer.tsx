@@ -4,58 +4,52 @@ import Link from 'next/link';
 
 export default function Footer() {
   return (
-    <footer className="bg-[#111827] border-t border-[#1F2937] py-16">
-      <div className="max-w-6xl mx-auto px-6">
-        <div className="grid md:grid-cols-4 gap-12 mb-12">
-          {/* Logo / Brand */}
+    <footer className="border-t border-[#E5E7EB] bg-white py-14">
+      <div className="mx-auto max-w-[1200px] px-6">
+        <div className="mb-10 grid gap-10 md:grid-cols-4">
           <div>
-            <h3 className="text-2xl font-bold bg-gradient-to-r from-[#3B82F6] to-[#1E40AF] bg-clip-text text-transparent mb-4">
+            <h3 className="mb-3 text-2xl font-bold tracking-tight text-[#111827]">
               UpskillBay
             </h3>
-            <p className="text-[#9CA3AF] text-sm">Build skills. Earn income. Get hired.</p>
+            <p className="text-sm leading-6 text-[#6B7280]">Build skills. Earn income. Get hired.</p>
           </div>
 
-          {/* Product Links */}
           <div>
-            <h4 className="font-semibold text-white mb-4">Product</h4>
-            <ul className="space-y-2 text-sm text-[#9CA3AF]">
-              <li><Link href="/career-tracks" className="hover:text-white transition-colors">Career Tracks</Link></li>
-              <li><Link href="/gigs" className="hover:text-white transition-colors">Projects</Link></li>
-              <li><Link href="#" className="hover:text-white transition-colors">Pricing</Link></li>
+            <h4 className="mb-4 font-semibold text-[#111827]">Product</h4>
+            <ul className="space-y-2 text-sm text-[#6B7280]">
+              <li><Link href="/career-tracks" className="hover:text-[#4F46E5] transition-colors">Career Tracks</Link></li>
+              <li><Link href="/gigs" className="hover:text-[#4F46E5] transition-colors">Projects</Link></li>
+              <li><Link href="#" className="hover:text-[#4F46E5] transition-colors">Pricing</Link></li>
             </ul>
           </div>
 
-          {/* Company Links */}
           <div>
-            <h4 className="font-semibold text-white mb-4">Company</h4>
-            <ul className="space-y-2 text-sm text-[#9CA3AF]">
-              <li><Link href="#" className="hover:text-white transition-colors">About</Link></li>
-              <li><Link href="#" className="hover:text-white transition-colors">Blog</Link></li>
-              <li><Link href="#" className="hover:text-white transition-colors">Contact</Link></li>
+            <h4 className="mb-4 font-semibold text-[#111827]">Company</h4>
+            <ul className="space-y-2 text-sm text-[#6B7280]">
+              <li><Link href="#" className="hover:text-[#4F46E5] transition-colors">About</Link></li>
+              <li><Link href="#" className="hover:text-[#4F46E5] transition-colors">Blog</Link></li>
+              <li><Link href="#" className="hover:text-[#4F46E5] transition-colors">Contact</Link></li>
             </ul>
           </div>
 
-          {/* Legal Links */}
           <div>
-            <h4 className="font-semibold text-white mb-4">Legal</h4>
-            <ul className="space-y-2 text-sm text-[#9CA3AF]">
-              <li><Link href="#" className="hover:text-white transition-colors">Terms</Link></li>
-              <li><Link href="#" className="hover:text-white transition-colors">Privacy</Link></li>
-              <li><Link href="#" className="hover:text-white transition-colors">Cookie Policy</Link></li>
+            <h4 className="mb-4 font-semibold text-[#111827]">Legal</h4>
+            <ul className="space-y-2 text-sm text-[#6B7280]">
+              <li><Link href="#" className="hover:text-[#4F46E5] transition-colors">Terms</Link></li>
+              <li><Link href="#" className="hover:text-[#4F46E5] transition-colors">Privacy</Link></li>
+              <li><Link href="#" className="hover:text-[#4F46E5] transition-colors">Cookie Policy</Link></li>
             </ul>
           </div>
         </div>
 
-        {/* Divider */}
-        <div className="border-t border-[#1F2937] pt-8">
-          <div className="flex flex-col md:flex-row justify-between items-center text-sm text-[#9CA3AF]">
+        <div className="border-t border-[#E5E7EB] pt-8">
+          <div className="flex flex-col items-center justify-between gap-4 text-sm text-[#6B7280] md:flex-row">
             <p>&copy; 2024 UpskillBay. All rights reserved.</p>
 
-            {/* Social Links */}
-            <div className="flex gap-6 mt-4 md:mt-0">
-              <a href="#" className="hover:text-white transition-colors">Twitter</a>
-              <a href="#" className="hover:text-white transition-colors">LinkedIn</a>
-              <a href="#" className="hover:text-white transition-colors">Discord</a>
+            <div className="flex gap-6">
+              <a href="#" className="hover:text-[#4F46E5] transition-colors">Twitter</a>
+              <a href="#" className="hover:text-[#4F46E5] transition-colors">LinkedIn</a>
+              <a href="#" className="hover:text-[#4F46E5] transition-colors">Discord</a>
             </div>
           </div>
         </div>

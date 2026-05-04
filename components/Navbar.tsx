@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { signOut } from 'next-auth/react';
 
 interface User {
@@ -16,6 +16,7 @@ export default function Navbar() {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
+  const pathname = usePathname();
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -41,88 +42,91 @@ export default function Navbar() {
     setIsOpen(false);
   };
 
+  const navLinkClass = (href: string) =>
+    `rounded-full px-3 py-2 text-sm font-semibold transition-all duration-200 ${
+      pathname === href
+        ? 'bg-[#EEF2FF] text-[#4F46E5]'
+        : 'text-[#4B5563] hover:bg-slate-50 hover:text-[#4F46E5]'
+    }`;
+
   return (
-    <nav className="bg-[#0B0F19] border-b border-[#1F2937] sticky top-0 z-50 backdrop-blur-md">
-      <div className="max-w-6xl mx-auto px-6">
-        <div className="flex justify-between items-center h-16">
-          {/* Logo */}
-          <Link href="/" className="text-2xl font-bold text-white hover:text-[#3B82F6] transition-colors duration-200">
+    <nav className="sticky top-0 z-50 border-b border-white/70 bg-white/85 shadow-sm shadow-slate-200/70 backdrop-blur-xl">
+      <div className="mx-auto max-w-[1200px] px-6">
+        <div className="flex h-16 items-center justify-between">
+          <Link href="/" className="text-2xl font-bold tracking-tight text-[#111827] transition-colors duration-200 hover:text-[#4F46E5]">
             UpskillBay
           </Link>
 
-          {/* Desktop Menu */}
-          <div className="hidden md:flex gap-8 items-center">
-            <Link href="/career-tracks" className="text-[#9CA3AF] hover:text-white transition-colors duration-200">
+          <div className="hidden items-center gap-2 rounded-full border border-[#E5E7EB]/80 bg-white/70 p-1 shadow-sm md:flex">
+            <Link href="/career-tracks" className={navLinkClass('/career-tracks')}>
               Career Tracks
             </Link>
-            <Link href="/gigs" className="text-[#9CA3AF] hover:text-white transition-colors duration-200">
+            <Link href="/gigs" className={navLinkClass('/gigs')}>
               Projects
             </Link>
             {user && (
-              <Link href="/dashboard" className="text-[#9CA3AF] hover:text-white transition-colors duration-200">
+              <Link href="/dashboard" className={navLinkClass('/dashboard')}>
                 Dashboard
               </Link>
             )}
           </div>
 
-          {/* Desktop Auth Section */}
-          <div className="hidden md:flex gap-3 items-center">
+          <div className="hidden items-center gap-3 md:flex">
             {!loading && user ? (
               <>
                 <div className="text-right">
-                  <p className="text-white font-medium text-sm">{user.name}</p>
-                  <p className="text-[#9CA3AF] text-xs">{user.email}</p>
+                  <p className="text-sm font-semibold text-[#111827]">{user.name}</p>
+                  <p className="text-xs text-[#6B7280]">{user.email}</p>
                 </div>
                 <button
                   onClick={handleLogout}
-                  className="px-6 py-2 bg-[#111827] border border-[#1F2937] text-[#9CA3AF] rounded-lg hover:border-[#3B82F6]/30 hover:text-white transition-all duration-200 font-medium"
+                  className="rounded-xl border border-[#E5E7EB] bg-white px-5 py-2 text-sm font-semibold text-[#374151] shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:scale-[1.02] hover:border-[#D1D5DB] hover:shadow-md"
                 >
                   Logout
                 </button>
               </>
             ) : (
               <>
-                <Link href="/auth/login" className="px-6 py-2 text-[#9CA3AF] hover:text-white transition-colors duration-200">
+                <Link href="/auth/login" className="px-4 py-2 text-sm font-semibold text-[#4B5563] transition-colors duration-200 hover:text-[#4F46E5]">
                   Login
                 </Link>
-                <Link href="/auth/signup" className="px-6 py-2 bg-[#111827] border border-[#3B82F6] text-white rounded-lg hover:shadow-lg hover:shadow-[#3B82F6]/20 hover:-translate-y-1 transition-all duration-200 font-medium">
+                <Link href="/auth/signup" className="rounded-xl bg-[#4F46E5] px-5 py-2 text-sm font-semibold text-white shadow-lg shadow-indigo-500/25 transition-all duration-200 hover:-translate-y-0.5 hover:scale-[1.02] hover:bg-[#4338CA] hover:shadow-xl hover:shadow-indigo-500/30">
                   Sign Up
                 </Link>
               </>
             )}
           </div>
 
-          {/* Mobile Menu Button */}
           <button
-            className="md:hidden p-2"
+            className="rounded-xl border border-[#E5E7EB] bg-white p-2 text-[#374151] shadow-sm md:hidden"
             onClick={() => setIsOpen(!isOpen)}
+            aria-label="Toggle navigation"
           >
-            <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
             </svg>
           </button>
         </div>
 
-        {/* Mobile Menu */}
         {isOpen && (
-          <div className="md:hidden pb-4 space-y-2 border-t border-[#1F2937]">
-            <Link href="/career-tracks" className="block text-[#9CA3AF] hover:text-white py-2 transition-colors duration-200">
+          <div className="space-y-2 border-t border-[#E5E7EB]/80 bg-white/90 py-4 shadow-sm md:hidden">
+            <Link href="/career-tracks" className="block rounded-xl px-3 py-2 text-sm font-semibold text-[#4B5563] hover:bg-slate-50 hover:text-[#4F46E5]">
               Career Tracks
             </Link>
-            <Link href="/gigs" className="block text-[#9CA3AF] hover:text-white py-2 transition-colors duration-200">
+            <Link href="/gigs" className="block rounded-xl px-3 py-2 text-sm font-semibold text-[#4B5563] hover:bg-slate-50 hover:text-[#4F46E5]">
               Projects
             </Link>
             {user && (
               <>
-                <Link href="/dashboard" className="block text-[#9CA3AF] hover:text-white py-2 transition-colors duration-200">
+                <Link href="/dashboard" className="block rounded-xl px-3 py-2 text-sm font-semibold text-[#4B5563] hover:bg-slate-50 hover:text-[#4F46E5]">
                   Dashboard
                 </Link>
-                <div className="py-4 border-t border-[#1F2937]">
-                  <p className="text-white font-medium text-sm mb-2">{user.name}</p>
-                  <p className="text-[#9CA3AF] text-xs mb-4">{user.email}</p>
+                <div className="border-t border-[#E5E7EB] pt-4">
+                  <p className="mb-1 text-sm font-semibold text-[#111827]">{user.name}</p>
+                  <p className="mb-4 text-xs text-[#6B7280]">{user.email}</p>
                   <button
                     onClick={handleLogout}
-                    className="w-full px-4 py-2 bg-[#111827] border border-[#1F2937] text-[#9CA3AF] rounded-lg hover:border-[#3B82F6]/30 transition-all duration-200 font-medium text-sm"
+                    className="w-full rounded-xl border border-[#E5E7EB] bg-white px-4 py-2 text-sm font-semibold text-[#374151] shadow-sm transition-all duration-200 hover:shadow-md"
                   >
                     Logout
                   </button>
@@ -130,11 +134,11 @@ export default function Navbar() {
               </>
             )}
             {!loading && !user && (
-              <div className="flex flex-col gap-3 pt-4 border-t border-[#1F2937]">
-                <Link href="/auth/login" className="block text-center px-4 py-2 border border-[#1F2937] text-white rounded-lg hover:border-[#3B82F6]/30 transition-all duration-200">
+              <div className="flex flex-col gap-3 border-t border-[#E5E7EB] pt-4">
+                <Link href="/auth/login" className="block rounded-xl border border-[#E5E7EB] bg-white px-4 py-2 text-center text-sm font-semibold text-[#374151] shadow-sm">
                   Login
                 </Link>
-                <Link href="/auth/signup" className="block text-center px-4 py-2 bg-[#111827] border border-[#3B82F6] text-white rounded-lg hover:shadow-lg hover:shadow-[#3B82F6]/20 transition-all duration-200 font-medium">
+                <Link href="/auth/signup" className="block rounded-xl bg-[#4F46E5] px-4 py-2 text-center text-sm font-semibold text-white shadow-lg shadow-indigo-500/25">
                   Sign Up
                 </Link>
               </div>

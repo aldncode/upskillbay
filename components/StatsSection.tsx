@@ -15,7 +15,7 @@ export default function StatsSection() {
     },
     {
       number: '95%',
-      label: 'Job Placement Rate',
+      label: 'Learner Satisfaction',
     },
   ];
 
@@ -24,47 +24,54 @@ export default function StatsSection() {
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.2,
+        staggerChildren: 0.12,
       },
     },
   };
 
   const itemVariants = {
-    hidden: { opacity: 0, scale: 0.8 },
+    hidden: { opacity: 0, y: 16 },
     visible: {
       opacity: 1,
-      scale: 1,
-      transition: { duration: 0.5 },
+      y: 0,
+      transition: { duration: 0.4 },
     },
   };
 
   return (
-    <AnimatedSection className="bg-[#111827] border-y border-[#1F2937]">
-      {/* Title */}
-      <motion.h2
-        className="text-4xl md:text-5xl font-bold text-white mb-16 text-center"
-        initial={{ opacity: 0, y: 20 }}
+    <AnimatedSection className="bg-[#F9FAFB]">
+      <motion.div
+        className="mb-10 text-center"
+        initial={{ opacity: 0, y: 16 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
-        transition={{ duration: 0.5 }}
+        transition={{ duration: 0.4 }}
       >
-        Proof Over Promises
-      </motion.h2>
+        <h2 className="mb-4 text-4xl font-bold tracking-tight text-[#111827] md:text-5xl">
+          Practical outcomes learners can measure.
+        </h2>
+        <p className="mx-auto max-w-2xl text-lg leading-8 text-[#4B5563]">
+          UpskillBay is built around project completion, earning potential, and career readiness.
+        </p>
+      </motion.div>
 
-      {/* Stats Grid */}
       <motion.div
-        className="grid md:grid-cols-3 gap-12"
+        className="grid grid-cols-1 gap-6 md:grid-cols-3"
         variants={containerVariants}
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true }}
       >
-        {stats.map((stat, idx) => (
-          <motion.div key={idx} className="text-center" variants={itemVariants}>
-            <div className="text-5xl md:text-6xl font-bold text-[#3B82F6] mb-3">
+        {stats.map((stat) => (
+          <motion.div
+            key={stat.label}
+            className="rounded-xl border border-[#E5E7EB] bg-white p-8 text-center shadow-sm"
+            variants={itemVariants}
+          >
+            <div className="mb-3 text-5xl font-bold tracking-tight text-[#4F46E5]">
               {stat.number}
             </div>
-            <p className="text-lg text-[#9CA3AF] font-medium">{stat.label}</p>
+            <p className="font-semibold text-[#4B5563]">{stat.label}</p>
           </motion.div>
         ))}
       </motion.div>

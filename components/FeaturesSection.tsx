@@ -3,32 +3,30 @@
 import { motion } from 'framer-motion';
 import Card from './Card';
 import AnimatedSection from './AnimatedSection';
+import Button from './Button';
 
 export default function FeaturesSection() {
-  const features = [
+  const paths = [
     {
-      title: 'Career Tracks',
-      description: 'Structured learning paths in high-demand fields. Not courses. Careers.',
+      title: 'Web Development',
+      description: 'Learn frontend, backend, deployment, and project delivery through practical builds.',
+      outcome: 'Build and ship client-ready websites',
+      duration: '8-12 weeks',
+      earning: '₹10k-₹40k/project',
     },
     {
-      title: 'Real Client Projects',
-      description: 'Work on actual projects with real clients. Every deliverable matters.',
+      title: 'Digital Marketing',
+      description: 'Master campaign setup, content funnels, analytics, and growth experiments.',
+      outcome: 'Run measurable campaigns for brands',
+      duration: '6-10 weeks',
+      earning: '₹8k-₹30k/project',
     },
     {
-      title: 'Proof Profile',
-      description: 'Your portfolio is auto-built. Show employers exactly what you\'ve done.',
-    },
-    {
-      title: 'Paid Opportunities',
-      description: 'Earn income while you learn. Every project = real money in your account.',
-    },
-    {
-      title: 'Direct Hiring Access',
-      description: 'Top performers get introduced to hiring partners. Skip the resume pile.',
-    },
-    {
-      title: 'Verified Skills',
-      description: 'Skills aren\'t guessed. They\'re proven through completed projects.',
+      title: 'Data Analytics',
+      description: 'Use spreadsheets, dashboards, SQL, and storytelling to solve business problems.',
+      outcome: 'Create decision-ready reports',
+      duration: '8-12 weeks',
+      earning: '₹12k-₹45k/project',
     },
   ];
 
@@ -43,48 +41,63 @@ export default function FeaturesSection() {
   };
 
   const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
+    hidden: { opacity: 0, y: 16 },
     visible: {
       opacity: 1,
       y: 0,
-      transition: { duration: 0.5 },
+      transition: { duration: 0.4 },
     },
   };
 
   return (
-    <AnimatedSection className="bg-[#0B0F19]">
-      {/* Title */}
+    <AnimatedSection className="bg-[#F9FAFB]">
       <motion.div
-        className="mb-16"
-        initial={{ opacity: 0, y: 20 }}
+        className="mb-10 max-w-2xl"
+        initial={{ opacity: 0, y: 16 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
-        transition={{ duration: 0.5 }}
+        transition={{ duration: 0.4 }}
       >
-        <h2 className="text-4xl md:text-5xl font-bold text-white mb-4">
-          Everything You Need to Get Hired
+        <p className="mb-3 text-sm font-semibold uppercase tracking-wide text-[#4F46E5]">
+          Choose Your Career Path
+        </p>
+        <h2 className="mb-4 text-4xl font-bold tracking-tight text-[#111827] md:text-5xl">
+          Pick a path built around outcomes, not lectures.
         </h2>
-        <p className="text-[#9CA3AF]">
-          We handle the platform. You focus on building your future.
+        <p className="text-lg leading-8 text-[#4B5563]">
+          Each track includes a focused curriculum, portfolio assignments, and clear earning potential.
         </p>
       </motion.div>
 
-      {/* Features Grid */}
       <motion.div
-        className="grid md:grid-cols-3 gap-6"
+        className="grid grid-cols-1 gap-6 md:grid-cols-3"
         variants={containerVariants}
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true }}
       >
-        {features.map((feature, idx) => (
-          <motion.div key={idx} variants={itemVariants}>
-            <Card>
-              {/* Icon - simple dot */}
-              <div className="w-3 h-3 bg-[#3B82F6] rounded-full mb-4" />
-
-              <h3 className="text-lg font-bold text-white mb-3">{feature.title}</h3>
-              <p className="text-[#9CA3AF] text-sm leading-relaxed">{feature.description}</p>
+        {paths.map((path) => (
+          <motion.div key={path.title} variants={itemVariants}>
+            <Card className="flex h-full flex-col">
+              <h3 className="mb-3 text-xl font-bold text-[#111827]">{path.title}</h3>
+              <p className="mb-5 flex-grow text-sm leading-6 text-[#4B5563]">{path.description}</p>
+              <div className="mb-5 rounded-lg bg-green-50 p-4">
+                <p className="text-xs font-semibold uppercase tracking-wide text-green-700">Outcome</p>
+                <p className="mt-1 text-sm font-semibold text-green-700">{path.outcome}</p>
+              </div>
+              <div className="mb-6 grid grid-cols-2 gap-4 border-t border-[#E5E7EB] pt-5">
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-wide text-[#6B7280]">Duration</p>
+                  <p className="mt-1 text-sm font-bold text-[#111827]">{path.duration}</p>
+                </div>
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-wide text-[#6B7280]">Earning</p>
+                  <p className="mt-1 text-sm font-bold text-green-700">{path.earning}</p>
+                </div>
+              </div>
+              <Button href="/career-tracks" className="w-full">
+                View Track
+              </Button>
             </Card>
           </motion.div>
         ))}

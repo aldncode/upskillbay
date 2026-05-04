@@ -22,6 +22,48 @@ interface CareerTrackCardProps {
   enrolled?: boolean;
 }
 
+function DurationIcon() {
+  return (
+    <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path
+        d="M12 7v5l3 2M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+function EarningsIcon() {
+  return (
+    <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path
+        d="M12 3v18M17 7.5c-.7-1.2-2.1-2-4-2h-1.5C9.6 5.5 8 6.8 8 8.4c0 1.3.9 2.4 2.3 2.8l3.8 1.1c1.4.4 2.3 1.5 2.3 2.8 0 1.8-1.6 3.4-3.6 3.4H11c-1.9 0-3.3-.8-4-2"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+function OutcomeIcon() {
+  return (
+    <svg className="h-4 w-4" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path
+        d="m5 12 4 4L19 6"
+        stroke="currentColor"
+        strokeWidth="2.2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
 export default function CareerTrackCard({
   track,
   enrolled = false,
@@ -29,117 +71,113 @@ export default function CareerTrackCard({
   const [isEnrolling] = useState(false);
   const [isApplyModalOpen, setIsApplyModalOpen] = useState(false);
 
-
-  const levelColors: Record<string, string> = {
-    beginner: 'text-[#10B981]',
-    intermediate: 'text-[#F59E0B]',
-    advanced: 'text-[#EF4444]',
+  const levelClasses: Record<string, string> = {
+    beginner: 'bg-emerald-50 text-emerald-700 border-emerald-100',
+    intermediate: 'bg-amber-50 text-amber-700 border-amber-100',
+    advanced: 'bg-rose-50 text-rose-700 border-rose-100',
   };
 
   return (
     <>
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
+      <motion.article
+        initial={{ opacity: 0, y: 18 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3 }}
-        whileHover={{ y: -4 }}
+        transition={{ duration: 0.4, ease: 'easeOut' }}
+        whileHover={{ y: -6, scale: 1.01 }}
         className="h-full"
       >
-        <div className="relative h-full bg-[#111827] border border-[#1F2937] rounded-xl overflow-hidden group hover:border-[#3B82F6]/50 hover:shadow-lg hover:shadow-[#3B82F6]/10 transition-all duration-200 p-6 flex flex-col">
-          {/* Level Badge */}
-          <div className="absolute top-4 right-4 z-10">
+        <div className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-white/80 bg-white p-6 shadow-lg shadow-slate-200/60 transition-all duration-300 hover:border-indigo-100 hover:shadow-2xl hover:shadow-indigo-100/80">
+          <div className="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-[#4F46E5] via-[#06B6D4] to-emerald-400 opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
+          <div className="mb-6 flex items-start justify-between gap-4">
             <span
-              className={`inline-block px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider ${
-                levelColors[track.level.toLowerCase()] || 'text-[#9CA3AF]'
-              } bg-[#0B0F19] border border-[#1F2937]`}
+              className={`rounded-full border px-3 py-1 text-xs font-semibold uppercase tracking-wide ${
+                levelClasses[track.level.toLowerCase()] || 'bg-gray-50 text-gray-700 border-gray-100'
+              }`}
             >
               {track.level}
             </span>
+            <span className="rounded-full bg-slate-50 px-3 py-1 text-xs font-medium text-[#6B7280]">
+              {track.enrollments?.length || 0} enrolled
+            </span>
           </div>
 
-          {/* Title */}
-          <h3 className="text-xl font-bold text-white mb-2 pr-16">
+          <h3 className="mb-3 text-xl font-bold leading-snug text-[#111827]">
             {track.title}
           </h3>
 
-          {/* Description */}
-          <p className="text-[#9CA3AF] text-sm mb-6 line-clamp-2 flex-grow">
+          <p className="mb-6 line-clamp-3 flex-grow text-sm leading-6 text-[#4B5563]">
             {track.description}
           </p>
 
-          {/* Outcome */}
-          <div className="mb-6 pb-6 border-b border-[#1F2937]">
-            <p className="text-xs text-[#6B7280] font-semibold mb-2 uppercase tracking-wide">
-              Outcome
-            </p>
-            <p className="text-sm text-[#E2E8F0] font-medium">
+          <div className="mb-6 rounded-2xl border border-emerald-100 bg-gradient-to-br from-emerald-50 to-teal-50 p-4 shadow-sm">
+            <div className="mb-2 flex items-center gap-2 text-emerald-700">
+              <span className="inline-flex h-7 w-7 items-center justify-center rounded-lg bg-white shadow-sm">
+                <OutcomeIcon />
+              </span>
+              <p className="text-xs font-semibold uppercase tracking-wide">
+                Outcome
+              </p>
+            </div>
+            <p className="text-sm font-semibold leading-6 text-emerald-800">
               {track.outcome}
             </p>
           </div>
 
-          {/* Skills */}
-          <div className="mb-6 pb-6 border-b border-[#1F2937]">
-            <p className="text-xs text-[#6B7280] font-semibold mb-3 uppercase tracking-wide">
-              Skills
-            </p>
-            <div className="flex flex-wrap gap-2">
-              {track.skills.slice(0, 3).map((skill, idx) => (
-                <span
-                  key={idx}
-                  className="inline-block px-3 py-1 bg-[#0B0F19] text-[#3B82F6] text-xs font-medium rounded-lg border border-[#1F2937]"
-                >
-                  {skill}
-                </span>
-              ))}
-              {track.skills.length > 3 && (
-                <span className="text-xs text-[#6B7280] flex items-center">
-                  +{track.skills.length - 3}
-                </span>
-              )}
-            </div>
+          <div className="mb-6 flex flex-wrap gap-2">
+            {track.skills.slice(0, 3).map((skill) => (
+              <span
+                key={skill}
+                className="rounded-lg border border-[#E5E7EB] bg-[#F9FAFB] px-2.5 py-1 text-xs font-medium text-[#374151]"
+              >
+                {skill}
+              </span>
+            ))}
+            {track.skills.length > 3 && (
+              <span className="rounded-lg bg-[#EEF2FF] px-2.5 py-1 text-xs font-semibold text-[#4F46E5]">
+                +{track.skills.length - 3}
+              </span>
+            )}
           </div>
 
-          {/* Info Grid */}
-          <div className="grid grid-cols-2 gap-4 mb-6 pb-6 border-b border-[#1F2937]">
-            <div>
-              <p className="text-xs text-[#6B7280] font-semibold uppercase tracking-wide mb-2">
+          <div className="mb-6 grid grid-cols-2 gap-3 border-t border-[#E5E7EB] pt-5">
+            <div className="rounded-xl bg-slate-50 p-3">
+              <p className="mb-2 flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-[#6B7280]">
+                <span className="text-[#4F46E5]">
+                  <DurationIcon />
+                </span>
                 Duration
               </p>
-              <p className="text-sm font-bold text-white">
+              <p className="text-sm font-bold text-[#111827]">
                 {track.duration}
               </p>
             </div>
-            <div>
-              <p className="text-xs text-[#6B7280] font-semibold uppercase tracking-wide mb-2">
+            <div className="rounded-xl bg-slate-50 p-3">
+              <p className="mb-2 flex items-center gap-2 text-xs font-semibold uppercase tracking-wide text-[#6B7280]">
+                <span className="text-emerald-600">
+                  <EarningsIcon />
+                </span>
                 Earning
               </p>
-              <p className="text-sm font-bold text-[#10B981]">
+              <p className="text-sm font-bold text-emerald-700">
                 {track.earningPotential}
               </p>
             </div>
           </div>
 
-          {/* Enrollment Count */}
-          <p className="text-xs text-[#6B7280] mb-6">
-            {track.enrollments?.length || 0} people enrolled
-          </p>
-
-          {/* CTA Button */}
           <button
             onClick={() => setIsApplyModalOpen(true)}
-            disabled={isEnrolling}
-            className={`w-full px-4 py-3 rounded-lg font-medium transition-all duration-200 ${
+            disabled={isEnrolling || enrolled}
+            className={`mt-auto w-full rounded-xl px-4 py-3 text-sm font-semibold transition-all duration-200 ${
               enrolled
-                ? 'bg-[#0B0F19] border border-[#1F2937] text-[#10B981] cursor-default'
-                : 'bg-[#111827] border border-[#3B82F6] text-white hover:shadow-lg hover:shadow-[#3B82F6]/20 hover:-translate-y-1'
+                ? 'border border-emerald-200 bg-emerald-50 text-emerald-700'
+                : 'bg-[#4F46E5] text-white shadow-lg shadow-indigo-500/25 hover:-translate-y-0.5 hover:scale-[1.02] hover:bg-[#4338CA] hover:shadow-xl hover:shadow-indigo-500/30'
             } ${isEnrolling ? 'opacity-75' : ''}`}
           >
-            {enrolled ? '✓ Applied' : 'Apply Now'}
+            {enrolled ? 'Enrolled' : 'Enroll Now'}
           </button>
         </div>
-      </motion.div>
+      </motion.article>
 
-      {/* Apply Modal */}
       <ApplyModal
         isOpen={isApplyModalOpen}
         onClose={() => setIsApplyModalOpen(false)}
@@ -147,7 +185,6 @@ export default function CareerTrackCard({
         targetId={track.id}
         targetName={track.title}
         onSuccess={() => {
-          // Optionally refresh or update state
           toast.success('Application received!');
         }}
       />

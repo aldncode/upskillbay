@@ -78,7 +78,7 @@ export default function ApplyModal({
         throw new Error(data.error || 'Failed to submit application');
       }
 
-      toast.success('✓ Application submitted successfully!');
+      toast.success('Application submitted successfully!');
       setFormData({ name: '', email: '', phone: '', experience: '', motivation: '' });
       setAgreedToTerms(false);
       onClose();
@@ -94,53 +94,49 @@ export default function ApplyModal({
     <AnimatePresence>
       {isOpen && (
         <>
-          {/* Backdrop */}
           <motion.div
             key="backdrop"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
-            className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40"
+            className="fixed inset-0 z-40 bg-[#6B7280]/30 backdrop-blur-sm"
           />
 
-          {/* Modal Container - Centered with flex */}
-          <div className="fixed inset-0 flex items-center justify-center z-50 p-4">
-            {/* Modal */}
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
             <motion.div
               key="modal"
-              initial={{ opacity: 0, scale: 0.95, y: 20 }}
+              initial={{ opacity: 0, scale: 0.97, y: 16 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: 20 }}
+              exit={{ opacity: 0, scale: 0.97, y: 16 }}
               transition={{ duration: 0.2 }}
-              className="w-full max-w-md max-h-[90vh] overflow-y-auto"
+              className="relative max-h-[90vh] w-full max-w-md overflow-y-auto rounded-xl border border-[#E5E7EB] bg-white p-8 shadow-2xl"
             >
-              <div className="bg-[#111827] border border-[#1F2937] rounded-xl p-8 shadow-2xl">
-              {/* Close button */}
               <button
                 onClick={onClose}
-                className="absolute top-4 right-4 text-[#6B7280] hover:text-white transition-colors"
+                className="absolute right-4 top-4 rounded-lg p-1 text-[#6B7280] transition-colors hover:bg-[#F3F4F6] hover:text-[#111827]"
+                aria-label="Close modal"
               >
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </button>
 
-              {/* Header */}
-              <div className="mb-6">
-                <h2 className="text-2xl font-bold text-white mb-2">
-                  Apply for {type === 'track' ? 'Career Track' : 'Project'}
+              <div className="mb-6 pr-8">
+                <p className="mb-2 text-sm font-semibold uppercase tracking-wide text-[#4F46E5]">
+                  {type === 'track' ? 'Career Track' : 'Project'}
+                </p>
+                <h2 className="mb-2 text-2xl font-bold tracking-tight text-[#111827]">
+                  Enroll in {targetName}
                 </h2>
-                <p className="text-[#9CA3AF] text-sm">
-                  {targetName}
+                <p className="text-sm leading-6 text-[#6B7280]">
+                  Share a few details so we can guide your next step.
                 </p>
               </div>
 
-              {/* Form */}
               <form onSubmit={handleSubmit} className="space-y-4">
-                {/* Name */}
                 <div>
-                  <label className="block text-sm font-medium text-white mb-2">
+                  <label className="mb-2 block text-sm font-semibold text-[#111827]">
                     Full Name *
                   </label>
                   <input
@@ -149,13 +145,12 @@ export default function ApplyModal({
                     value={formData.name}
                     onChange={handleChange}
                     placeholder="John Doe"
-                    className="w-full px-4 py-3 bg-[#0B0F19] border border-[#1F2937] rounded-lg text-white placeholder-[#6B7280] focus:border-[#3B82F6] focus:ring-1 focus:ring-[#3B82F6]/50 transition-all duration-200 outline-none"
+                    className="input"
                   />
                 </div>
 
-                {/* Email */}
                 <div>
-                  <label className="block text-sm font-medium text-white mb-2">
+                  <label className="mb-2 block text-sm font-semibold text-[#111827]">
                     Email *
                   </label>
                   <input
@@ -164,13 +159,12 @@ export default function ApplyModal({
                     value={formData.email}
                     onChange={handleChange}
                     placeholder="john@example.com"
-                    className="w-full px-4 py-3 bg-[#0B0F19] border border-[#1F2937] rounded-lg text-white placeholder-[#6B7280] focus:border-[#3B82F6] focus:ring-1 focus:ring-[#3B82F6]/50 transition-all duration-200 outline-none"
+                    className="input"
                   />
                 </div>
 
-                {/* Phone */}
                 <div>
-                  <label className="block text-sm font-medium text-white mb-2">
+                  <label className="mb-2 block text-sm font-semibold text-[#111827]">
                     Phone Number *
                   </label>
                   <input
@@ -179,13 +173,12 @@ export default function ApplyModal({
                     value={formData.phone}
                     onChange={handleChange}
                     placeholder="+1 (555) 000-0000"
-                    className="w-full px-4 py-3 bg-[#0B0F19] border border-[#1F2937] rounded-lg text-white placeholder-[#6B7280] focus:border-[#3B82F6] focus:ring-1 focus:ring-[#3B82F6]/50 transition-all duration-200 outline-none"
+                    className="input"
                   />
                 </div>
 
-                {/* Experience */}
                 <div>
-                  <label className="block text-sm font-medium text-white mb-2">
+                  <label className="mb-2 block text-sm font-semibold text-[#111827]">
                     Your Experience *
                   </label>
                   <textarea
@@ -194,14 +187,13 @@ export default function ApplyModal({
                     onChange={handleChange}
                     placeholder="Tell us about your relevant experience..."
                     rows={3}
-                    className="w-full px-4 py-3 bg-[#0B0F19] border border-[#1F2937] rounded-lg text-white placeholder-[#6B7280] focus:border-[#3B82F6] focus:ring-1 focus:ring-[#3B82F6]/50 transition-all duration-200 outline-none resize-none"
+                    className="input resize-none"
                   />
                 </div>
 
-                {/* Motivation */}
                 <div>
-                  <label className="block text-sm font-medium text-white mb-2">
-                    Why do you want to apply? *
+                  <label className="mb-2 block text-sm font-semibold text-[#111827]">
+                    Why do you want to enroll? *
                   </label>
                   <textarea
                     name="motivation"
@@ -209,52 +201,41 @@ export default function ApplyModal({
                     onChange={handleChange}
                     placeholder="Share your motivation..."
                     rows={3}
-                    className="w-full px-4 py-3 bg-[#0B0F19] border border-[#1F2937] rounded-lg text-white placeholder-[#6B7280] focus:border-[#3B82F6] focus:ring-1 focus:ring-[#3B82F6]/50 transition-all duration-200 outline-none resize-none"
+                    className="input resize-none"
                   />
                 </div>
 
-                {/* Terms Checkbox */}
                 <div className="flex items-start gap-3 pt-2">
                   <input
                     type="checkbox"
                     id="terms"
                     checked={agreedToTerms}
                     onChange={(e) => setAgreedToTerms(e.target.checked)}
-                    className="mt-1 w-4 h-4 rounded bg-[#0B0F19] border border-[#1F2937] text-[#3B82F6] focus:ring-2 focus:ring-[#3B82F6]/50 cursor-pointer"
+                    className="mt-1 h-4 w-4 cursor-pointer rounded border-[#D1D5DB] text-[#4F46E5] focus:ring-2 focus:ring-[#4F46E5]/20"
                   />
-                  <label htmlFor="terms" className="text-sm text-[#9CA3AF] cursor-pointer">
+                  <label htmlFor="terms" className="cursor-pointer text-sm leading-6 text-[#6B7280]">
                     I agree to the terms and conditions and confirm that the information provided is accurate.
                   </label>
                 </div>
 
-                {/* Submit Button */}
                 <motion.button
                   type="submit"
                   disabled={isSubmitting || !agreedToTerms}
-                  whileHover={!isSubmitting && agreedToTerms ? { scale: 1.02 } : {}}
-                  whileTap={!isSubmitting && agreedToTerms ? { scale: 0.98 } : {}}
-                  className={`w-full px-4 py-3 rounded-lg font-medium transition-all duration-200 mt-6 ${
+                  whileHover={!isSubmitting && agreedToTerms ? { y: -2 } : {}}
+                  whileTap={!isSubmitting && agreedToTerms ? { scale: 0.99 } : {}}
+                  className={`mt-6 w-full rounded-lg px-4 py-3 font-semibold transition-all duration-200 ${
                     agreedToTerms && !isSubmitting
-                      ? 'bg-[#111827] border border-[#3B82F6] text-white hover:shadow-lg hover:shadow-[#3B82F6]/20'
-                      : 'bg-[#0B0F19] border border-[#1F2937] text-[#6B7280] cursor-not-allowed'
+                      ? 'bg-[#4F46E5] text-white shadow-sm hover:bg-[#4338CA] hover:shadow-md'
+                      : 'border border-[#E5E7EB] bg-[#F3F4F6] text-[#9CA3AF] cursor-not-allowed'
                   }`}
                 >
-                  {isSubmitting ? (
-                    <span className="flex items-center justify-center gap-2">
-                      <span className="inline-block animate-spin">⚙️</span>
-                      Submitting...
-                    </span>
-                  ) : (
-                    'Submit Application'
-                  )}
+                  {isSubmitting ? 'Submitting...' : 'Submit Application'}
                 </motion.button>
               </form>
 
-              {/* Info Text */}
-              <p className="text-xs text-[#6B7280] text-center mt-4">
-                We'll review your application and get back to you shortly.
+              <p className="mt-4 text-center text-xs text-[#6B7280]">
+                We will review your application and get back to you shortly.
               </p>
-            </div>
             </motion.div>
           </div>
         </>

@@ -5,24 +5,31 @@ import Button from './Button';
 
 export default function CtaSection() {
   return (
-    <section className="py-24 bg-[#0B0F19]">
+    <section className="bg-white py-20">
       <motion.div
-        className="max-w-4xl mx-auto px-6 text-center"
-        initial={{ opacity: 0, y: 30 }}
+        className="mx-auto max-w-[900px] px-6 text-center"
+        initial={{ opacity: 0, y: 24 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
-        transition={{ duration: 0.6 }}
+        transition={{ duration: 0.45 }}
       >
-        <h2 className="text-5xl md:text-6xl font-bold mb-6 text-white">
-          Your First ₹10,000 Starts Here
-        </h2>
-        <p className="text-xl text-[#9CA3AF] mb-12 max-w-2xl mx-auto">
-          Top performers on UpskillBay earn real money from their first project.
-        </p>
+        <div className="rounded-xl border border-[#E5E7EB] bg-white p-8 shadow-sm md:p-12">
+          <h2 className="mb-4 text-4xl font-bold tracking-tight text-[#111827] md:text-5xl">
+            Start building proof of work today.
+          </h2>
+          <p className="mx-auto mb-8 max-w-2xl text-lg leading-8 text-[#4B5563]">
+            Choose a career path, complete practical projects, and build the confidence to apply for paid opportunities.
+          </p>
 
-        <Button variant="primary" size="lg" href="/auth/signup">
-          Start Now
-        </Button>
+          <div className="flex flex-col justify-center gap-4 sm:flex-row">
+            <Button variant="primary" size="lg" href="/auth/signup">
+              Start Free
+            </Button>
+            <Button variant="secondary" size="lg" href="/career-tracks">
+              View Tracks
+            </Button>
+          </div>
+        </div>
       </motion.div>
     </section>
   );

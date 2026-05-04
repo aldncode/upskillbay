@@ -38,7 +38,6 @@ export default function Dashboard() {
   const [careerTracks, setCareerTracks] = useState<CareerTrack[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Fetch dashboard data
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -64,17 +63,15 @@ export default function Dashboard() {
     }
   }, [session]);
 
-  // Fetch user's career track enrollments
   useEffect(() => {
     const fetchEnrollments = async () => {
       try {
         const res = await fetch('/api/enrollments');
-        const data = await res.json();
-        console.log('Career track enrollments:', data.enrollments);
+        const enrollmentsData = await res.json();
 
         setData((prev) => ({
           ...prev,
-          careerTrackEnrollments: data.enrollments || [],
+          careerTrackEnrollments: enrollmentsData.enrollments || [],
         }));
       } catch (error) {
         console.error('Error fetching enrollments:', error);
@@ -86,13 +83,11 @@ export default function Dashboard() {
     }
   }, [session]);
 
-  // Fetch user's applications
   useEffect(() => {
     const fetchApplications = async () => {
       try {
         const res = await fetch('/api/apply');
         const applications = await res.json();
-        console.log('Track applications:', applications);
 
         setData((prev) => ({
           ...prev,
@@ -108,13 +103,11 @@ export default function Dashboard() {
     }
   }, [session]);
 
-  // Fetch career tracks
   useEffect(() => {
     const fetchCareerTracks = async () => {
       try {
         const res = await fetch('/api/career-tracks');
         const tracks = await res.json();
-        // Show top 3 career tracks
         setCareerTracks(tracks.slice(0, 3));
       } catch (error) {
         console.error('Error fetching career tracks:', error);
@@ -125,7 +118,14 @@ export default function Dashboard() {
   }, []);
 
   if (loading) {
-    return <div className="p-8 text-center text-[#9CA3AF]">Loading...</div>;
+    return (
+      <div className="mx-auto max-w-[1200px] px-6 py-16">
+        <div className="rounded-xl border border-[#E5E7EB] bg-white p-12 text-center shadow-sm">
+          <div className="mx-auto mb-4 h-10 w-10 animate-spin rounded-full border-4 border-[#E5E7EB] border-t-[#4F46E5]" />
+          <p className="font-medium text-[#6B7280]">Loading your dashboard...</p>
+        </div>
+      </div>
+    );
   }
 
   const user = session?.user as any;
@@ -140,102 +140,102 @@ export default function Dashboard() {
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.1,
+        staggerChildren: 0.08,
       },
     },
   };
 
   const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
+    hidden: { opacity: 0, y: 16 },
     visible: {
       opacity: 1,
       y: 0,
-      transition: { duration: 0.4 },
+      transition: { duration: 0.35 },
     },
   };
 
   return (
-    <div className="max-w-6xl mx-auto px-6 py-12">
-      {/* Welcome Section */}
-      <motion.div
-        className="mb-12"
-        initial={{ opacity: 0, y: 20 }}
+    <main className="mx-auto max-w-[1200px] px-6 py-10">
+      <motion.section
+        className="mb-10 rounded-xl border border-[#E5E7EB] bg-white p-8 shadow-sm"
+        initial={{ opacity: 0, y: 16 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4 }}
+        transition={{ duration: 0.35 }}
       >
-        <h1 className="text-4xl font-bold text-white mb-2 tracking-tight">Welcome back, {user?.name}! 👋</h1>
-        <p className="text-lg text-[#9CA3AF]">Build your skills, earn from projects, and get hired</p>
-      </motion.div>
+        <p className="mb-2 text-sm font-semibold uppercase tracking-wide text-[#4F46E5]">
+          Dashboard
+        </p>
+        <h1 className="mb-3 text-4xl font-bold tracking-tight text-[#111827]">
+          Welcome back, {user?.name || 'Learner'}
+        </h1>
+        <p className="max-w-2xl text-lg leading-8 text-[#4B5563]">
+          Track your course progress, review applications, and keep moving toward paid work.
+        </p>
+      </motion.section>
 
-      {/* Stats Grid */}
-      <motion.div
-        className="grid md:grid-cols-4 gap-6 mb-12"
+      <motion.section
+        className="mb-10 grid gap-6 md:grid-cols-4"
         variants={containerVariants}
         initial="hidden"
         animate="visible"
       >
         <motion.div variants={itemVariants}>
           <Card>
-            <div className="text-center">
-              <div className="text-4xl font-bold text-[#3B82F6]">{(data.careerTrackEnrollments?.length) ?? 0}</div>
-              <p className="text-[#9CA3AF] mt-3 text-sm">Career Tracks Enrolled</p>
-            </div>
+            <p className="text-sm font-semibold text-[#6B7280]">Career Tracks</p>
+            <div className="mt-3 text-4xl font-bold text-[#4F46E5]">{(data.careerTrackEnrollments?.length) ?? 0}</div>
+            <p className="mt-2 text-sm text-[#6B7280]">Enrolled paths</p>
           </Card>
         </motion.div>
 
         <motion.div variants={itemVariants}>
           <Card>
-            <div className="text-center">
-              <div className="text-4xl font-bold text-[#10B981]">{approvedCount}</div>
-              <p className="text-[#9CA3AF] mt-3 text-sm">Completed Tasks</p>
-            </div>
+            <p className="text-sm font-semibold text-[#6B7280]">Completed</p>
+            <div className="mt-3 text-4xl font-bold text-green-700">{approvedCount}</div>
+            <p className="mt-2 text-sm text-[#6B7280]">Approved tasks</p>
           </Card>
         </motion.div>
 
         <motion.div variants={itemVariants}>
           <Card>
-            <div className="text-center">
-              <div className="text-4xl font-bold text-[#F59E0B]">{pendingCount}</div>
-              <p className="text-[#9CA3AF] mt-3 text-sm">Pending Review</p>
-            </div>
+            <p className="text-sm font-semibold text-[#6B7280]">In Review</p>
+            <div className="mt-3 text-4xl font-bold text-amber-600">{pendingCount}</div>
+            <p className="mt-2 text-sm text-[#6B7280]">Pending tasks</p>
           </Card>
         </motion.div>
 
         <motion.div variants={itemVariants}>
           <Card>
-            <div className="text-center">
-              <div className="text-4xl font-bold text-[#EC4899]">{(data.applications?.length) ?? 0}</div>
-              <p className="text-[#9CA3AF] mt-3 text-sm">Applications Sent</p>
-            </div>
+            <p className="text-sm font-semibold text-[#6B7280]">Applications</p>
+            <div className="mt-3 text-4xl font-bold text-[#111827]">{(data.applications?.length) ?? 0}</div>
+            <p className="mt-2 text-sm text-[#6B7280]">Submitted total</p>
           </Card>
         </motion.div>
-      </motion.div>
+      </motion.section>
 
-      {/* Recommended Career Tracks Section */}
       {careerTracks.length > 0 && (
-        <motion.div
+        <motion.section
           className="mb-12"
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4, delay: 0.1 }}
+          transition={{ duration: 0.35, delay: 0.05 }}
         >
-          <div className="flex items-center justify-between mb-8">
+          <div className="mb-6 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
             <div>
-              <h2 className="text-3xl font-bold text-white mb-2 tracking-tight">
+              <h2 className="text-3xl font-bold tracking-tight text-[#111827]">
                 Recommended Tracks
               </h2>
-              <p className="text-[#9CA3AF]">
-                Build skills, complete projects, and start earning
+              <p className="mt-2 text-[#6B7280]">
+                Popular paths to build skills, portfolio proof, and earning potential.
               </p>
             </div>
             <Link
               href="/career-tracks"
-              className="text-[#3B82F6] font-medium hover:text-[#60A5FA] transition-colors duration-200"
+              className="font-semibold text-[#4F46E5] transition-colors duration-200 hover:text-[#4338CA]"
             >
-              View All →
+              View All
             </Link>
           </div>
-          <div className="grid md:grid-cols-3 gap-6">
+          <div className="grid gap-6 md:grid-cols-3">
             {careerTracks.map((track) => (
               <CareerTrackCard
                 key={track.id}
@@ -244,26 +244,31 @@ export default function Dashboard() {
               />
             ))}
           </div>
-        </motion.div>
+        </motion.section>
       )}
 
-      {/* Main Content */}
-      <div className="grid md:grid-cols-3 gap-8">
-        {/* Active Tracks & Applications */}
+      <div className="grid gap-8 md:grid-cols-3">
         <motion.div
-          className="md:col-span-2 space-y-8"
-          initial={{ opacity: 0, y: 20 }}
+          className="space-y-8 md:col-span-2"
+          initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4, delay: 0.2 }}
+          transition={{ duration: 0.35, delay: 0.1 }}
         >
-          {/* Your Active Tracks */}
           <Card>
-            <h2 className="text-2xl font-bold mb-6 text-white tracking-tight">Your Active Tracks</h2>
+            <div className="mb-6 flex items-center justify-between gap-4">
+              <div>
+                <h2 className="text-2xl font-bold tracking-tight text-[#111827]">Your Active Tracks</h2>
+                <p className="mt-1 text-sm text-[#6B7280]">Continue where you left off.</p>
+              </div>
+              <Link href="/career-tracks" className="text-sm font-semibold text-[#4F46E5] hover:text-[#4338CA]">
+                Browse
+              </Link>
+            </div>
             {(data.careerTrackEnrollments?.length ?? 0) === 0 ? (
-              <p className="text-[#9CA3AF] mb-4">
-                You haven't enrolled in any career tracks yet.{' '}
-                <Link href="/career-tracks" className="text-[#3B82F6] font-medium hover:underline">
-                  Browse career tracks
+              <p className="text-[#6B7280]">
+                You have not enrolled in any career tracks yet.{' '}
+                <Link href="/career-tracks" className="font-semibold text-[#4F46E5] hover:underline">
+                  Explore tracks
                 </Link>
               </p>
             ) : (
@@ -271,19 +276,19 @@ export default function Dashboard() {
                 {(data.careerTrackEnrollments || []).map((enrollment: any) => (
                   <motion.div
                     key={enrollment.id}
-                    className="p-4 bg-[#0B0F19] border border-[#1F2937] rounded-lg hover:border-[#3B82F6]/50 transition-all duration-200 group cursor-pointer"
-                    whileHover={{ scale: 1.01 }}
+                    className="rounded-lg border border-[#E5E7EB] bg-[#F9FAFB] p-4 transition-all duration-200 hover:-translate-y-0.5 hover:bg-white hover:shadow-sm"
+                    whileHover={{ scale: 1.005 }}
                     transition={{ duration: 0.2 }}
                   >
-                    <h3 className="font-semibold text-white group-hover:text-[#3B82F6] transition-colors">{enrollment.careerTrack?.title || 'Career Track'}</h3>
-                    <p className="text-sm text-[#9CA3AF] mt-2 mb-3">
+                    <h3 className="font-semibold text-[#111827]">{enrollment.careerTrack?.title || 'Career Track'}</h3>
+                    <p className="mt-2 mb-3 text-sm leading-6 text-[#6B7280]">
                       {enrollment.careerTrack?.description ? enrollment.careerTrack.description.substring(0, 100) + '...' : 'No description'}
                     </p>
                     <Link
                       href={`/career-tracks/${enrollment.careerTrackId}`}
-                      className="text-[#3B82F6] text-sm font-medium hover:text-[#60A5FA] transition-colors"
+                      className="text-sm font-semibold text-[#4F46E5] hover:text-[#4338CA]"
                     >
-                      Continue learning →
+                      Continue learning
                     </Link>
                   </motion.div>
                 ))}
@@ -291,13 +296,12 @@ export default function Dashboard() {
             )}
           </Card>
 
-          {/* My Applications */}
           <Card>
-            <h2 className="text-2xl font-bold mb-6 text-white tracking-tight">My Applications</h2>
+            <h2 className="mb-6 text-2xl font-bold tracking-tight text-[#111827]">My Applications</h2>
             {(data.applications?.length ?? 0) === 0 ? (
-              <p className="text-[#9CA3AF]">
-                You haven't applied to any career tracks yet.{' '}
-                <Link href="/career-tracks" className="text-[#3B82F6] font-medium hover:underline">
+              <p className="text-[#6B7280]">
+                You have not applied to any career tracks yet.{' '}
+                <Link href="/career-tracks" className="font-semibold text-[#4F46E5] hover:underline">
                   Explore tracks
                 </Link>
               </p>
@@ -306,28 +310,28 @@ export default function Dashboard() {
                 {(data.applications || []).map((app: any) => (
                   <motion.div
                     key={app.id}
-                    className="p-4 bg-[#0B0F19] border border-[#1F2937] rounded-lg hover:border-[#3B82F6]/50 transition-all duration-200"
-                    whileHover={{ scale: 1.01 }}
+                    className="rounded-lg border border-[#E5E7EB] bg-[#F9FAFB] p-4 transition-all duration-200 hover:-translate-y-0.5 hover:bg-white hover:shadow-sm"
+                    whileHover={{ scale: 1.005 }}
                     transition={{ duration: 0.2 }}
                   >
-                    <div className="flex items-start justify-between mb-2">
+                    <div className="mb-2 flex items-start justify-between gap-4">
                       <div>
-                        <h3 className="font-semibold text-white">{app.type === 'track' ? 'Career Track' : 'Project'} Application</h3>
-                        <p className="text-sm text-[#9CA3AF] mt-1">ID: {app.targetId?.substring(0, 8) ?? 'N/A'}...</p>
+                        <h3 className="font-semibold text-[#111827]">{app.type === 'track' ? 'Career Track' : 'Project'} Application</h3>
+                        <p className="mt-1 text-sm text-[#6B7280]">ID: {app.targetId?.substring(0, 8) ?? 'N/A'}...</p>
                       </div>
                       <span
-                        className={`text-xs font-semibold px-3 py-1 rounded-full whitespace-nowrap ${
+                        className={`whitespace-nowrap rounded-md px-2.5 py-1 text-xs font-semibold ${
                           app.status === 'approved'
-                            ? 'bg-[#10B981]/10 text-[#10B981]'
+                            ? 'bg-green-50 text-green-700 border border-green-100'
                             : app.status === 'pending'
-                            ? 'bg-[#F59E0B]/10 text-[#F59E0B]'
-                            : 'bg-[#EF4444]/10 text-[#EF4444]'
+                            ? 'bg-amber-50 text-amber-700 border border-amber-100'
+                            : 'bg-red-50 text-red-700 border border-red-100'
                         }`}
                       >
                         {app.status.charAt(0).toUpperCase() + app.status.slice(1)}
                       </span>
                     </div>
-                    <p className="text-sm text-[#9CA3AF] mt-2">Applied on {new Date(app.createdAt).toLocaleDateString()}</p>
+                    <p className="text-sm text-[#6B7280]">Applied on {new Date(app.createdAt).toLocaleDateString()}</p>
                   </motion.div>
                 ))}
               </div>
@@ -335,54 +339,51 @@ export default function Dashboard() {
           </Card>
         </motion.div>
 
-        {/* Right Sidebar */}
-        <motion.div
+        <motion.aside
           className="space-y-6"
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4, delay: 0.3 }}
+          transition={{ duration: 0.35, delay: 0.15 }}
         >
-          {/* Quick Actions */}
           <Card>
-            <h2 className="text-xl font-bold mb-4 text-white tracking-tight">Quick Actions</h2>
+            <h2 className="mb-4 text-xl font-bold tracking-tight text-[#111827]">Quick Actions</h2>
             <div className="space-y-3">
               <Link
                 href="/career-tracks"
-                className="block w-full px-4 py-3 bg-[#111827] border border-[#3B82F6] text-white rounded-lg hover:shadow-lg hover:shadow-[#3B82F6]/20 hover:-translate-y-1 transition-all duration-200 font-medium text-center"
+                className="block w-full rounded-lg bg-[#4F46E5] px-4 py-3 text-center font-semibold text-white shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#4338CA] hover:shadow-md"
               >
                 Explore Tracks
               </Link>
               <Link
                 href="/gigs"
-                className="block w-full px-4 py-3 bg-[#111827] border border-[#1F2937] text-[#9CA3AF] rounded-lg hover:border-[#3B82F6]/30 transition-all duration-200 font-medium text-center"
+                className="block w-full rounded-lg border border-[#E5E7EB] bg-white px-4 py-3 text-center font-semibold text-[#374151] shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md"
               >
                 Browse Projects
               </Link>
               <Link
                 href={`/portfolio/${user?.id}`}
-                className="block w-full px-4 py-3 bg-[#111827] border border-[#1F2937] text-[#9CA3AF] rounded-lg hover:border-[#3B82F6]/30 transition-all duration-200 font-medium text-center"
+                className="block w-full rounded-lg border border-[#E5E7EB] bg-white px-4 py-3 text-center font-semibold text-[#374151] shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:shadow-md"
               >
                 View Portfolio
               </Link>
             </div>
           </Card>
 
-          {/* Recent Submissions */}
           <Card>
-            <h3 className="font-bold mb-4 text-white tracking-tight">Recent Submissions</h3>
+            <h3 className="mb-4 font-bold tracking-tight text-[#111827]">Recent Submissions</h3>
             {data.submissions.length === 0 ? (
-              <p className="text-sm text-[#9CA3AF]">No submissions yet</p>
+              <p className="text-sm text-[#6B7280]">No submissions yet</p>
             ) : (
               <div className="space-y-3">
                 {data.submissions.slice(0, 3).map((sub) => (
                   <motion.div
                     key={sub.id}
-                    className="text-sm p-3 bg-[#0B0F19] border border-[#1F2937] rounded-lg"
-                    whileHover={{ scale: 1.02 }}
+                    className="rounded-lg border border-[#E5E7EB] bg-[#F9FAFB] p-3 text-sm"
+                    whileHover={{ y: -2 }}
                   >
-                    <p className="font-medium text-white truncate">{sub.task.title}</p>
+                    <p className="truncate font-semibold text-[#111827]">{sub.task.title}</p>
                     <span
-                      className={`badge text-xs mt-2 ${
+                      className={`badge mt-2 ${
                         sub.status === 'approved'
                           ? 'badge-success'
                           : sub.status === 'pending'
@@ -397,8 +398,8 @@ export default function Dashboard() {
               </div>
             )}
           </Card>
-        </motion.div>
+        </motion.aside>
       </div>
-    </div>
+    </main>
   );
 }
