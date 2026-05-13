@@ -1,34 +1,37 @@
 'use client';
 
-import { ReactNode } from 'react';
+import { ReactNode, ButtonHTMLAttributes } from 'react';
 
-interface ButtonProps {
+interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   children: ReactNode;
-  variant?: 'primary' | 'secondary' | 'outline';
+  variant?: 'primary' | 'secondary' | 'ghost' | 'accent' | 'outline';
   size?: 'sm' | 'md' | 'lg';
-  onClick?: () => void;
   href?: string;
   disabled?: boolean;
   className?: string;
-  type?: 'button' | 'submit' | 'reset';
+  ariaLabel?: string;
+  isLoading?: boolean;
 }
 
 export default function Button({
   children,
   variant = 'primary',
   size = 'md',
-  onClick,
   href,
   disabled = false,
   className = '',
-  type = 'button',
+  ariaLabel,
+  isLoading = false,
+  ...props
 }: ButtonProps) {
-  const baseClass = 'inline-flex items-center justify-center rounded-xl font-semibold transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-60';
+  const baseClass = 'btn inline-flex items-center justify-center font-semibold transition-all disabled:cursor-not-allowed disabled:opacity-60';
 
   const variantClass = {
-    primary: 'bg-[#4F46E5] text-white shadow-lg shadow-indigo-500/25 hover:bg-[#4338CA] hover:-translate-y-0.5 hover:scale-[1.02] hover:shadow-xl hover:shadow-indigo-500/30 disabled:hover:scale-100 disabled:hover:translate-y-0 disabled:hover:shadow-lg',
-    secondary: 'bg-white text-[#111827] border border-[#E5E7EB] shadow-sm hover:border-[#D1D5DB] hover:-translate-y-0.5 hover:scale-[1.02] hover:shadow-md disabled:hover:scale-100 disabled:hover:translate-y-0 disabled:hover:shadow-sm',
-    outline: 'bg-white border border-[#4F46E5] text-[#4F46E5] hover:bg-[#EEF2FF] hover:-translate-y-0.5 hover:scale-[1.02] hover:shadow-sm disabled:hover:scale-100 disabled:hover:translate-y-0',
+    primary: 'btn-primary',
+    secondary: 'btn-secondary',
+    ghost: 'btn-ghost',
+    accent: 'btn-accent',
+    outline: 'btn-outline',
   }[variant];
 
   const sizeClass = {
@@ -39,17 +42,39 @@ export default function Button({
 
   const classes = `${baseClass} ${variantClass} ${sizeClass} ${className}`;
 
-  if (href) {
+  const commonProps = {
+    className: classes,
+    disabled: disabled || isLoading,
+    'aria-label': ariaLabel,
+    'aria-busy': isLoading,
+    ...props,
+  };
+
+  if (href && !disabled) {
     return (
-      <a href={href} className={classes}>
-        {children}
+      <a 
+        href={href} 
+        className={classes}
+        aria-label={ariaLabel}
+      >
+        {isLoading && (
+          <span className="absolute inset-0 flex items-center justify-center animate-pulse">
+            <span className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
+          </span>
+        )}
+        <span className={isLoading ? 'opacity-0' : ''}>{children}</span>
       </a>
     );
   }
 
   return (
-    <button type={type} onClick={onClick} disabled={disabled} className={classes}>
-      {children}
+    <button {...commonProps}>
+      {isLoading && (
+        <span className="absolute inset-0 flex items-center justify-center">
+          <span className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
+        </span>
+      )}
+      <span className={isLoading ? 'opacity-0' : ''}>{children}</span>
     </button>
   );
 }

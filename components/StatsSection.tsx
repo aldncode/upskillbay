@@ -30,7 +30,7 @@ export default function StatsSection() {
   };
 
   const itemVariants = {
-    hidden: { opacity: 0, y: 16 },
+    hidden: { opacity: 0, y: 18 },
     visible: {
       opacity: 1,
       y: 0,
@@ -39,24 +39,24 @@ export default function StatsSection() {
   };
 
   return (
-    <AnimatedSection className="bg-[#F9FAFB]">
+    <AnimatedSection className="bg-white">
       <motion.div
-        className="mb-10 text-center"
-        initial={{ opacity: 0, y: 16 }}
+        className="text-center"
+        initial={{ opacity: 0, y: 18 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true }}
         transition={{ duration: 0.4 }}
       >
-        <h2 className="mb-4 text-4xl font-bold tracking-tight text-[#111827] md:text-5xl">
+        <h2 className="mb-6 text-4xl font-bold tracking-tight text-[#0F172A]">
           Practical outcomes learners can measure.
         </h2>
-        <p className="mx-auto max-w-2xl text-lg leading-8 text-[#4B5563]">
+        <p className="mx-auto mb-10 max-w-2xl text-[17px] leading-7 text-[#475569]">
           UpskillBay is built around project completion, earning potential, and career readiness.
         </p>
       </motion.div>
 
       <motion.div
-        className="grid grid-cols-1 gap-6 md:grid-cols-3"
+        className="mt-12 grid grid-cols-1 gap-8 md:grid-cols-3"
         variants={containerVariants}
         initial="hidden"
         whileInView="visible"
@@ -65,13 +65,14 @@ export default function StatsSection() {
         {stats.map((stat) => (
           <motion.div
             key={stat.label}
-            className="rounded-xl border border-[#E5E7EB] bg-white p-8 text-center shadow-sm"
+            className="rounded-2xl border border-[#E2E8F0] bg-white p-9 text-center shadow-md transition-all duration-300 hover:-translate-y-1 hover:border-[#C7D2FE] hover:shadow-lg"
             variants={itemVariants}
           >
-            <div className="mb-3 text-5xl font-bold tracking-tight text-[#4F46E5]">
+            <div className="mx-auto mb-5 h-1.5 w-10 rounded-full bg-gradient-to-r from-[#4F46E5] to-[#7C3AED]" />
+            <div className="mb-4 text-5xl font-black tracking-tight text-[#4F46E5] md:text-6xl">
               {stat.number}
             </div>
-            <p className="font-semibold text-[#4B5563]">{stat.label}</p>
+            <p className="text-sm font-bold uppercase tracking-[0.16em] text-[#64748B]">{stat.label}</p>
           </motion.div>
         ))}
       </motion.div>

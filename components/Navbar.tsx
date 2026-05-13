@@ -43,54 +43,71 @@ export default function Navbar() {
   };
 
   const navLinkClass = (href: string) =>
-    `rounded-full px-3 py-2 text-sm font-semibold transition-all duration-200 ${
+    `group relative rounded-lg px-3.5 py-2 text-sm font-medium transition-all duration-200 ${
       pathname === href
-        ? 'bg-[#EEF2FF] text-[#4F46E5]'
-        : 'text-[#4B5563] hover:bg-slate-50 hover:text-[#4F46E5]'
+        ? 'bg-[#EEF2FF]/80 text-[#4F46E5] shadow-[inset_0_0_0_1px_rgba(79,70,229,0.08)]'
+        : 'text-slate-700 hover:bg-slate-100/70 hover:text-indigo-600'
     }`;
 
   return (
-    <nav className="sticky top-0 z-50 border-b border-white/70 bg-white/85 shadow-sm shadow-slate-200/70 backdrop-blur-xl">
-      <div className="mx-auto max-w-[1200px] px-6">
-        <div className="flex h-16 items-center justify-between">
-          <Link href="/" className="text-2xl font-bold tracking-tight text-[#111827] transition-colors duration-200 hover:text-[#4F46E5]">
-            UpskillBay
+    <nav className="navbar">
+      <div className="container">
+        <div className="flex items-center justify-between py-4">
+          <Link
+            href="/"
+            className="group inline-flex items-center gap-2.5 transition-colors duration-200"
+            aria-label="UpskillBay Home"
+          >
+            <span className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-[#4F46E5] to-[#7C3AED] text-sm font-black text-white shadow-lg shadow-indigo-500/25 transition-transform duration-200 group-hover:-translate-y-0.5">
+              U
+            </span>
+            <span className="text-[1.45rem] font-black leading-none tracking-tight text-[#0F172A] group-hover:text-[#4F46E5]">
+              UpskillBay
+            </span>
           </Link>
 
-          <div className="hidden items-center gap-2 rounded-full border border-[#E5E7EB]/80 bg-white/70 p-1 shadow-sm md:flex">
-            <Link href="/career-tracks" className={navLinkClass('/career-tracks')}>
+          <div className="hidden items-center gap-1 md:flex">
+            <Link href="/career-tracks" className={navLinkClass('/career-tracks')} aria-current={pathname === '/career-tracks' ? 'page' : undefined}>
               Career Tracks
             </Link>
-            <Link href="/gigs" className={navLinkClass('/gigs')}>
+            <Link href="/gigs" className={navLinkClass('/gigs')} aria-current={pathname === '/gigs' ? 'page' : undefined}>
               Projects
             </Link>
             {user && (
-              <Link href="/dashboard" className={navLinkClass('/dashboard')}>
+              <Link href="/dashboard" className={navLinkClass('/dashboard')} aria-current={pathname === '/dashboard' ? 'page' : undefined}>
                 Dashboard
               </Link>
             )}
           </div>
 
-          <div className="hidden items-center gap-3 md:flex">
+          <div className="hidden items-center gap-2.5 md:flex">
             {!loading && user ? (
               <>
-                <div className="text-right">
-                  <p className="text-sm font-semibold text-[#111827]">{user.name}</p>
-                  <p className="text-xs text-[#6B7280]">{user.email}</p>
+                <div className="mr-1 text-right">
+                  <p className="text-sm font-semibold leading-5 text-[#0F172A]">{user.name}</p>
+                  <p className="text-xs leading-4 text-[#64748B]">{user.email}</p>
                 </div>
                 <button
                   onClick={handleLogout}
-                  className="rounded-xl border border-[#E5E7EB] bg-white px-5 py-2 text-sm font-semibold text-[#374151] shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:scale-[1.02] hover:border-[#D1D5DB] hover:shadow-md"
+                  className="rounded-xl border border-[#CBD5E1] bg-white px-5 py-2.5 text-sm font-semibold text-[#0F172A] shadow-sm transition-all duration-200 hover:-translate-y-0.5 hover:border-[#A5B4FC] hover:bg-[#EEF2FF] hover:text-[#4F46E5] hover:shadow-md"
+                  aria-label="Logout"
                 >
                   Logout
                 </button>
               </>
             ) : (
               <>
-                <Link href="/auth/login" className="px-4 py-2 text-sm font-semibold text-[#4B5563] transition-colors duration-200 hover:text-[#4F46E5]">
+                <Link
+                  href="/auth/login"
+                  className="rounded-lg px-3.5 py-2 text-sm font-medium text-slate-700 transition-all duration-200 hover:bg-slate-100/70 hover:text-indigo-600"
+                  aria-label="Login"
+                >
                   Login
                 </Link>
-                <Link href="/auth/signup" className="rounded-xl bg-[#4F46E5] px-5 py-2 text-sm font-semibold text-white shadow-lg shadow-indigo-500/25 transition-all duration-200 hover:-translate-y-0.5 hover:scale-[1.02] hover:bg-[#4338CA] hover:shadow-xl hover:shadow-indigo-500/30">
+                <Link
+                  href="/auth/signup"
+                  className="rounded-xl bg-gradient-to-r from-[#4F46E5] to-[#7C3AED] px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-indigo-500/25 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-indigo-500/30"
+                >
                   Sign Up
                 </Link>
               </>
@@ -98,9 +115,11 @@ export default function Navbar() {
           </div>
 
           <button
-            className="rounded-xl border border-[#E5E7EB] bg-white p-2 text-[#374151] shadow-sm md:hidden"
+            className="rounded-xl border border-[#E2E8F0] bg-white/90 p-2.5 text-slate-700 shadow-sm transition-all duration-200 hover:border-[#A5B4FC] hover:bg-[#EEF2FF] hover:text-indigo-600 md:hidden"
             onClick={() => setIsOpen(!isOpen)}
-            aria-label="Toggle navigation"
+            aria-label="Toggle navigation menu"
+            aria-expanded={isOpen}
+            aria-controls="mobile-nav"
           >
             <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
@@ -109,24 +128,38 @@ export default function Navbar() {
         </div>
 
         {isOpen && (
-          <div className="space-y-2 border-t border-[#E5E7EB]/80 bg-white/90 py-4 shadow-sm md:hidden">
-            <Link href="/career-tracks" className="block rounded-xl px-3 py-2 text-sm font-semibold text-[#4B5563] hover:bg-slate-50 hover:text-[#4F46E5]">
+          <div
+            id="mobile-nav"
+            className="space-y-2 border-t border-[#E2E8F0] bg-white/90 py-4 shadow-lg backdrop-blur-md md:hidden"
+            role="navigation"
+          >
+            <Link
+              href="/career-tracks"
+              className="block rounded-xl px-4 py-2.5 text-sm font-medium text-slate-700 transition-all duration-200 hover:bg-[#EEF2FF] hover:text-indigo-600"
+            >
               Career Tracks
             </Link>
-            <Link href="/gigs" className="block rounded-xl px-3 py-2 text-sm font-semibold text-[#4B5563] hover:bg-slate-50 hover:text-[#4F46E5]">
+            <Link
+              href="/gigs"
+              className="block rounded-xl px-4 py-2.5 text-sm font-medium text-slate-700 transition-all duration-200 hover:bg-[#EEF2FF] hover:text-indigo-600"
+            >
               Projects
             </Link>
             {user && (
               <>
-                <Link href="/dashboard" className="block rounded-xl px-3 py-2 text-sm font-semibold text-[#4B5563] hover:bg-slate-50 hover:text-[#4F46E5]">
+                <Link
+                  href="/dashboard"
+                  className="block rounded-xl px-4 py-2.5 text-sm font-medium text-slate-700 transition-all duration-200 hover:bg-[#EEF2FF] hover:text-indigo-600"
+                >
                   Dashboard
                 </Link>
-                <div className="border-t border-[#E5E7EB] pt-4">
-                  <p className="mb-1 text-sm font-semibold text-[#111827]">{user.name}</p>
-                  <p className="mb-4 text-xs text-[#6B7280]">{user.email}</p>
+                <div className="border-t border-[#E2E8F0] pt-4">
+                  <p className="mb-1 text-sm font-semibold text-[#0F172A]">{user.name}</p>
+                  <p className="mb-4 text-xs text-[#64748B]">{user.email}</p>
                   <button
                     onClick={handleLogout}
-                    className="w-full rounded-xl border border-[#E5E7EB] bg-white px-4 py-2 text-sm font-semibold text-[#374151] shadow-sm transition-all duration-200 hover:shadow-md"
+                    className="w-full rounded-xl border border-[#CBD5E1] bg-white px-4 py-2.5 text-sm font-semibold text-[#0F172A] shadow-sm transition-all duration-200 hover:border-[#A5B4FC] hover:bg-[#EEF2FF] hover:text-[#4F46E5]"
+                    aria-label="Logout"
                   >
                     Logout
                   </button>
@@ -134,11 +167,17 @@ export default function Navbar() {
               </>
             )}
             {!loading && !user && (
-              <div className="flex flex-col gap-3 border-t border-[#E5E7EB] pt-4">
-                <Link href="/auth/login" className="block rounded-xl border border-[#E5E7EB] bg-white px-4 py-2 text-center text-sm font-semibold text-[#374151] shadow-sm">
+              <div className="flex flex-col gap-3 border-t border-[#E2E8F0] pt-4">
+                <Link
+                  href="/auth/login"
+                  className="block rounded-xl border border-[#CBD5E1] bg-white px-4 py-2.5 text-center text-sm font-semibold text-[#0F172A] shadow-sm transition-all duration-200 hover:border-[#A5B4FC] hover:bg-[#EEF2FF] hover:text-[#4F46E5]"
+                >
                   Login
                 </Link>
-                <Link href="/auth/signup" className="block rounded-xl bg-[#4F46E5] px-4 py-2 text-center text-sm font-semibold text-white shadow-lg shadow-indigo-500/25">
+                <Link
+                  href="/auth/signup"
+                  className="block rounded-xl bg-gradient-to-r from-[#4F46E5] to-[#7C3AED] px-4 py-2.5 text-center text-sm font-semibold text-white shadow-lg shadow-indigo-500/25 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-xl hover:shadow-indigo-500/30"
+                >
                   Sign Up
                 </Link>
               </div>
