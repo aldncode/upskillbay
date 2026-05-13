@@ -171,7 +171,7 @@ export default function ApplyModal({
                       {type === 'track' ? 'Career Track' : 'Project'}
                     </div>
                     <h2 className="text-xl font-bold tracking-tight text-[#0F172A]">
-                      Enroll in {targetName}
+                      Apply for {targetName}
                     </h2>
                     {session?.user ? (
                       <p className="mt-2 text-sm text-slate-500">

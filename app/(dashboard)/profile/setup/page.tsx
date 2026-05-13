@@ -3,7 +3,6 @@
 import { useEffect, useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useSession } from 'next-auth/react';
-import ProgressBar from '@/components/ProgressBar';
 import toast from 'react-hot-toast';
 import { motion } from 'framer-motion';
 
@@ -21,6 +20,13 @@ interface ProfileData {
   location: string;
   expectedSalary: number;
 }
+
+const stepDetails = {
+  2: { title: 'Your Career Goals', description: 'Tell us what you\'re working toward', icon: '🎯' },
+  3: { title: 'Skills & Availability', description: 'Show us what you bring to the table', icon: '💡' },
+  4: { title: 'Proof of Work', description: 'Showcase your portfolio and experience', icon: '📁' },
+  5: { title: 'Hiring Details', description: 'Help employers find you', icon: '🎁' },
+};
 
 function SetupContent() {
   const { data: session, status } = useSession();
@@ -104,15 +110,16 @@ function SetupContent() {
       });
 
       if (response.ok) {
-        toast.success('Profile updated successfully');
+        toast.success('Progress saved!');
         if (currentStep < 5) {
           setCurrentStep(currentStep + 1);
           router.push(`/profile/setup?step=${currentStep + 1}`);
         } else {
-          router.push('/profile');
+          toast.success('Profile completed!');
+          router.push('/dashboard');
         }
       } else {
-        toast.error('Failed to save profile');
+        toast.error('Failed to save');
       }
     } catch (error) {
       toast.error('An error occurred');
@@ -123,104 +130,142 @@ function SetupContent() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-[#0B0F19]">
-        <div className="text-gray-400">Loading...</div>
+      <div className="min-h-screen flex items-center justify-center bg-slate-50">
+        <div className="h-8 w-8 animate-spin rounded-full border-2 border-slate-200 border-t-[#4F46E5]" />
       </div>
     );
   }
 
-  const stepTitles = {
-    2: { title: 'Career Setup', description: 'Tell us about your career goals' },
-    3: { title: 'Skills & Tools', description: 'What are your key skills?' },
-    4: { title: 'Proof of Work', description: 'Show your portfolio and experience' },
-    5: { title: 'Hiring Information', description: 'Help recruiters connect with you' },
-  };
-
-  const current = stepTitles[currentStep as keyof typeof stepTitles] || stepTitles[2];
+  const current = stepDetails[currentStep as keyof typeof stepDetails] || stepDetails[2];
   const progress = ((currentStep - 1) / 4) * 100;
 
   return (
-    <div className="min-h-screen bg-[#0B0F19] text-white py-8">
-      <div className="max-w-2xl mx-auto px-4">
-        {/* Progress */}
+    <div className="min-h-screen bg-slate-50 py-8">
+      <div className="mx-auto max-w-2xl px-6">
         <motion.div
           initial={{ opacity: 0, y: -10 }}
           animate={{ opacity: 1, y: 0 }}
           className="mb-8"
         >
-          <div className="flex items-center justify-between mb-4">
+          <div className="mb-6 flex items-center justify-between">
             <div>
-              <h1 className="text-3xl font-bold">{current.title}</h1>
-              <p className="text-gray-400 mt-1">{current.description}</p>
+              <h1 className="text-2xl font-bold tracking-tight text-[#0F172A]">{current.title}</h1>
+              <p className="mt-1 text-slate-500">{current.description}</p>
             </div>
             <div className="text-right">
-              <div className="text-2xl font-bold text-blue-400">Step {currentStep - 1}/4</div>
+              <span className="text-lg font-bold text-[#4F46E5]">Step {currentStep - 1}/4</span>
             </div>
           </div>
-          <ProgressBar percentage={progress} showLabel={false} />
+          
+          <div className="h-2 overflow-hidden rounded-full bg-slate-200">
+            <motion.div 
+              className="h-full rounded-full bg-gradient-to-r from-[#4F46E5] to-[#7C3AED]"
+              initial={{ width: 0 }}
+              animate={{ width: `${progress}%` }}
+              transition={{ duration: 0.5 }}
+            />
+          </div>
+
+          <div className="mt-4 flex justify-between text-xs font-medium text-slate-500">
+            {Object.entries(stepDetails).map(([step, details]) => (
+              <span key={step} className={currentStep >= parseInt(step) ? 'text-[#4F46E5]' : ''}>
+                {details.title.split(' ')[0]}
+              </span>
+            ))}
+          </div>
         </motion.div>
 
-        {/* Form */}
         <motion.div
           key={currentStep}
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
           exit={{ opacity: 0, x: -20 }}
           transition={{ duration: 0.3 }}
-          className="bg-[#111827] border border-[#1F2937] rounded-2xl p-8 mb-8"
+          className="rounded-2xl border border-slate-200 bg-white p-8 shadow-sm"
         >
           {currentStep === 2 && (
             <div className="space-y-6">
               <div>
-                <label className="block text-sm font-medium mb-2">What's your main interest?</label>
-                <select
-                  value={formData.interest || ''}
-                  onChange={(e) => handleChange('interest', e.target.value)}
-                  className="w-full bg-[#0B0F19] border border-[#1F2937] rounded-lg px-4 py-3 text-white focus:border-blue-500 focus:outline-none"
-                >
-                  <option value="">Select an interest</option>
-                  <option value="Digital Marketing">Digital Marketing</option>
-                  <option value="Data">Data</option>
-                  <option value="Development">Development</option>
-                  <option value="Design">Design</option>
-                  <option value="Product">Product</option>
-                  <option value="Other">Other</option>
-                </select>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium mb-2">Experience Level</label>
-                <div className="space-y-2">
-                  {['Beginner', 'Intermediate', 'Advanced'].map((level) => (
-                    <label key={level} className="flex items-center gap-3 cursor-pointer">
+                <label className="mb-3 block text-sm font-semibold text-slate-700">What field interests you most?</label>
+                <div className="grid gap-3 sm:grid-cols-2">
+                  {['Web Development', 'Data Analytics', 'Digital Marketing', 'Product Design', 'Backend Engineering', 'Product Management'].map((opt) => (
+                    <label
+                      key={opt}
+                      className={`flex cursor-pointer items-center gap-3 rounded-xl border p-4 transition-all ${
+                        formData.interest === opt 
+                          ? 'border-[#4F46E5] bg-[#4F46E5]/5' 
+                          : 'border-slate-200 hover:border-slate-300'
+                      }`}
+                    >
                       <input
                         type="radio"
-                        name="experienceLevel"
-                        value={level}
-                        checked={formData.experienceLevel === level}
-                        onChange={(e) => handleChange('experienceLevel', e.target.value)}
-                        className="w-4 h-4 accent-blue-500"
+                        name="interest"
+                        value={opt}
+                        checked={formData.interest === opt}
+                        onChange={(e) => handleChange('interest', e.target.value)}
+                        className="h-4 w-4 accent-[#4F46E5]"
                       />
-                      <span>{level}</span>
+                      <span className="text-sm font-medium text-slate-700">{opt}</span>
                     </label>
                   ))}
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-2">What's your main goal?</label>
-                <div className="space-y-2">
-                  {['Earn Money', 'Get Job', 'Freelance', 'Build Skills'].map((goal) => (
-                    <label key={goal} className="flex items-center gap-3 cursor-pointer">
+                <label className="mb-3 block text-sm font-semibold text-slate-700">What's your experience level?</label>
+                <div className="grid gap-3 sm:grid-cols-3">
+                  {['Beginner - Just starting out', 'Intermediate - Some experience', 'Advanced - Experienced professional'].map((level) => (
+                    <label
+                      key={level}
+                      className={`flex cursor-pointer items-center gap-3 rounded-xl border p-4 transition-all ${
+                        formData.experienceLevel === level 
+                          ? 'border-[#4F46E5] bg-[#4F46E5]/5' 
+                          : 'border-slate-200 hover:border-slate-300'
+                      }`}
+                    >
+                      <input
+                        type="radio"
+                        name="experienceLevel"
+                        value={level}
+                        checked={formData.experienceLevel === level}
+                        onChange={(e) => handleChange('experienceLevel', e.target.value)}
+                        className="h-4 w-4 accent-[#4F46E5]"
+                      />
+                      <span className="text-sm font-medium text-slate-700">{level.split(' - ')[0]}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+
+              <div>
+                <label className="mb-3 block text-sm font-semibold text-slate-700">What do you want to achieve?</label>
+                <div className="grid gap-3 sm:grid-cols-2">
+                  {[
+                    { value: 'Get Hired', desc: 'Land a full-time job' },
+                    { value: 'Freelance', desc: 'Work independently' },
+                    { value: 'Build Skills', desc: 'Learn for growth' },
+                    { value: 'Earn Money', desc: 'Generate income' },
+                  ].map((opt) => (
+                    <label
+                      key={opt.value}
+                      className={`flex cursor-pointer items-center gap-3 rounded-xl border p-4 transition-all ${
+                        formData.goal === opt.value 
+                          ? 'border-[#4F46E5] bg-[#4F46E5]/5' 
+                          : 'border-slate-200 hover:border-slate-300'
+                      }`}
+                    >
                       <input
                         type="radio"
                         name="goal"
-                        value={goal}
-                        checked={formData.goal === goal}
+                        value={opt.value}
+                        checked={formData.goal === opt.value}
                         onChange={(e) => handleChange('goal', e.target.value)}
-                        className="w-4 h-4 accent-blue-500"
+                        className="h-4 w-4 accent-[#4F46E5]"
                       />
-                      <span>{goal}</span>
+                      <div>
+                        <p className="text-sm font-medium text-slate-700">{opt.value}</p>
+                        <p className="text-xs text-slate-500">{opt.desc}</p>
+                      </div>
                     </label>
                   ))}
                 </div>
@@ -231,46 +276,45 @@ function SetupContent() {
           {currentStep === 3 && (
             <div className="space-y-6">
               <div>
-                <label className="block text-sm font-medium mb-2">Skills</label>
-                <div className="flex gap-2 mb-3">
+                <label className="mb-3 block text-sm font-semibold text-slate-700">What skills do you have?</label>
+                <div className="flex gap-2">
                   <input
                     type="text"
                     id="skillInput"
-                    placeholder="Add a skill (e.g., React)"
-                    className="flex-1 bg-[#0B0F19] border border-[#1F2937] rounded-lg px-4 py-2 text-white focus:border-blue-500 focus:outline-none"
-                    onKeyPress={(e) => {
+                    placeholder="e.g., React, Python, SEO..."
+                    className="flex-1 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none transition-all focus:border-[#4F46E5] focus:bg-white"
+                    onKeyDown={(e) => {
                       if (e.key === 'Enter') {
-                        handleAddArrayItem(
-                          'skills',
-                          (e.target as HTMLInputElement).value
-                        );
-                        (e.target as HTMLInputElement).value = '';
+                        const input = e.target as HTMLInputElement;
+                        handleAddArrayItem('skills', input.value);
+                        input.value = '';
                       }
                     }}
                   />
                   <button
+                    type="button"
                     onClick={() => {
                       const input = document.getElementById('skillInput') as HTMLInputElement;
                       handleAddArrayItem('skills', input.value);
                       input.value = '';
                     }}
-                    className="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg font-medium transition-colors"
+                    className="rounded-xl bg-[#4F46E5] px-5 py-3 text-sm font-semibold text-white transition-all hover:bg-[#4338CA]"
                   >
                     Add
                   </button>
                 </div>
-                <div className="flex flex-wrap gap-2">
+                <div className="mt-3 flex flex-wrap gap-2">
                   {(formData.skills || []).map((skill, idx) => (
                     <span
                       key={idx}
-                      className="bg-blue-500/20 text-blue-300 px-3 py-1 rounded-full text-sm flex items-center gap-2"
+                      className="flex items-center gap-2 rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 text-sm font-medium text-slate-700"
                     >
                       {skill}
                       <button
                         onClick={() => handleRemoveArrayItem('skills', idx)}
-                        className="text-blue-400 hover:text-blue-200"
+                        className="text-slate-400 hover:text-red-500"
                       >
-                        ✕
+                        ×
                       </button>
                     </span>
                   ))}
@@ -278,46 +322,45 @@ function SetupContent() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-2">Tools & Technologies</label>
-                <div className="flex gap-2 mb-3">
+                <label className="mb-3 block text-sm font-semibold text-slate-700">Tools you know</label>
+                <div className="flex gap-2">
                   <input
                     type="text"
                     id="toolInput"
-                    placeholder="Add a tool (e.g., Adobe XD)"
-                    className="flex-1 bg-[#0B0F19] border border-[#1F2937] rounded-lg px-4 py-2 text-white focus:border-blue-500 focus:outline-none"
-                    onKeyPress={(e) => {
+                    placeholder="e.g., Figma, Tableau, VS Code..."
+                    className="flex-1 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none transition-all focus:border-[#4F46E5] focus:bg-white"
+                    onKeyDown={(e) => {
                       if (e.key === 'Enter') {
-                        handleAddArrayItem(
-                          'toolsKnown',
-                          (e.target as HTMLInputElement).value
-                        );
-                        (e.target as HTMLInputElement).value = '';
+                        const input = e.target as HTMLInputElement;
+                        handleAddArrayItem('toolsKnown', input.value);
+                        input.value = '';
                       }
                     }}
                   />
                   <button
+                    type="button"
                     onClick={() => {
                       const input = document.getElementById('toolInput') as HTMLInputElement;
                       handleAddArrayItem('toolsKnown', input.value);
                       input.value = '';
                     }}
-                    className="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg font-medium transition-colors"
+                    className="rounded-xl border border-slate-200 bg-white px-5 py-3 text-sm font-semibold text-slate-700 transition-all hover:bg-slate-50"
                   >
                     Add
                   </button>
                 </div>
-                <div className="flex flex-wrap gap-2">
+                <div className="mt-3 flex flex-wrap gap-2">
                   {(formData.toolsKnown || []).map((tool, idx) => (
                     <span
                       key={idx}
-                      className="bg-cyan-500/20 text-cyan-300 px-3 py-1 rounded-full text-sm flex items-center gap-2"
+                      className="flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-sm font-medium text-slate-600"
                     >
                       {tool}
                       <button
                         onClick={() => handleRemoveArrayItem('toolsKnown', idx)}
-                        className="text-cyan-400 hover:text-cyan-200"
+                        className="text-slate-400 hover:text-red-500"
                       >
-                        ✕
+                        ×
                       </button>
                     </span>
                   ))}
@@ -325,16 +368,36 @@ function SetupContent() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-2">
-                  How many hours per week can you work?
-                </label>
-                <input
-                  type="number"
-                  value={formData.availability || ''}
-                  onChange={(e) => handleChange('availability', parseInt(e.target.value))}
-                  placeholder="e.g., 20"
-                  className="w-full bg-[#0B0F19] border border-[#1F2937] rounded-lg px-4 py-3 text-white focus:border-blue-500 focus:outline-none"
-                />
+                <label className="mb-3 block text-sm font-semibold text-slate-700">Weekly availability (hours)</label>
+                <div className="grid gap-3 sm:grid-cols-3">
+                  {[
+                    { value: 10, label: '10 hrs/week', desc: 'Casual pace' },
+                    { value: 20, label: '20 hrs/week', desc: 'Part-time' },
+                    { value: 40, label: '40 hrs/week', desc: 'Full-time' },
+                  ].map((opt) => (
+                    <label
+                      key={opt.value}
+                      className={`flex cursor-pointer items-center gap-3 rounded-xl border p-4 transition-all ${
+                        formData.availability === opt.value 
+                          ? 'border-[#4F46E5] bg-[#4F46E5]/5' 
+                          : 'border-slate-200 hover:border-slate-300'
+                      }`}
+                    >
+                      <input
+                        type="radio"
+                        name="availability"
+                        value={opt.value}
+                        checked={formData.availability === opt.value}
+                        onChange={(e) => handleChange('availability', opt.value)}
+                        className="h-4 w-4 accent-[#4F46E5]"
+                      />
+                      <div>
+                        <p className="text-sm font-medium text-slate-700">{opt.label}</p>
+                        <p className="text-xs text-slate-500">{opt.desc}</p>
+                      </div>
+                    </label>
+                  ))}
+                </div>
               </div>
             </div>
           )}
@@ -342,45 +405,37 @@ function SetupContent() {
           {currentStep === 4 && (
             <div className="space-y-6">
               <div>
-                <label className="block text-sm font-medium mb-2">Portfolio Links</label>
-                <div className="flex gap-2 mb-3">
+                <label className="mb-3 block text-sm font-semibold text-slate-700">Portfolio / Project Links</label>
+                <div className="flex gap-2">
                   <input
                     type="url"
                     id="portfolioInput"
-                    placeholder="Add a portfolio URL"
-                    className="flex-1 bg-[#0B0F19] border border-[#1F2937] rounded-lg px-4 py-2 text-white focus:border-blue-500 focus:outline-none"
-                    onKeyPress={(e) => {
-                      if (e.key === 'Enter') {
-                        handleAddArrayItem(
-                          'portfolioLinks',
-                          (e.target as HTMLInputElement).value
-                        );
-                        (e.target as HTMLInputElement).value = '';
-                      }
-                    }}
+                    placeholder="https://github.com/yourname"
+                    className="flex-1 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none transition-all focus:border-[#4F46E5] focus:bg-white"
                   />
                   <button
+                    type="button"
                     onClick={() => {
                       const input = document.getElementById('portfolioInput') as HTMLInputElement;
                       handleAddArrayItem('portfolioLinks', input.value);
                       input.value = '';
                     }}
-                    className="px-4 py-2 bg-blue-600 hover:bg-blue-700 rounded-lg font-medium transition-colors"
+                    className="rounded-xl bg-[#4F46E5] px-5 py-3 text-sm font-semibold text-white transition-all hover:bg-[#4338CA]"
                   >
                     Add
                   </button>
                 </div>
-                <div className="space-y-2">
+                <div className="mt-3 space-y-2">
                   {(formData.portfolioLinks || []).map((link, idx) => (
-                    <div key={idx} className="flex items-center justify-between bg-[#0B0F19] p-3 rounded-lg">
-                      <a href={link} target="_blank" rel="noopener noreferrer" className="text-blue-400 hover:underline truncate">
+                    <div key={idx} className="flex items-center justify-between rounded-lg border border-slate-100 bg-slate-50 px-4 py-2">
+                      <a href={link} target="_blank" rel="noopener noreferrer" className="truncate text-sm font-medium text-[#4F46E5]">
                         {link}
                       </a>
                       <button
                         onClick={() => handleRemoveArrayItem('portfolioLinks', idx)}
-                        className="text-red-400 hover:text-red-300"
+                        className="text-slate-400 hover:text-red-500"
                       >
-                        ✕
+                        ×
                       </button>
                     </div>
                   ))}
@@ -388,13 +443,13 @@ function SetupContent() {
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-2">Past Work Description</label>
+                <label className="mb-3 block text-sm font-semibold text-slate-700">Past Work Experience</label>
                 <textarea
                   value={formData.pastWorkDescription || ''}
                   onChange={(e) => handleChange('pastWorkDescription', e.target.value)}
-                  placeholder="Tell us about your past projects and accomplishments..."
-                  rows={5}
-                  className="w-full bg-[#0B0F19] border border-[#1F2937] rounded-lg px-4 py-3 text-white focus:border-blue-500 focus:outline-none resize-none"
+                  placeholder="Describe your relevant projects, internships, or work experience..."
+                  rows={4}
+                  className="w-full resize-none rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none transition-all focus:border-[#4F46E5] focus:bg-white"
                 />
               </div>
             </div>
@@ -402,55 +457,55 @@ function SetupContent() {
 
           {currentStep === 5 && (
             <div className="space-y-6">
-              <div>
-                <label className="block text-sm font-medium mb-2">Location</label>
-                <input
-                  type="text"
-                  value={formData.location || ''}
-                  onChange={(e) => handleChange('location', e.target.value)}
-                  placeholder="e.g., San Francisco, USA"
-                  className="w-full bg-[#0B0F19] border border-[#1F2937] rounded-lg px-4 py-3 text-white focus:border-blue-500 focus:outline-none"
-                />
+              <div className="grid gap-4 sm:grid-cols-2">
+                <div>
+                  <label className="mb-3 block text-sm font-semibold text-slate-700">Location</label>
+                  <input
+                    type="text"
+                    value={formData.location || ''}
+                    onChange={(e) => handleChange('location', e.target.value)}
+                    placeholder="e.g., Mumbai, India"
+                    className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none transition-all focus:border-[#4F46E5] focus:bg-white"
+                  />
+                </div>
+                <div>
+                  <label className="mb-3 block text-sm font-semibold text-slate-700">Expected Salary (₹/year)</label>
+                  <input
+                    type="number"
+                    value={formData.expectedSalary || ''}
+                    onChange={(e) => handleChange('expectedSalary', parseInt(e.target.value))}
+                    placeholder="e.g., 600000"
+                    className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none transition-all focus:border-[#4F46E5] focus:bg-white"
+                  />
+                </div>
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-2">Expected Salary (in thousands)</label>
-                <input
-                  type="number"
-                  value={formData.expectedSalary || ''}
-                  onChange={(e) => handleChange('expectedSalary', parseInt(e.target.value))}
-                  placeholder="e.g., 80"
-                  className="w-full bg-[#0B0F19] border border-[#1F2937] rounded-lg px-4 py-3 text-white focus:border-blue-500 focus:outline-none"
-                />
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium mb-2">LinkedIn Profile URL</label>
+                <label className="mb-3 block text-sm font-semibold text-slate-700">LinkedIn Profile URL</label>
                 <input
                   type="url"
                   value={formData.linkedinURL || ''}
                   onChange={(e) => handleChange('linkedinURL', e.target.value)}
                   placeholder="https://linkedin.com/in/yourprofile"
-                  className="w-full bg-[#0B0F19] border border-[#1F2937] rounded-lg px-4 py-3 text-white focus:border-blue-500 focus:outline-none"
+                  className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none transition-all focus:border-[#4F46E5] focus:bg-white"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-2">Resume URL</label>
+                <label className="mb-3 block text-sm font-semibold text-slate-700">Resume URL (optional)</label>
                 <input
                   type="url"
                   value={formData.resumeURL || ''}
                   onChange={(e) => handleChange('resumeURL', e.target.value)}
-                  placeholder="https://example.com/resume.pdf"
-                  className="w-full bg-[#0B0F19] border border-[#1F2937] rounded-lg px-4 py-3 text-white focus:border-blue-500 focus:outline-none"
+                  placeholder="https://drive.google.com/..."
+                  className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm outline-none transition-all focus:border-[#4F46E5] focus:bg-white"
                 />
               </div>
             </div>
           )}
         </motion.div>
 
-        {/* Navigation */}
-        <div className="flex items-center justify-between">
+        <div className="mt-6 flex items-center justify-between">
           <button
             onClick={() => {
               const newStep = currentStep - 1;
@@ -460,24 +515,24 @@ function SetupContent() {
               }
             }}
             disabled={currentStep === 2}
-            className="px-6 py-3 border border-[#1F2937] rounded-lg font-medium disabled:opacity-50 disabled:cursor-not-allowed hover:bg-[#111827] transition-colors"
+            className="rounded-xl border border-slate-200 bg-white px-6 py-3 text-sm font-semibold text-slate-700 disabled:cursor-not-allowed disabled:opacity-50 transition-all hover:bg-slate-50"
           >
             ← Back
           </button>
 
           <div className="flex gap-3">
             <button
-              onClick={() => router.push('/profile')}
-              className="px-6 py-3 border border-[#1F2937] rounded-lg font-medium hover:bg-[#111827] transition-colors"
+              onClick={() => router.push('/dashboard')}
+              className="rounded-xl border border-slate-200 px-6 py-3 text-sm font-semibold text-slate-600 transition-all hover:bg-slate-50"
             >
-              Skip
+              Save & Exit
             </button>
             <button
               onClick={handleSave}
               disabled={saving}
-              className="px-6 py-3 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed rounded-lg font-medium transition-colors"
+              className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-[#4F46E5] to-[#7C3AED] px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-indigo-500/25 transition-all hover:shadow-xl hover:shadow-indigo-500/30 hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-60"
             >
-              {saving ? 'Saving...' : currentStep === 5 ? 'Finish' : 'Next →'}
+              {saving ? 'Saving...' : currentStep === 5 ? 'Complete ✓' : 'Continue →'}
             </button>
           </div>
         </div>
@@ -488,7 +543,11 @@ function SetupContent() {
 
 export default function SetupPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen flex items-center justify-center bg-[#0B0F19]"><div className="text-gray-400">Loading...</div></div>}>
+    <Suspense fallback={
+      <div className="min-h-screen flex items-center justify-center bg-slate-50">
+        <div className="h-8 w-8 animate-spin rounded-full border-2 border-slate-200 border-t-[#4F46E5]" />
+      </div>
+    }>
       <SetupContent />
     </Suspense>
   );
