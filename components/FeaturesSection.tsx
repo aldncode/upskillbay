@@ -71,7 +71,7 @@ export default function FeaturesSection() {
   };
 
   return (
-    <AnimatedSection className="bg-white">
+    <AnimatedSection background="white">
       <motion.div
         className="max-w-2xl"
         initial={{ opacity: 0, y: 18 }}
@@ -91,7 +91,7 @@ export default function FeaturesSection() {
       </motion.div>
 
       <motion.div
-        className="mt-12 grid grid-cols-1 gap-8 md:grid-cols-3"
+        className="mt-10 grid grid-cols-1 gap-7 md:grid-cols-3"
         variants={containerVariants}
         initial="hidden"
         whileInView="visible"
@@ -99,7 +99,7 @@ export default function FeaturesSection() {
       >
         {paths.map((path, index) => (
           <motion.div key={path.title} variants={itemVariants}>
-            <Card className="group flex h-full flex-col gap-7">
+            <Card className="group flex h-full flex-col gap-6">
               <div className="flex items-start justify-between gap-4">
                 <div className="flex items-center gap-3">
                   <span className="flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-[#EEF2FF] to-white text-[#4F46E5] shadow-[inset_0_0_0_1px_rgba(79,70,229,0.12),0_12px_30px_-22px_rgba(79,70,229,0.7)] transition-transform duration-300 group-hover:-translate-y-0.5">

@@ -16,12 +16,14 @@ export default function Home() {
   return (
     <>
       <Navbar />
-      <Hero />
-      <SocialProof />
-      <FeaturesSection />
-      <SolutionSection />
-      <StatsSection />
-      <CtaSection />
+      <main className="relative">
+        <Hero />
+        <SocialProof />
+        <FeaturesSection />
+        <SolutionSection />
+        <StatsSection />
+        <CtaSection />
+      </main>
       <Footer />
     </>
   );

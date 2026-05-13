@@ -39,7 +39,7 @@ export default function StatsSection() {
   };
 
   return (
-    <AnimatedSection className="bg-white">
+    <AnimatedSection background="white">
       <motion.div
         className="text-center"
         initial={{ opacity: 0, y: 18 }}
@@ -56,7 +56,7 @@ export default function StatsSection() {
       </motion.div>
 
       <motion.div
-        className="mt-12 grid grid-cols-1 gap-8 md:grid-cols-3"
+        className="mt-10 grid grid-cols-1 gap-7 md:grid-cols-3"
         variants={containerVariants}
         initial="hidden"
         whileInView="visible"
@@ -65,11 +65,11 @@ export default function StatsSection() {
         {stats.map((stat) => (
           <motion.div
             key={stat.label}
-            className="rounded-2xl border border-[#E2E8F0] bg-white p-9 text-center shadow-md transition-all duration-300 hover:-translate-y-1 hover:border-[#C7D2FE] hover:shadow-lg"
+            className="rounded-2xl border border-[#E2E8F0] bg-white/90 p-8 text-center shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-[#C7D2FE] hover:shadow-md"
             variants={itemVariants}
           >
-            <div className="mx-auto mb-5 h-1.5 w-10 rounded-full bg-gradient-to-r from-[#4F46E5] to-[#7C3AED]" />
-            <div className="mb-4 text-5xl font-black tracking-tight text-[#4F46E5] md:text-6xl">
+            <div className="mx-auto mb-4 h-1.5 w-10 rounded-full bg-gradient-to-r from-[#4F46E5] to-[#7C3AED]" />
+            <div className="mb-3 text-5xl font-black tracking-tight text-[#4F46E5] md:text-6xl">
               {stat.number}
             </div>
             <p className="text-sm font-bold uppercase tracking-[0.16em] text-[#64748B]">{stat.label}</p>

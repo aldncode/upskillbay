@@ -326,7 +326,7 @@ export default function CareerTracksPage() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.35 }}
-              className="relative rounded-2xl border border-[#E2E8F0] bg-white/95 p-12 text-center shadow-md backdrop-blur">
+              className="relative rounded-2xl border border-[#E2E8F0] bg-white/95 p-12 text-center shadow-md backdrop-blur"
             >
               <h2 className="mb-5 text-4xl font-bold tracking-tight text-[#0F172A] md:text-5xl">
                 No matching tracks found

@@ -47,7 +47,7 @@ export default function SolutionSection() {
   };
 
   return (
-    <AnimatedSection className="border-y border-[#E2E8F0] bg-[#EEF2FF]">
+    <AnimatedSection background="light-indigo">
       <motion.div
         className="max-w-2xl"
         initial={{ opacity: 0, y: 16 }}
@@ -67,7 +67,7 @@ export default function SolutionSection() {
       </motion.div>
 
       <motion.div
-        className="mt-12 grid grid-cols-1 gap-8 md:grid-cols-4"
+        className="mt-10 grid grid-cols-1 gap-7 md:grid-cols-4"
         variants={containerVariants}
         initial="hidden"
         whileInView="visible"
@@ -76,10 +76,10 @@ export default function SolutionSection() {
         {steps.map((step) => (
           <motion.div
             key={step.number}
-            className="group rounded-[28px] border border-[#E2E8F0] bg-white p-7 shadow-[0_1px_2px_rgba(15,23,42,0.04),0_20px_55px_-38px_rgba(15,23,42,0.52)] transition-all duration-300 hover:-translate-y-1 hover:border-[#C7D2FE] hover:shadow-2xl"
+            className="group rounded-[28px] border border-[#E2E8F0] bg-white/90 p-7 shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-[#C7D2FE] hover:shadow-md"
             variants={itemVariants}
           >
-            <div className="mb-7 flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-[#EEF2FF] to-white text-sm font-black text-[#4F46E5] shadow-[inset_0_0_0_1px_rgba(79,70,229,0.12),0_12px_30px_-22px_rgba(79,70,229,0.7)] transition-transform duration-300 group-hover:-translate-y-0.5">
+            <div className="mb-6 flex h-11 w-11 items-center justify-center rounded-2xl bg-gradient-to-br from-[#EEF2FF] to-white text-sm font-black text-[#4F46E5] shadow-[inset_0_0_0_1px_rgba(79,70,229,0.12)] transition-transform duration-300 group-hover:-translate-y-0.5">
               {step.number}
             </div>
             <h3 className="mb-3 text-xl font-black tracking-tight text-[#0F172A]">{step.title}</h3>
