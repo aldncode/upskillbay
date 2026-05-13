@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import toast from 'react-hot-toast';
 
@@ -31,6 +31,17 @@ export default function ApplyModal({
     motivation: '',
   });
 
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isOpen]);
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     setFormData((prev) => ({
@@ -43,12 +54,12 @@ export default function ApplyModal({
     e.preventDefault();
 
     if (!agreedToTerms) {
-      toast.error('You must agree to the terms');
+      toast.error('Please agree to the terms to continue');
       return;
     }
 
     if (!formData.name || !formData.email || !formData.phone || !formData.experience || !formData.motivation) {
-      toast.error('Please fill in all fields');
+      toast.error('Please fill in all required fields');
       return;
     }
 
@@ -57,9 +68,7 @@ export default function ApplyModal({
 
       const res = await fetch('/api/apply', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           type,
           targetId,
@@ -75,7 +84,7 @@ export default function ApplyModal({
       const data = await res.json();
 
       if (!res.ok) {
-        throw new Error(data.error || 'Failed to submit application');
+        throw new Error(data.error || 'Application failed');
       }
 
       toast.success('Application submitted successfully!');
@@ -83,8 +92,9 @@ export default function ApplyModal({
       setAgreedToTerms(false);
       onClose();
       onSuccess?.();
-    } catch (error: any) {
-      toast.error(error.message || 'Failed to submit application');
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : 'Application failed';
+      toast.error(message);
     } finally {
       setIsSubmitting(false);
     }
@@ -99,143 +109,164 @@ export default function ApplyModal({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
             onClick={onClose}
-            className="fixed inset-0 z-40 bg-[#6B7280]/30 backdrop-blur-sm"
+            className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-md"
           />
 
-          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div className="fixed inset-0 z-50 flex items-start justify-center px-4 py-6 sm:py-10">
             <motion.div
               key="modal"
-              initial={{ opacity: 0, scale: 0.97, y: 16 }}
+              initial={{ opacity: 0, scale: 0.96, y: 8 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.97, y: 16 }}
-              transition={{ duration: 0.2 }}
-              className="relative max-h-[90vh] w-full max-w-md overflow-y-auto rounded-xl border border-[#E5E7EB] bg-white p-8 shadow-2xl"
+              exit={{ opacity: 0, scale: 0.96, y: 8 }}
+              transition={{ duration: 0.25, ease: 'easeOut' }}
+              className="relative flex max-h-[calc(100vh-3rem)] w-full max-w-lg flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl shadow-slate-900/20 sm:max-h-[calc(100vh-5rem)]"
             >
+              <div className="absolute top-0 left-0 right-0 h-1 flex-shrink-0 bg-gradient-to-r from-[#4F46E5] to-[#7C3AED]" />
+
               <button
                 onClick={onClose}
-                className="absolute right-4 top-4 rounded-lg p-1 text-[#6B7280] transition-colors hover:bg-[#F3F4F6] hover:text-[#111827]"
-                aria-label="Close modal"
+                className="absolute right-3 top-3 z-10 rounded-lg p-2 text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-600 sm:right-4 sm:top-4"
+                aria-label="Close"
               >
                 <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
                 </svg>
               </button>
 
-              <div className="mb-6 pr-8">
-                <p className="mb-2 text-sm font-semibold uppercase tracking-wide text-[#4F46E5]">
-                  {type === 'track' ? 'Career Track' : 'Project'}
-                </p>
-                <h2 className="mb-2 text-2xl font-bold tracking-tight text-[#111827]">
-                  Enroll in {targetName}
-                </h2>
-                <p className="text-sm leading-6 text-[#6B7280]">
-                  Share a few details so we can guide your next step.
-                </p>
+              <div className="flex flex-col overflow-y-auto">
+                <div className="flex-shrink-0 px-6 pt-8 sm:px-8 sm:pt-10">
+                  <div className="mb-4 sm:mb-6">
+                    <div className="mb-3 inline-flex items-center rounded-full bg-[#4F46E5]/10 px-3 py-1 text-xs font-semibold text-[#4F46E5]">
+                      {type === 'track' ? 'Career Track' : 'Project'}
+                    </div>
+                    <h2 className="text-xl font-bold tracking-tight text-[#0F172A]">
+                      Enroll in {targetName}
+                    </h2>
+                    <p className="mt-2 text-sm text-slate-500">
+                      Tell us about yourself so we can guide your learning journey
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex-1 px-6 sm:px-8">
+                  <form onSubmit={handleSubmit} className="space-y-5 pb-4">
+                    <div className="grid gap-5 sm:grid-cols-2">
+                      <div>
+                        <label className="mb-2 block text-sm font-medium text-slate-700">
+                          Full Name <span className="text-red-500">*</span>
+                        </label>
+                        <input
+                          type="text"
+                          name="name"
+                          value={formData.name}
+                          onChange={handleChange}
+                          className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 transition-all focus:border-[#4F46E5] focus:bg-white focus:outline-none focus:ring-4 focus:ring-[#4F46E5]/10"
+                          placeholder="John Doe"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="mb-2 block text-sm font-medium text-slate-700">
+                          Email <span className="text-red-500">*</span>
+                        </label>
+                        <input
+                          type="email"
+                          name="email"
+                          value={formData.email}
+                          onChange={handleChange}
+                          className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 transition-all focus:border-[#4F46E5] focus:bg-white focus:outline-none focus:ring-4 focus:ring-[#4F46E5]/10"
+                          placeholder="john@example.com"
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="mb-2 block text-sm font-medium text-slate-700">
+                        Phone Number <span className="text-red-500">*</span>
+                      </label>
+                      <input
+                        type="tel"
+                        name="phone"
+                        value={formData.phone}
+                        onChange={handleChange}
+                        className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 transition-all focus:border-[#4F46E5] focus:bg-white focus:outline-none focus:ring-4 focus:ring-[#4F46E5]/10"
+                        placeholder="+1 (555) 000-0000"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="mb-2 block text-sm font-medium text-slate-700">
+                        Your Experience <span className="text-red-500">*</span>
+                      </label>
+                      <textarea
+                        name="experience"
+                        value={formData.experience}
+                        onChange={handleChange}
+                        rows={3}
+                        className="w-full resize-none rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 transition-all focus:border-[#4F46E5] focus:bg-white focus:outline-none focus:ring-4 focus:ring-[#4F46E5]/10"
+                        placeholder="Tell us about your background and any relevant experience..."
+                      />
+                    </div>
+
+                    <div>
+                      <label className="mb-2 block text-sm font-medium text-slate-700">
+                        Why do you want to enroll? <span className="text-red-500">*</span>
+                      </label>
+                      <textarea
+                        name="motivation"
+                        value={formData.motivation}
+                        onChange={handleChange}
+                        rows={3}
+                        className="w-full resize-none rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 transition-all focus:border-[#4F46E5] focus:bg-white focus:outline-none focus:ring-4 focus:ring-[#4F46E5]/10"
+                        placeholder="Share your goals and what you hope to achieve..."
+                      />
+                    </div>
+
+                    <div className="flex items-start gap-3 rounded-xl bg-slate-50 p-4">
+                      <input
+                        type="checkbox"
+                        id="terms"
+                        checked={agreedToTerms}
+                        onChange={(e) => setAgreedToTerms(e.target.checked)}
+                        className="mt-0.5 h-4 w-4 cursor-pointer rounded border-slate-300 text-[#4F46E5] focus:ring-[#4F46E5]/20"
+                      />
+                      <label htmlFor="terms" className="cursor-pointer text-xs leading-relaxed text-slate-600">
+                        I agree to the terms and conditions and confirm that the information provided is accurate.
+                      </label>
+                    </div>
+                  </form>
+                </div>
+
+                <div className="flex-shrink-0 border-t border-slate-100 bg-white px-6 pb-6 pt-4 sm:px-8 sm:pb-8 sm:pt-5">
+                  <button
+                    type="submit"
+                    disabled={isSubmitting || !agreedToTerms}
+                    onClick={handleSubmit}
+                    className={`w-full rounded-xl py-3.5 text-sm font-semibold transition-all duration-200 ${
+                      agreedToTerms && !isSubmitting
+                        ? 'bg-gradient-to-r from-[#4F46E5] to-[#7C3AED] text-white shadow-lg shadow-indigo-500/25 hover:shadow-xl hover:shadow-indigo-500/30 hover:-translate-y-0.5'
+                        : 'bg-slate-100 text-slate-400 cursor-not-allowed'
+                    }`}
+                  >
+                    {isSubmitting ? (
+                      <span className="flex items-center justify-center gap-2">
+                        <svg className="h-4 w-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                        </svg>
+                        Submitting...
+                      </span>
+                    ) : (
+                      'Submit Application'
+                    )}
+                  </button>
+                  <p className="mt-3 text-center text-xs text-slate-400">
+                    We'll review your application and get back to you within 24-48 hours
+                  </p>
+                </div>
               </div>
-
-              <form onSubmit={handleSubmit} className="space-y-4">
-                <div>
-                  <label className="mb-2 block text-sm font-semibold text-[#111827]">
-                    Full Name *
-                  </label>
-                  <input
-                    type="text"
-                    name="name"
-                    value={formData.name}
-                    onChange={handleChange}
-                    placeholder="John Doe"
-                    className="input"
-                  />
-                </div>
-
-                <div>
-                  <label className="mb-2 block text-sm font-semibold text-[#111827]">
-                    Email *
-                  </label>
-                  <input
-                    type="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    placeholder="john@example.com"
-                    className="input"
-                  />
-                </div>
-
-                <div>
-                  <label className="mb-2 block text-sm font-semibold text-[#111827]">
-                    Phone Number *
-                  </label>
-                  <input
-                    type="tel"
-                    name="phone"
-                    value={formData.phone}
-                    onChange={handleChange}
-                    placeholder="+1 (555) 000-0000"
-                    className="input"
-                  />
-                </div>
-
-                <div>
-                  <label className="mb-2 block text-sm font-semibold text-[#111827]">
-                    Your Experience *
-                  </label>
-                  <textarea
-                    name="experience"
-                    value={formData.experience}
-                    onChange={handleChange}
-                    placeholder="Tell us about your relevant experience..."
-                    rows={3}
-                    className="input resize-none"
-                  />
-                </div>
-
-                <div>
-                  <label className="mb-2 block text-sm font-semibold text-[#111827]">
-                    Why do you want to enroll? *
-                  </label>
-                  <textarea
-                    name="motivation"
-                    value={formData.motivation}
-                    onChange={handleChange}
-                    placeholder="Share your motivation..."
-                    rows={3}
-                    className="input resize-none"
-                  />
-                </div>
-
-                <div className="flex items-start gap-3 pt-2">
-                  <input
-                    type="checkbox"
-                    id="terms"
-                    checked={agreedToTerms}
-                    onChange={(e) => setAgreedToTerms(e.target.checked)}
-                    className="mt-1 h-4 w-4 cursor-pointer rounded border-[#D1D5DB] text-[#4F46E5] focus:ring-2 focus:ring-[#4F46E5]/20"
-                  />
-                  <label htmlFor="terms" className="cursor-pointer text-sm leading-6 text-[#6B7280]">
-                    I agree to the terms and conditions and confirm that the information provided is accurate.
-                  </label>
-                </div>
-
-                <motion.button
-                  type="submit"
-                  disabled={isSubmitting || !agreedToTerms}
-                  whileHover={!isSubmitting && agreedToTerms ? { y: -2 } : {}}
-                  whileTap={!isSubmitting && agreedToTerms ? { scale: 0.99 } : {}}
-                  className={`mt-6 w-full rounded-lg px-4 py-3 font-semibold transition-all duration-200 ${
-                    agreedToTerms && !isSubmitting
-                      ? 'bg-[#4F46E5] text-white shadow-sm hover:bg-[#4338CA] hover:shadow-md'
-                      : 'border border-[#E5E7EB] bg-[#F3F4F6] text-[#9CA3AF] cursor-not-allowed'
-                  }`}
-                >
-                  {isSubmitting ? 'Submitting...' : 'Submit Application'}
-                </motion.button>
-              </form>
-
-              <p className="mt-4 text-center text-xs text-[#6B7280]">
-                We will review your application and get back to you shortly.
-              </p>
             </motion.div>
           </div>
         </>
