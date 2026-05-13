@@ -1,6 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import toast from 'react-hot-toast';
 
@@ -21,6 +23,8 @@ export default function ApplyModal({
   targetName,
   onSuccess,
 }: ApplyModalProps) {
+  const { data: session, status } = useSession();
+  const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [agreedToTerms, setAgreedToTerms] = useState(false);
   const [formData, setFormData] = useState({
@@ -30,6 +34,25 @@ export default function ApplyModal({
     experience: '',
     motivation: '',
   });
+
+  useEffect(() => {
+    if (isOpen && status === 'unauthenticated') {
+      toast.error('Please sign in to continue');
+      onClose();
+      router.push('/auth/login?callbackUrl=' + encodeURIComponent(window.location.pathname));
+      return;
+    }
+  }, [isOpen, status, onClose, router]);
+
+  useEffect(() => {
+    if (isOpen && session?.user) {
+      setFormData((prev) => ({
+        ...prev,
+        name: prev.name || session.user?.name || '',
+        email: prev.email || session.user?.email || '',
+      }));
+    }
+  }, [isOpen, session]);
 
   useEffect(() => {
     if (isOpen) {
@@ -52,6 +75,12 @@ export default function ApplyModal({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (status === 'unauthenticated') {
+      toast.error('Please sign in to continue');
+      router.push('/auth/login');
+      return;
+    }
 
     if (!agreedToTerms) {
       toast.error('Please agree to the terms to continue');
@@ -88,7 +117,7 @@ export default function ApplyModal({
       }
 
       toast.success('Application submitted successfully!');
-      setFormData({ name: '', email: '', phone: '', experience: '', motivation: '' });
+      setFormData({ name: session?.user?.name || '', email: session?.user?.email || '', phone: '', experience: '', motivation: '' });
       setAgreedToTerms(false);
       onClose();
       onSuccess?.();
@@ -144,128 +173,170 @@ export default function ApplyModal({
                     <h2 className="text-xl font-bold tracking-tight text-[#0F172A]">
                       Enroll in {targetName}
                     </h2>
-                    <p className="mt-2 text-sm text-slate-500">
-                      Tell us about yourself so we can guide your learning journey
-                    </p>
+                    {session?.user ? (
+                      <p className="mt-2 text-sm text-slate-500">
+                        Great to have you back! Tell us a bit more about yourself.
+                      </p>
+                    ) : (
+                      <p className="mt-2 text-sm text-slate-500">
+                        Sign in to save your progress and track your applications.
+                      </p>
+                    )}
                   </div>
                 </div>
 
                 <div className="flex-1 px-6 sm:px-8">
                   <form onSubmit={handleSubmit} className="space-y-5 pb-4">
-                    <div className="grid gap-5 sm:grid-cols-2">
-                      <div>
-                        <label className="mb-2 block text-sm font-medium text-slate-700">
-                          Full Name <span className="text-red-500">*</span>
-                        </label>
-                        <input
-                          type="text"
-                          name="name"
-                          value={formData.name}
-                          onChange={handleChange}
-                          className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 transition-all focus:border-[#4F46E5] focus:bg-white focus:outline-none focus:ring-4 focus:ring-[#4F46E5]/10"
-                          placeholder="John Doe"
-                        />
+                    {status === 'loading' ? (
+                      <div className="flex items-center justify-center py-8">
+                        <div className="h-6 w-6 animate-spin rounded-full border-2 border-slate-200 border-t-[#4F46E5]" />
                       </div>
-
-                      <div>
-                        <label className="mb-2 block text-sm font-medium text-slate-700">
-                          Email <span className="text-red-500">*</span>
-                        </label>
-                        <input
-                          type="email"
-                          name="email"
-                          value={formData.email}
-                          onChange={handleChange}
-                          className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 transition-all focus:border-[#4F46E5] focus:bg-white focus:outline-none focus:ring-4 focus:ring-[#4F46E5]/10"
-                          placeholder="john@example.com"
-                        />
+                    ) : status === 'unauthenticated' ? (
+                      <div className="rounded-xl border border-amber-200 bg-amber-50 p-6 text-center">
+                        <svg className="mx-auto mb-3 h-8 w-8 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                        </svg>
+                        <h3 className="mb-2 font-semibold text-amber-800">Sign in required</h3>
+                        <p className="mb-4 text-sm text-amber-700">
+                          You need to be signed in to enroll in this program.
+                        </p>
+                        <div className="flex flex-col gap-2 sm:flex-row sm:justify-center">
+                          <button
+                            type="button"
+                            onClick={() => router.push('/auth/login?callbackUrl=' + encodeURIComponent(window.location.pathname))}
+                            className="rounded-lg bg-[#4F46E5] px-4 py-2 text-sm font-semibold text-white"
+                          >
+                            Sign In
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => router.push('/auth/signup?callbackUrl=' + encodeURIComponent(window.location.pathname))}
+                            className="rounded-lg border border-amber-300 px-4 py-2 text-sm font-semibold text-amber-800"
+                          >
+                            Create Account
+                          </button>
+                        </div>
                       </div>
-                    </div>
+                    ) : (
+                      <>
+                        <div className="grid gap-5 sm:grid-cols-2">
+                          <div>
+                            <label className="mb-2 block text-sm font-medium text-slate-700">
+                              Full Name <span className="text-red-500">*</span>
+                            </label>
+                            <input
+                              type="text"
+                              name="name"
+                              value={formData.name}
+                              onChange={handleChange}
+                              className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 transition-all focus:border-[#4F46E5] focus:bg-white focus:outline-none focus:ring-4 focus:ring-[#4F46E5]/10"
+                              placeholder="e.g. Priya Sharma"
+                            />
+                          </div>
 
-                    <div>
-                      <label className="mb-2 block text-sm font-medium text-slate-700">
-                        Phone Number <span className="text-red-500">*</span>
-                      </label>
-                      <input
-                        type="tel"
-                        name="phone"
-                        value={formData.phone}
-                        onChange={handleChange}
-                        className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 transition-all focus:border-[#4F46E5] focus:bg-white focus:outline-none focus:ring-4 focus:ring-[#4F46E5]/10"
-                        placeholder="+1 (555) 000-0000"
-                      />
-                    </div>
+                          <div>
+                            <label className="mb-2 block text-sm font-medium text-slate-700">
+                              Email <span className="text-red-500">*</span>
+                            </label>
+                            <input
+                              type="email"
+                              name="email"
+                              value={formData.email}
+                              onChange={handleChange}
+                              className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 transition-all focus:border-[#4F46E5] focus:bg-white focus:outline-none focus:ring-4 focus:ring-[#4F46E5]/10"
+                              placeholder="e.g. priya@example.com"
+                            />
+                          </div>
+                        </div>
 
-                    <div>
-                      <label className="mb-2 block text-sm font-medium text-slate-700">
-                        Your Experience <span className="text-red-500">*</span>
-                      </label>
-                      <textarea
-                        name="experience"
-                        value={formData.experience}
-                        onChange={handleChange}
-                        rows={3}
-                        className="w-full resize-none rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 transition-all focus:border-[#4F46E5] focus:bg-white focus:outline-none focus:ring-4 focus:ring-[#4F46E5]/10"
-                        placeholder="Tell us about your background and any relevant experience..."
-                      />
-                    </div>
+                        <div>
+                          <label className="mb-2 block text-sm font-medium text-slate-700">
+                            Phone Number <span className="text-red-500">*</span>
+                          </label>
+                          <input
+                            type="tel"
+                            name="phone"
+                            value={formData.phone}
+                            onChange={handleChange}
+                            className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 transition-all focus:border-[#4F46E5] focus:bg-white focus:outline-none focus:ring-4 focus:ring-[#4F46E5]/10"
+                            placeholder="e.g. +91 98765 43210"
+                          />
+                        </div>
 
-                    <div>
-                      <label className="mb-2 block text-sm font-medium text-slate-700">
-                        Why do you want to enroll? <span className="text-red-500">*</span>
-                      </label>
-                      <textarea
-                        name="motivation"
-                        value={formData.motivation}
-                        onChange={handleChange}
-                        rows={3}
-                        className="w-full resize-none rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 transition-all focus:border-[#4F46E5] focus:bg-white focus:outline-none focus:ring-4 focus:ring-[#4F46E5]/10"
-                        placeholder="Share your goals and what you hope to achieve..."
-                      />
-                    </div>
+                        <div>
+                          <label className="mb-2 block text-sm font-medium text-slate-700">
+                            Your Background <span className="text-red-500">*</span>
+                          </label>
+                          <textarea
+                            name="experience"
+                            value={formData.experience}
+                            onChange={handleChange}
+                            rows={3}
+                            className="w-full resize-none rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 transition-all focus:border-[#4F46E5] focus:bg-white focus:outline-none focus:ring-4 focus:ring-[#4F46E5]/10"
+                            placeholder="Share your educational background, any relevant work experience, or current role..."
+                          />
+                        </div>
 
-                    <div className="flex items-start gap-3 rounded-xl bg-slate-50 p-4">
-                      <input
-                        type="checkbox"
-                        id="terms"
-                        checked={agreedToTerms}
-                        onChange={(e) => setAgreedToTerms(e.target.checked)}
-                        className="mt-0.5 h-4 w-4 cursor-pointer rounded border-slate-300 text-[#4F46E5] focus:ring-[#4F46E5]/20"
-                      />
-                      <label htmlFor="terms" className="cursor-pointer text-xs leading-relaxed text-slate-600">
-                        I agree to the terms and conditions and confirm that the information provided is accurate.
-                      </label>
-                    </div>
+                        <div>
+                          <label className="mb-2 block text-sm font-medium text-slate-700">
+                            Why this career path? <span className="text-red-500">*</span>
+                          </label>
+                          <textarea
+                            name="motivation"
+                            value={formData.motivation}
+                            onChange={handleChange}
+                            rows={3}
+                            className="w-full resize-none rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 transition-all focus:border-[#4F46E5] focus:bg-white focus:outline-none focus:ring-4 focus:ring-[#4F46E5]/10"
+                            placeholder="What inspired you to choose this career? What are your goals?"
+                          />
+                        </div>
+
+                        <div className="flex items-start gap-3 rounded-xl bg-slate-50 p-4">
+                          <input
+                            type="checkbox"
+                            id="terms"
+                            checked={agreedToTerms}
+                            onChange={(e) => setAgreedToTerms(e.target.checked)}
+                            className="mt-0.5 h-4 w-4 cursor-pointer rounded border-slate-300 text-[#4F46E5] focus:ring-[#4F46E5]/20"
+                          />
+                          <label htmlFor="terms" className="cursor-pointer text-xs leading-relaxed text-slate-600">
+                            I agree to the terms and conditions and confirm that the information provided is accurate.
+                          </label>
+                        </div>
+                      </>
+                    )}
                   </form>
                 </div>
 
-                <div className="flex-shrink-0 border-t border-slate-100 bg-white px-6 pb-6 pt-4 sm:px-8 sm:pb-8 sm:pt-5">
-                  <button
-                    type="submit"
-                    disabled={isSubmitting || !agreedToTerms}
-                    onClick={handleSubmit}
-                    className={`w-full rounded-xl py-3.5 text-sm font-semibold transition-all duration-200 ${
-                      agreedToTerms && !isSubmitting
-                        ? 'bg-gradient-to-r from-[#4F46E5] to-[#7C3AED] text-white shadow-lg shadow-indigo-500/25 hover:shadow-xl hover:shadow-indigo-500/30 hover:-translate-y-0.5'
-                        : 'bg-slate-100 text-slate-400 cursor-not-allowed'
-                    }`}
-                  >
-                    {isSubmitting ? (
-                      <span className="flex items-center justify-center gap-2">
-                        <svg className="h-4 w-4 animate-spin" fill="none" viewBox="0 0 24 24">
-                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-                        </svg>
-                        Submitting...
-                      </span>
-                    ) : (
-                      'Submit Application'
-                    )}
-                  </button>
-                  <p className="mt-3 text-center text-xs text-slate-400">
-                    We'll review your application and get back to you within 24-48 hours
-                  </p>
-                </div>
+                {status === 'authenticated' && (
+                  <div className="flex-shrink-0 border-t border-slate-100 bg-white px-6 pb-6 pt-4 sm:px-8 sm:pb-8 sm:pt-5">
+                    <button
+                      type="submit"
+                      disabled={isSubmitting || !agreedToTerms}
+                      onClick={handleSubmit}
+                      className={`w-full rounded-xl py-3.5 text-sm font-semibold transition-all duration-200 ${
+                        agreedToTerms && !isSubmitting
+                          ? 'bg-gradient-to-r from-[#4F46E5] to-[#7C3AED] text-white shadow-lg shadow-indigo-500/25 hover:shadow-xl hover:shadow-indigo-500/30 hover:-translate-y-0.5'
+                          : 'bg-slate-100 text-slate-400 cursor-not-allowed'
+                      }`}
+                    >
+                      {isSubmitting ? (
+                        <span className="flex items-center justify-center gap-2">
+                          <svg className="h-4 w-4 animate-spin" fill="none" viewBox="0 0 24 24">
+                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                          </svg>
+                          Submitting...
+                        </span>
+                      ) : (
+                        'Submit Application'
+                      )}
+                    </button>
+                    <p className="mt-3 text-center text-xs text-slate-400">
+                      We'll review your application and get back to you within 24-48 hours
+                    </p>
+                  </div>
+                )}
               </div>
             </motion.div>
           </div>
