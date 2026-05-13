@@ -27,38 +27,26 @@ export default function CareerTracksPage() {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [level, setLevel] = useState('');
-  const [focus, setFocus] = useState<'all' | 'high-income' | 'fast-track'>('all');
   const [userEnrollments, setUserEnrollments] = useState<Set<string>>(new Set());
 
   const filteredTracks = useMemo(() => {
-    return careerTracks
-      .filter((track) => {
-        if (!level) return true;
-        return track.level.toLowerCase() === level.toLowerCase();
-      })
-      .filter((track) => {
-        if (focus === 'all') return true;
-        if (focus === 'high-income') {
-          return /\$|high income|high-income|earning|income/i.test(
-            track.earningPotential
-          );
-        }
-        if (focus === 'fast-track') {
-          return /fast|4 weeks|6 weeks|8 weeks|short|rapid/i.test(track.duration);
-        }
-        return true;
-      });
-  }, [careerTracks, focus, level]);
+    return careerTracks.filter((track) => {
+      if (search && !track.title.toLowerCase().includes(search.toLowerCase()) && 
+          !track.description.toLowerCase().includes(search.toLowerCase())) {
+        return false;
+      }
+      if (level && track.level.toLowerCase() !== level.toLowerCase()) {
+        return false;
+      }
+      return true;
+    });
+  }, [careerTracks, search, level]);
 
   useEffect(() => {
     const fetchCareerTracks = async () => {
       try {
         setLoading(true);
-        const params = new URLSearchParams();
-        if (search) params.append('search', search);
-        if (level) params.append('level', level);
-
-        const res = await fetch(`/api/career-tracks?${params}`);
+        const res = await fetch('/api/career-tracks');
         const data = await res.json();
         setCareerTracks(data);
       } catch (error) {
@@ -68,14 +56,12 @@ export default function CareerTracksPage() {
         setLoading(false);
       }
     };
-
     fetchCareerTracks();
-  }, [search, level]);
+  }, []);
 
   useEffect(() => {
     const fetchUserEnrollments = async () => {
       if (!session?.user) return;
-
       try {
         const res = await fetch('/api/enrollments');
         const data = await res.json();
@@ -87,7 +73,6 @@ export default function CareerTracksPage() {
         console.error('Error fetching enrollments:', error);
       }
     };
-
     fetchUserEnrollments();
   }, [session]);
 
@@ -95,391 +80,240 @@ export default function CareerTracksPage() {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
-      transition: {
-        staggerChildren: 0.08,
-      },
+      transition: { staggerChildren: 0.06 },
     },
   };
 
   const itemVariants: Variants = {
-    hidden: { opacity: 0, y: 16 },
+    hidden: { opacity: 0, y: 12 },
     visible: {
       opacity: 1,
       y: 0,
-      transition: { duration: 0.45, ease: 'easeOut' },
+      transition: { duration: 0.35, ease: 'easeOut' },
     },
   };
+
+  const filterTabs = [
+    { value: '', label: 'All Tracks' },
+    { value: 'beginner', label: 'Beginner' },
+    { value: 'intermediate', label: 'Intermediate' },
+    { value: 'advanced', label: 'Advanced' },
+  ];
 
   return (
     <>
       <Navbar />
-      <main className="min-h-screen overflow-hidden bg-[#F8FAFC]">
-        <section className="relative border-b border-indigo-100/50 bg-[radial-gradient(circle_at_18%_12%,_rgba(79,70,229,0.12),_transparent_38%),radial-gradient(circle_at_84%_18%,_rgba(14,165,233,0.07),_transparent_35%),linear-gradient(135deg,_#F8FAFC_0%,_#F0F4FF_55%,_#FFFFFF_100%)]">
-          <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-[#F8FAFC] to-transparent" />
-          <div className="relative mx-auto max-w-7xl px-6 py-20 md:px-8 md:py-28">
-            <motion.div
-              initial={{ opacity: 0, y: 18 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.55, ease: 'easeOut' }}
-              className="max-w-3xl"
-            >
-              <p className="mb-6 inline-flex rounded-full border border-indigo-200 bg-white/80 px-4 py-2 text-sm font-semibold text-[#4F46E5] shadow-sm backdrop-blur">
-                Career Tracks
-              </p>
-              <h1 className="mb-7 text-6xl font-black leading-[0.95] tracking-tight text-[#0F172A] md:text-7xl">
-                Learn job-ready skills from structured career paths.
-              </h1>
-              <p className="max-w-2xl text-[17px] leading-7 text-[#475569]">
-                Choose a track, build practical projects, and move toward paid work with clear outcomes and timelines.
-              </p>
-              <div className="mt-10 flex flex-wrap items-center gap-4">
-                <Link
-                  href="#tracks"
-                  className="inline-flex rounded-xl bg-[#4F46E5] px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-indigo-500/25 transition-all duration-200 hover:-translate-y-0.5 hover:scale-[1.02] hover:bg-[#4338CA] hover:shadow-xl hover:shadow-indigo-500/30"
-                >
-                  Explore Tracks
-                </Link>
-                {!session?.user && (
-                  <Link
-                    href="/auth/signup"
-                    className="inline-flex rounded-xl border border-[#E5E7EB] bg-white/90 px-6 py-3 text-sm font-semibold text-[#0F172A] shadow-sm backdrop-blur transition-all duration-200 hover:-translate-y-0.5 hover:scale-[1.02] hover:border-indigo-200 hover:shadow-md"
-                  >
-                    Start Free
-                  </Link>
-                )}
-              </div>
-            </motion.div>
-          </div>
-        </section>
-
-        <section id="tracks" className="relative mx-auto max-w-7xl px-6 py-20 md:px-8 md:py-28">
-          <div className="pointer-events-none absolute -right-40 top-24 h-80 w-80 rounded-full bg-indigo-200/40 blur-3xl" />
-          <div className="relative mb-10 grid gap-8 rounded-2xl border border-[#E2E8F0] bg-white/95 p-8 shadow-md backdrop-blur md:grid-cols-[1.2fr_0.8fr] md:p-8">
-            <div>
-              <p className="mb-4 text-sm font-semibold uppercase tracking-[0.24em] text-[#4F46E5]">
-                Start here
-              </p>
-              <h2 className="text-4xl font-bold tracking-tight text-[#0F172A] md:text-5xl">
-                Pick the track that fits your next career goal.
-              </h2>
-              <p className="mt-5 max-w-xl text-[17px] leading-7 text-[#475569]">
-                Our career system is built for learners who want real work, fast growth, and income-ready proof. Start with the path that matches your objective.
-              </p>
-            </div>
-            <div className="grid gap-8 sm:grid-cols-2">
-              <Link
-                href="#tracks"
-                onClick={() => {
-                  setLevel('beginner');
-                  setFocus('all');
-                }}
-                className="rounded-[28px] border border-[#C7D2FE] bg-[#EEF2FF] p-6 text-left shadow-[0_1px_2px_rgba(15,23,42,0.04),0_16px_42px_-34px_rgba(79,70,229,0.38)] transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl"
-              >
-                <p className="text-xl font-semibold text-[#0F172A]">Build portfolio fast</p>
-                <p className="mt-3 text-[17px] leading-7 text-[#475569]">
-                  Ideal for beginners who want structured projects + a polished showcase.
-                </p>
-              </Link>
-              <Link
-                href="#tracks"
-                onClick={() => {
-                  setLevel('');
-                  setFocus('high-income');
-                }}
-                className="rounded-[28px] border border-[#E2E8F0] bg-white p-6 text-left shadow-[0_1px_2px_rgba(15,23,42,0.04),0_16px_42px_-34px_rgba(15,23,42,0.48)] transition-all duration-300 hover:-translate-y-1 hover:border-[#C7D2FE] hover:shadow-2xl"
-              >
-                <p className="text-xl font-semibold text-[#0F172A]">Launch income faster</p>
-                <p className="mt-3 text-[17px] leading-7 text-[#475569]">
-                  Great for learners focused on freelance gigs, side income, and early pay.
-                </p>
-              </Link>
-              <Link
-                href="#tracks"
-                onClick={() => {
-                  setLevel('');
-                  setFocus('fast-track');
-                }}
-                className="rounded-[28px] border border-[#E2E8F0] bg-white p-6 text-left shadow-[0_1px_2px_rgba(15,23,42,0.04),0_16px_42px_-34px_rgba(15,23,42,0.48)] transition-all duration-300 hover:-translate-y-1 hover:border-[#C7D2FE] hover:shadow-2xl"
-              >
-                <p className="text-xl font-semibold text-[#0F172A]">Fast-track your skill set</p>
-                <p className="mt-3 text-[17px] leading-7 text-[#475569]">
-                  Designed for motivated learners who want a shorter, outcome-driven path.
-                </p>
-              </Link>
-              <Link
-                href="#tracks"
-                onClick={() => {
-                  setLevel('intermediate');
-                  setFocus('all');
-                }}
-                className="rounded-[28px] border border-[#C7D2FE] bg-[#EEF2FF] p-6 text-left shadow-[0_1px_2px_rgba(15,23,42,0.04),0_16px_42px_-34px_rgba(79,70,229,0.38)] transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl"
-              >
-                <p className="text-xl font-semibold text-[#0F172A]">Improve practical skills</p>
-                <p className="mt-3 text-[17px] leading-7 text-[#475569]">
-                  The right choice for learners ready to move beyond basics into project work.
-                </p>
-              </Link>
-            </div>
-          </div>
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4, delay: 0.05, ease: 'easeOut' }}
-            className="relative mb-10 rounded-2xl border border-[#E2E8F0] bg-white/95 p-8 shadow-md backdrop-blur"
-          >
-            <div className="mb-8 flex flex-col justify-between gap-6 md:flex-row md:items-end">
+      <main className="min-h-screen bg-slate-50">
+        <section className="bg-white border-b border-slate-200">
+          <div className="mx-auto max-w-7xl px-6 py-12 md:px-8 md:py-16">
+            <div className="grid gap-8 lg:grid-cols-[1fr_320px] lg:gap-12">
               <div>
-                <p className="mb-3 text-sm font-semibold text-[#4F46E5]">Find your next move</p>
-                <h2 className="text-4xl font-bold tracking-tight text-[#0F172A] md:text-5xl">Browse career tracks</h2>
-              </div>
-              <div className="flex flex-col items-start gap-2 text-sm text-[#64748B] md:items-end">
-                <p>
-                  {loading
-                    ? 'Loading curated paths...'
-                    : `Showing ${filteredTracks.length} of ${careerTracks.length} tracks`}
+                <div className="mb-4 flex items-center gap-2 text-sm font-medium text-[#4F46E5]">
+                  <span className="flex h-6 w-6 items-center justify-center rounded-md bg-[#4F46E5]/10">
+                    <svg className="h-3.5 w-3.5" fill="currentColor" viewBox="0 0 20 20">
+                      <path d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4.125-1.625a1 1 0 00.788-.38l-.003.003a1 1 0 01-.14.09l-1.975 1.02a1 1 0 00-.37.306l.002.002a1 1 0 01.37.307l1.976-1.02a1 1 0 00.14-.09l1.975-1.022a.999.999 0 01.356.257l4.125 1.625a1 1 0 00.788.38l.003-.003a1 1 0 01-.37.306l-.002.002a1 1 0 00-.37.306l1.976 1.02a1 1 0 00.14.09l1.975 1.022a.999.999 0 01-.356.257l-4.125 1.625a1 1 0 00-.788.38l1.975 1.022a1 1 0 01.37.306l-.002.002a1 1 0 00-.37.306l-1.976 1.02a1 1 0 00-.14.09l-1.975 1.022a.999.999 0 01-.356.257l-4.125-1.625a1 1 0 00-.788-.38l-1.976-1.022a1 1 0 01-.37-.306l.002-.002a1 1 0 00.37-.306l1.976-1.02a1 1 0 00.14-.09l1.975-1.022.003.003zM6.894 9.06a1 1 0 00-1.788 0l-3.5 2a1 1 0 000 1.788l3.5 2a1 1 0 001.788 0l3.5-2a1 1 0 000-1.788l-3.5-2zM10.5 7.5a1 1 0 10-2 0v2.268a3 3 0 00-.879 2.098l1.536 2.98a1 1 0 001.756-.233l1.5-2.866A3 3 0 0012.5 9.768V7.5a1 1 0 00-2 0zM13.106 9.06a1 1 0 00-1.788 0l-3.5 2a1 1 0 000 1.788l3.5 2a1 1 0 001.788 0l3.5-2a1 1 0 000-1.788l-3.5-2z" />
+                    </svg>
+                  </span>
+                  Career Tracks
+                </div>
+                <h1 className="mb-4 text-3xl font-bold tracking-tight text-[#0F172A] md:text-4xl lg:text-[42px]">
+                  Find your path to a new career
+                </h1>
+                <p className="mb-6 max-w-2xl text-base leading-relaxed text-slate-600">
+                  Structured learning paths with real projects, portfolio outcomes, and earning potential. Choose a track and start building your future.
                 </p>
-                <div className="flex flex-wrap items-center gap-2">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setLevel('beginner');
-                      setFocus('all');
-                    }}
-                    className={`rounded-full px-4 py-2 text-sm font-semibold transition-all duration-200 ${
-                      level === 'beginner' && focus === 'all'
-                        ? 'bg-[#4F46E5] text-white shadow-sm'
-                        : 'bg-slate-100 text-[#475569] hover:bg-slate-200'
-                    }`}
-                  >
-                    Beginner
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setFocus('high-income');
-                      setLevel('');
-                    }}
-                    className={`rounded-full px-4 py-2 text-sm font-semibold transition-all duration-200 ${
-                      focus === 'high-income'
-                        ? 'bg-[#4F46E5] text-white shadow-sm'
-                        : 'bg-slate-100 text-[#475569] hover:bg-slate-200'
-                    }`}
-                  >
-                    High income
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setFocus('fast-track');
-                      setLevel('');
-                    }}
-                    className={`rounded-full px-4 py-2 text-sm font-semibold transition-all duration-200 ${
-                      focus === 'fast-track'
-                        ? 'bg-[#4F46E5] text-white shadow-sm'
-                        : 'bg-slate-100 text-[#475569] hover:bg-slate-200'
-                    }`}
-                  >
-                    Fast track
-                  </button>
+                <div className="flex flex-wrap items-center gap-3">
+                  <div className="flex items-center gap-2 rounded-full bg-slate-100 px-4 py-2 text-sm font-medium text-slate-700">
+                    <svg className="h-4 w-4 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a4 4 0 11-8 0 4 4 0 018 0zM17 20a4 4 0 100-8 4 4 0 000 8z" />
+                    </svg>
+                    {careerTracks.length} tracks available
+                  </div>
+                  <div className="flex items-center gap-2 rounded-full bg-slate-100 px-4 py-2 text-sm font-medium text-slate-700">
+                    <svg className="h-4 w-4 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    4-12 week programs
+                  </div>
+                </div>
+              </div>
+
+              <div className="hidden lg:block">
+                <div className="rounded-2xl border border-slate-200 bg-gradient-to-br from-[#4F46E5]/5 to-[#7C3AED]/5 p-6">
+                  <h3 className="mb-4 text-lg font-semibold text-[#0F172A]">Why UpskillBay?</h3>
+                  <ul className="space-y-3">
+                    {[
+                      'Real client projects',
+                      'Portfolio-ready outcomes',
+                      'Flexible learning schedule',
+                      'Career support & guidance',
+                    ].map((item) => (
+                      <li key={item} className="flex items-center gap-3 text-sm text-slate-600">
+                        <span className="flex h-5 w-5 items-center justify-center rounded-full bg-[#4F46E5]">
+                          <svg className="h-3 w-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                          </svg>
+                        </span>
+                        {item}
+                      </li>
+                    ))}
+                  </ul>
+                  {!session?.user && (
+                    <Link
+                      href="/auth/signup"
+                      className="mt-6 block w-full rounded-xl bg-[#4F46E5] py-3 text-center text-sm font-semibold text-white transition-colors hover:bg-[#4338CA]"
+                    >
+                      Get Started Free
+                    </Link>
+                  )}
                 </div>
               </div>
             </div>
-            <div className="grid gap-8 md:grid-cols-2">
-              <div>
-                <label className="mb-3 block text-sm font-semibold text-[#0F172A]">
-                  Search tracks
-                </label>
+          </div>
+        </section>
+
+        <section className="sticky top-16 z-30 border-b border-slate-200 bg-white/95 backdrop-blur-sm">
+          <div className="mx-auto max-w-7xl px-6 py-4 md:px-8">
+            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+              <div className="flex items-center gap-1 overflow-x-auto pb-2 sm:pb-0">
+                {filterTabs.map((tab) => (
+                  <button
+                    key={tab.value}
+                    onClick={() => setLevel(tab.value)}
+                    className={`whitespace-nowrap rounded-lg px-4 py-2 text-sm font-medium transition-all ${
+                      level === tab.value
+                        ? 'bg-[#4F46E5] text-white'
+                        : 'text-slate-600 hover:bg-slate-100'
+                    }`}
+                  >
+                    {tab.label}
+                  </button>
+                ))}
+              </div>
+              <div className="relative">
+                <svg className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
                 <input
                   type="text"
-                  placeholder="Search by skill or title"
+                  placeholder="Search tracks..."
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  className="input rounded-xl border-slate-200 bg-white/90 shadow-sm focus:shadow-md"
+                  className="w-full rounded-lg border border-slate-200 bg-slate-50 py-2 pl-10 pr-4 text-sm outline-none transition-all focus:border-[#4F46E5] focus:bg-white sm:w-64"
                 />
               </div>
-
-              <div>
-                <label className="mb-3 block text-sm font-semibold text-[#0F172A]">
-                  Difficulty level
-                </label>
-                <select
-                  value={level}
-                  onChange={(e) => setLevel(e.target.value)}
-                  className="input rounded-xl border-slate-200 bg-white/90 shadow-sm focus:shadow-md"
-                >
-                  <option value="">All Levels</option>
-                  <option value="beginner">Beginner</option>
-                  <option value="intermediate">Intermediate</option>
-                  <option value="advanced">Advanced</option>
-                </select>
-              </div>
             </div>
-          </motion.div>
+          </div>
+        </section>
+
+        <section className="mx-auto max-w-7xl px-6 py-8 md:px-8">
+          <div className="mb-6 flex items-center justify-between">
+            <p className="text-sm text-slate-600">
+              {loading ? (
+                'Loading...'
+              ) : (
+                <>
+                  Showing <span className="font-semibold text-[#0F172A]">{filteredTracks.length}</span> of{' '}
+                  <span className="font-semibold text-[#0F172A]">{careerTracks.length}</span> tracks
+                </>
+              )}
+            </p>
+          </div>
 
           {loading ? (
-            <div className="relative rounded-2xl border border-[#E2E8F0] bg-white/95 p-12 text-center shadow-md backdrop-blur">
-              <div className="mx-auto mb-4 h-10 w-10 animate-spin rounded-full border-4 border-[#E5E7EB] border-t-[#4F46E5]" />
-              <p className="font-medium text-[#64748B]">Loading career tracks...</p>
+            <div className="flex items-center justify-center py-20">
+              <div className="h-8 w-8 animate-spin rounded-full border-2 border-slate-200 border-t-[#4F46E5]" />
             </div>
           ) : filteredTracks.length === 0 ? (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.35 }}
-              className="relative rounded-2xl border border-[#E2E8F0] bg-white/95 p-12 text-center shadow-md backdrop-blur"
-            >
-              <h2 className="mb-5 text-4xl font-bold tracking-tight text-[#0F172A] md:text-5xl">
-                No matching tracks found
-              </h2>
-              <p className="mx-auto mb-7 max-w-md text-[17px] leading-7 text-[#475569]">
-                Try a broader search or reset the difficulty filter to see every available path.
-              </p>
+            <div className="rounded-2xl border border-slate-200 bg-white p-12 text-center">
+              <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-slate-100">
+                <svg className="h-6 w-6 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <h3 className="mb-2 text-lg font-semibold text-[#0F172A]">No tracks found</h3>
+              <p className="mb-6 text-slate-600">Try adjusting your filters or search terms</p>
               <button
                 onClick={() => {
                   setSearch('');
                   setLevel('');
                 }}
-                className="rounded-xl bg-[#4F46E5] px-6 py-3 font-semibold text-white shadow-lg shadow-indigo-500/25 transition-all duration-200 hover:-translate-y-0.5 hover:scale-[1.02] hover:bg-[#4338CA] hover:shadow-xl hover:shadow-indigo-500/30"
+                className="rounded-lg bg-[#4F46E5] px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#4338CA]"
               >
-                View All Tracks
+                Clear filters
               </button>
-            </motion.div>
+            </div>
           ) : (
             <motion.div
-              className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4"
+              className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3"
               variants={containerVariants}
               initial="hidden"
               animate="visible"
             >
-              {filteredTracks.map((track) => (
+              {filteredTracks.map((track, index) => (
                 <motion.div key={track.id} variants={itemVariants}>
                   <CareerTrackCard
                     track={track}
                     enrolled={userEnrollments.has(track.id)}
+                    featured={index === 0}
                   />
                 </motion.div>
               ))}
             </motion.div>
           )}
+        </section>
 
-          {!loading && careerTracks.length > 0 && (
-            <>
-              <section className="mt-20 rounded-2xl border border-[#E2E8F0] bg-white/95 p-8 shadow-md backdrop-blur md:p-10">
-                <div className="grid gap-12 lg:grid-cols-2">
-                  <div>
-                    <p className="mb-4 text-sm font-semibold uppercase tracking-[0.24em] text-[#4F46E5]">
-                      What you get
-                    </p>
-                    <h2 className="text-4xl font-bold tracking-tight text-[#0F172A] md:text-5xl">
-                      Projects, proof, and income-ready support.
-                    </h2>
-                    <p className="mt-5 max-w-xl text-[17px] leading-7 text-[#475569]">
-                      Each career track is designed to deliver measurable progress: a portfolio, real assignments, and the confidence to turn your work into income.
-                    </p>
-                  </div>
-
-                  <div className="grid gap-8 sm:grid-cols-2">
-                    {[
-                      'Real project assignments that mirror client briefs',
-                      'Portfolio pieces you can share with employers and clients',
-                      'Income-focused guidance for gigs, internships, and freelance offers',
-                      'Clear milestones that keep every week goal-directed',
-                    ].map((item) => (
-                      <div key={item} className="rounded-[28px] border border-[#C7D2FE] bg-[#EEF2FF] p-7 text-[17px] leading-7 text-[#334155] shadow-[0_1px_2px_rgba(15,23,42,0.04),0_16px_42px_-34px_rgba(79,70,229,0.38)] transition-all duration-300 hover:-translate-y-1 hover:shadow-2xl">
-                        {item}
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              </section>
-
-              <section className="mt-16 grid gap-8 lg:grid-cols-3">
+        {!loading && careerTracks.length > 0 && (
+          <section className="border-t border-slate-200 bg-white">
+            <div className="mx-auto max-w-7xl px-6 py-16 md:px-8">
+              <div className="mb-10 text-center">
+                <h2 className="mb-3 text-2xl font-bold tracking-tight text-[#0F172A] md:text-3xl">
+                  How it works
+                </h2>
+                <p className="text-slate-600">Your journey from enrollment to earning</p>
+              </div>
+              <div className="grid grid-cols-1 gap-8 md:grid-cols-4">
                 {[
-                  {
-                    title: 'Portfolio-ready outcomes',
-                    description: 'Build real deliverables that show employers and clients you can complete work end to end.',
-                  },
-                  {
-                    title: 'Freelance and gig momentum',
-                    description: 'Use your completed projects to pitch for paid work and launch a side-income track.',
-                  },
-                  {
-                    title: 'Internship and entry-level readiness',
-                    description: 'Focus on practical skills that map directly to interviews, applications, and hiring criteria.',
-                  },
+                  { step: '01', title: 'Choose a Track', desc: 'Pick a path that matches your goals and schedule' },
+                  { step: '02', title: 'Build Projects', desc: 'Complete real assignments that build your portfolio' },
+                  { step: '03', title: 'Get Certified', desc: 'Earn credentials that prove your skills' },
+                  { step: '04', title: 'Start Earning', desc: 'Apply for gigs with your portfolio and proof' },
                 ].map((item) => (
-                  <div key={item.title} className="rounded-[28px] border border-[#E2E8F0] bg-white p-7 shadow-[0_1px_2px_rgba(15,23,42,0.04),0_16px_42px_-34px_rgba(15,23,42,0.48)] transition-all duration-300 hover:-translate-y-1 hover:border-[#C7D2FE] hover:shadow-2xl">
-                    <h3 className="mb-4 text-xl font-black tracking-tight text-[#0F172A]">{item.title}</h3>
-                    <p className="text-[17px] leading-7 text-[#334155]">{item.description}</p>
+                  <div key={item.step} className="text-center">
+                    <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-[#4F46E5]/10 text-lg font-bold text-[#4F46E5]">
+                      {item.step}
+                    </div>
+                    <h3 className="mb-2 font-semibold text-[#0F172A]">{item.title}</h3>
+                    <p className="text-sm text-slate-600">{item.desc}</p>
                   </div>
                 ))}
-              </section>
+              </div>
+            </div>
+          </section>
+        )}
 
-              <section className="mt-16 rounded-[28px] border border-[#C7D2FE] bg-[#EEF2FF] p-7 shadow-[0_1px_2px_rgba(15,23,42,0.04),0_20px_55px_-38px_rgba(79,70,229,0.45)] md:p-12">
-                <div className="mb-12 text-center">
-                  <p className="mb-4 text-sm font-semibold uppercase tracking-[0.28em] text-[#4F46E5]">
-                    FAQ
-                  </p>
-                  <h2 className="text-4xl font-bold tracking-tight text-[#0F172A] md:text-5xl">
-                    Common questions from new learners.
-                  </h2>
-                </div>
-                <div className="grid gap-8 md:grid-cols-3">
-                  {[
-                    {
-                      question: 'Do I need prior experience?',
-                      answer: 'No. Each track is built for learners starting with the basics, then adding real practice and income-ready work.',
-                    },
-                    {
-                      question: 'Can I earn while learning?',
-                      answer: 'Yes. The projects and portfolio guidance are designed to help you win freelance gigs, internships, and early paid opportunities.',
-                    },
-                    {
-                      question: 'How long before I can apply?',
-                      answer: 'Most students can share portfolio-ready outcomes in weeks, and every track includes milestones so your progress stays measurable.',
-                    },
-                  ].map((item) => (
-                    <div key={item.question} className="rounded-[28px] border border-[#E2E8F0] bg-white p-7 shadow-[0_1px_2px_rgba(15,23,42,0.04),0_16px_42px_-34px_rgba(15,23,42,0.48)] transition-all duration-300 hover:-translate-y-1 hover:border-[#C7D2FE] hover:shadow-2xl">
-                      <p className="mb-4 text-xl font-black tracking-tight text-[#0F172A]">{item.question}</p>
-                      <p className="text-[17px] leading-7 text-[#334155]">{item.answer}</p>
-                    </div>
-                  ))}
-                </div>
-              </section>
-            </>
-          )}
-
-          {!loading && careerTracks.length > 0 && (
-            <motion.div
-              initial={{ opacity: 0, y: 24 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.15, ease: 'easeOut' }}
-              className="relative mt-24 overflow-hidden rounded-3xl bg-[linear-gradient(135deg,_#312E81_0%,_#4F46E5_48%,_#06B6D4_100%)] p-10 text-center shadow-2xl shadow-indigo-500/25 md:p-16"
-            >
-              <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,_rgba(255,255,255,0.28),_transparent_30%)]" />
-              <div className="relative">
-              <h2 className="mb-5 text-4xl font-bold tracking-tight text-white md:text-5xl">
+        {!loading && careerTracks.length > 0 && (
+          <section className="bg-[#0F172A] py-16">
+            <div className="mx-auto max-w-7xl px-6 text-center md:px-8">
+              <h2 className="mb-4 text-2xl font-bold tracking-tight text-white md:text-3xl">
                 Ready to start learning?
               </h2>
-              <p className="mx-auto mb-8 max-w-2xl text-[17px] leading-7 text-white">
-                Join a structured path, complete real assignments, and build proof of work you can show clients or employers.
+              <p className="mb-8 text-slate-300">
+                Join learners who are building real skills and real careers
               </p>
               {!session?.user ? (
                 <Link
                   href="/auth/signup"
-                  className="inline-flex rounded-xl bg-white px-8 py-3 font-semibold text-[#312E81] shadow-lg shadow-slate-950/20 transition-all duration-200 hover:-translate-y-0.5 hover:scale-[1.02] hover:shadow-xl"
+                  className="inline-flex rounded-xl bg-[#4F46E5] px-8 py-3 text-base font-semibold text-white transition-colors hover:bg-[#4338CA]"
                 >
                   Get Started Free
                 </Link>
               ) : (
-                <p className="font-semibold text-white">
-                  You are signed in. Pick a track above to continue.
-                </p>
+                <p className="font-medium text-white">You're signed in. Browse tracks above to continue.</p>
               )}
-              </div>
-            </motion.div>
-          )}
-        </section>
+            </div>
+          </section>
+        )}
       </main>
       <Footer />
     </>
