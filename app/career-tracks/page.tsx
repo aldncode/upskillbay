@@ -21,6 +21,20 @@ interface CareerTrack {
   enrollments?: { userId: string }[];
 }
 
+const benefits = [
+  { icon: 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z', title: 'Real Projects', desc: 'Build portfolio pieces that prove your skills' },
+  { icon: 'M13 10V3L4 14h7v7l9-11h-7z', title: 'Career Ready', desc: 'Skills that employers and clients actually need' },
+  { icon: 'M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z', title: 'Flexible Pace', desc: 'Learn at your speed, on your schedule' },
+  { icon: 'M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a4 4 0 11-8 0 4 4 0 018 0zM17 20a4 4 0 100-8 4 4 0 000 8z', title: 'Expert Support', desc: 'Guidance from industry professionals' },
+];
+
+const processSteps = [
+  { num: '01', title: 'Choose Your Path', desc: 'Select a career track that matches your goals and current skill level', icon: 'M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z' },
+  { num: '02', title: 'Build Real Projects', desc: 'Complete hands-on assignments that create tangible portfolio pieces', icon: 'M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4' },
+  { num: '03', title: 'Get Certified', desc: 'Earn credentials that validate your new skills and capabilities', icon: 'M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z' },
+  { num: '04', title: 'Launch Your Career', desc: 'Apply with your portfolio and proof to start earning', icon: 'M13 7h8m0 0v8m0-8l-8 8-4-4-6 6' },
+];
+
 export default function CareerTracksPage() {
   const { data: session } = useSession();
   const [careerTracks, setCareerTracks] = useState<CareerTrack[]>([]);
@@ -94,7 +108,7 @@ export default function CareerTracksPage() {
   };
 
   const filterTabs = [
-    { value: '', label: 'All Tracks' },
+    { value: '', label: 'All' },
     { value: 'beginner', label: 'Beginner' },
     { value: 'intermediate', label: 'Intermediate' },
     { value: 'advanced', label: 'Advanced' },
@@ -104,78 +118,90 @@ export default function CareerTracksPage() {
     <>
       <Navbar />
       <main className="min-h-screen bg-slate-50">
-        <section className="bg-white border-b border-slate-200">
-          <div className="mx-auto max-w-7xl px-6 py-12 md:px-8 md:py-16">
-            <div className="grid gap-8 lg:grid-cols-[1fr_320px] lg:gap-12">
+        <section className="relative overflow-hidden bg-white">
+          <div className="absolute inset-0 bg-gradient-to-b from-slate-50/50 to-white" />
+          <div className="absolute inset-0 overflow-hidden">
+            <div className="absolute -top-40 -right-40 h-80 w-80 rounded-full bg-[#4F46E5]/5 blur-3xl" />
+            <div className="absolute -bottom-40 -left-40 h-80 w-80 rounded-full bg-[#7C3AED]/5 blur-3xl" />
+          </div>
+          
+          <div className="relative mx-auto max-w-7xl px-6 py-16 md:px-8 md:py-20">
+            <div className="grid gap-12 lg:grid-cols-[1fr_380px] lg:gap-16">
               <div>
-                <div className="mb-4 flex items-center gap-2 text-sm font-medium text-[#4F46E5]">
-                  <span className="flex h-6 w-6 items-center justify-center rounded-md bg-[#4F46E5]/10">
-                    <svg className="h-3.5 w-3.5" fill="currentColor" viewBox="0 0 20 20">
-                      <path d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4.125-1.625a1 1 0 00.788-.38l-.003.003a1 1 0 01-.14.09l-1.975 1.02a1 1 0 00-.37.306l.002.002a1 1 0 01.37.307l1.976-1.02a1 1 0 00.14-.09l1.975-1.022a.999.999 0 01.356.257l4.125 1.625a1 1 0 00.788.38l.003-.003a1 1 0 01-.37.306l-.002.002a1 1 0 00-.37.306l1.976 1.02a1 1 0 00.14.09l1.975 1.022a.999.999 0 01-.356.257l-4.125 1.625a1 1 0 00-.788.38l1.975 1.022a1 1 0 01.37.306l-.002.002a1 1 0 00-.37.306l-1.976 1.02a1 1 0 00-.14.09l-1.975 1.022a.999.999 0 01-.356.257l-4.125-1.625a1 1 0 00-.788-.38l-1.976-1.022a1 1 0 01-.37-.306l.002-.002a1 1 0 00.37-.306l1.976-1.02a1 1 0 00.14-.09l1.975-1.022.003.003zM6.894 9.06a1 1 0 00-1.788 0l-3.5 2a1 1 0 000 1.788l3.5 2a1 1 0 001.788 0l3.5-2a1 1 0 000-1.788l-3.5-2zM10.5 7.5a1 1 0 10-2 0v2.268a3 3 0 00-.879 2.098l1.536 2.98a1 1 0 001.756-.233l1.5-2.866A3 3 0 0012.5 9.768V7.5a1 1 0 00-2 0zM13.106 9.06a1 1 0 00-1.788 0l-3.5 2a1 1 0 000 1.788l3.5 2a1 1 0 001.788 0l3.5-2a1 1 0 000-1.788l-3.5-2z" />
-                    </svg>
+                <div className="mb-6 flex items-center gap-3">
+                  <span className="inline-flex items-center gap-2 rounded-full bg-[#4F46E5]/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-[#4F46E5]">
+                    <span className="h-2 w-2 rounded-full bg-[#4F46E5]" />
+                    Career Tracks
                   </span>
-                  Career Tracks
                 </div>
-                <h1 className="mb-4 text-3xl font-bold tracking-tight text-[#0F172A] md:text-4xl lg:text-[42px]">
-                  Find your path to a new career
+                <h1 className="mb-6 text-4xl font-bold tracking-tight text-[#0F172A] md:text-5xl lg:text-[56px] leading-tight">
+                  Transform your career with <span className="text-[#4F46E5]">real skills</span>
                 </h1>
-                <p className="mb-6 max-w-2xl text-base leading-relaxed text-slate-600">
-                  Structured learning paths with real projects, portfolio outcomes, and earning potential. Choose a track and start building your future.
+                <p className="mb-8 max-w-2xl text-lg leading-relaxed text-slate-600">
+                  Structured learning paths designed by industry experts. Build real projects, 
+                  earn recognized credentials, and launch your career with confidence.
                 </p>
-                <div className="flex flex-wrap items-center gap-3">
+                <div className="flex flex-wrap items-center gap-4">
                   <div className="flex items-center gap-2 rounded-full bg-slate-100 px-4 py-2 text-sm font-medium text-slate-700">
-                    <svg className="h-4 w-4 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a4 4 0 11-8 0 4 4 0 018 0zM17 20a4 4 0 100-8 4 4 0 000 8z" />
+                    <svg className="h-4 w-4 text-[#4F46E5]" fill="currentColor" viewBox="0 0 20 20">
+                      <path d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4.125-1.625a1 1 0 00.788-.38l-.003.003a1 1 0 01-.14.09l-1.975 1.02a1 1 0 00-.37.306l.002.002a1 1 0 01.37.306l1.976-1.02a1 1 0 00.14-.09l1.975-1.022a.999.999 0 01.356.257l4.125 1.625a1 1 0 00.788.38l.003-.003a1 1 0 01-.37.306l-.002.002a1 1 0 00-.37.306l1.976 1.02a1 1 0 00.14.09l1.975 1.022a.999.999 0 01-.356.257l-4.125-1.625a1 1 0 00-.788-.38l-1.976-1.022a1 1 0 01-.37-.306l.002-.002a1 1 0 00.37-.306l1.976-1.02a1 1 0 00.14-.09l1.975-1.022.003.003z" />
                     </svg>
-                    {careerTracks.length} tracks available
+                    {careerTracks.length} career paths
                   </div>
                   <div className="flex items-center gap-2 rounded-full bg-slate-100 px-4 py-2 text-sm font-medium text-slate-700">
-                    <svg className="h-4 w-4 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg className="h-4 w-4 text-[#4F46E5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                     </svg>
-                    4-12 week programs
+                    4-16 week programs
+                  </div>
+                  <div className="flex items-center gap-2 rounded-full bg-slate-100 px-4 py-2 text-sm font-medium text-slate-700">
+                    <svg className="h-4 w-4 text-[#4F46E5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                    </svg>
+                    Job-ready outcomes
                   </div>
                 </div>
               </div>
 
               <div className="hidden lg:block">
-                <div className="rounded-2xl border border-slate-200 bg-gradient-to-br from-[#4F46E5]/5 to-[#7C3AED]/5 p-6">
-                  <h3 className="mb-4 text-lg font-semibold text-[#0F172A]">Why UpskillBay?</h3>
-                  <ul className="space-y-3">
-                    {[
-                      'Real client projects',
-                      'Portfolio-ready outcomes',
-                      'Flexible learning schedule',
-                      'Career support & guidance',
-                    ].map((item) => (
-                      <li key={item} className="flex items-center gap-3 text-sm text-slate-600">
-                        <span className="flex h-5 w-5 items-center justify-center rounded-full bg-[#4F46E5]">
-                          <svg className="h-3 w-3 text-white" fill="currentColor" viewBox="0 0 20 20">
-                            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                          </svg>
-                        </span>
-                        {item}
-                      </li>
-                    ))}
-                  </ul>
-                  {!session?.user && (
-                    <Link
-                      href="/auth/signup"
-                      className="mt-6 block w-full rounded-xl bg-[#4F46E5] py-3 text-center text-sm font-semibold text-white transition-colors hover:bg-[#4338CA]"
-                    >
-                      Get Started Free
-                    </Link>
-                  )}
+                <div className="relative rounded-2xl border border-slate-200/60 bg-white/80 p-6 shadow-xl shadow-slate-200/50 backdrop-blur-sm">
+                  <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-[#4F46E5]/5 via-transparent to-[#7C3AED]/5" />
+                  <div className="relative">
+                    <h3 className="mb-5 text-lg font-bold text-[#0F172A]">Why UpskillBay?</h3>
+                    <div className="space-y-4">
+                      {benefits.map((item) => (
+                        <div key={item.title} className="flex items-start gap-3">
+                          <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-[#4F46E5]/10">
+                            <svg className="h-4 w-4 text-[#4F46E5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={item.icon} />
+                            </svg>
+                          </div>
+                          <div>
+                            <p className="text-sm font-semibold text-[#0F172A]">{item.title}</p>
+                            <p className="text-xs text-slate-500">{item.desc}</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                    {!session?.user && (
+                      <Link
+                        href="/auth/signup"
+                        className="mt-6 block w-full rounded-xl bg-gradient-to-r from-[#4F46E5] to-[#7C3AED] py-3 text-center text-sm font-semibold text-white shadow-lg shadow-indigo-500/25 transition-all hover:shadow-xl hover:shadow-indigo-500/30 hover:-translate-y-0.5"
+                      >
+                        Start Learning Free
+                      </Link>
+                    )}
+                  </div>
                 </div>
               </div>
             </div>
           </div>
         </section>
 
-        <section className="sticky top-16 z-30 border-b border-slate-200 bg-white/95 backdrop-blur-sm">
+        <section className="sticky top-16 z-30 border-b border-slate-200 bg-white/95 backdrop-blur-md">
           <div className="mx-auto max-w-7xl px-6 py-4 md:px-8">
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-              <div className="flex items-center gap-1 overflow-x-auto pb-2 sm:pb-0">
+              <div className="flex items-center gap-2">
                 {filterTabs.map((tab) => (
                   <button
                     key={tab.value}
@@ -196,28 +222,24 @@ export default function CareerTracksPage() {
                 </svg>
                 <input
                   type="text"
-                  placeholder="Search tracks..."
+                  placeholder="Search careers..."
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  className="w-full rounded-lg border border-slate-200 bg-slate-50 py-2 pl-10 pr-4 text-sm outline-none transition-all focus:border-[#4F46E5] focus:bg-white sm:w-64"
+                  className="w-full rounded-xl border border-slate-200 bg-slate-50 py-2.5 pl-10 pr-4 text-sm outline-none transition-all focus:border-[#4F46E5] focus:bg-white focus:ring-4 focus:ring-[#4F46E5]/10 sm:w-72"
                 />
               </div>
             </div>
           </div>
         </section>
 
-        <section className="mx-auto max-w-7xl px-6 py-8 md:px-8">
-          <div className="mb-6 flex items-center justify-between">
-            <p className="text-sm text-slate-600">
-              {loading ? (
-                'Loading...'
-              ) : (
-                <>
-                  Showing <span className="font-semibold text-[#0F172A]">{filteredTracks.length}</span> of{' '}
-                  <span className="font-semibold text-[#0F172A]">{careerTracks.length}</span> tracks
-                </>
-              )}
-            </p>
+        <section className="mx-auto max-w-7xl px-6 py-10 md:px-8">
+          <div className="mb-8 flex items-center justify-between">
+            <div>
+              <h2 className="text-xl font-bold text-[#0F172A]">Browse Career Tracks</h2>
+              <p className="mt-1 text-sm text-slate-500">
+                {loading ? 'Loading...' : `Showing ${filteredTracks.length} of ${careerTracks.length} tracks`}
+              </p>
+            </div>
           </div>
 
           {loading ? (
@@ -234,11 +256,8 @@ export default function CareerTracksPage() {
               <h3 className="mb-2 text-lg font-semibold text-[#0F172A]">No tracks found</h3>
               <p className="mb-6 text-slate-600">Try adjusting your filters or search terms</p>
               <button
-                onClick={() => {
-                  setSearch('');
-                  setLevel('');
-                }}
-                className="rounded-lg bg-[#4F46E5] px-5 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-[#4338CA]"
+                onClick={() => { setSearch(''); setLevel(''); }}
+                className="rounded-xl bg-[#4F46E5] px-6 py-2.5 text-sm font-semibold text-white transition-all hover:bg-[#4338CA]"
               >
                 Clear filters
               </button>
@@ -265,52 +284,75 @@ export default function CareerTracksPage() {
 
         {!loading && careerTracks.length > 0 && (
           <section className="border-t border-slate-200 bg-white">
-            <div className="mx-auto max-w-7xl px-6 py-16 md:px-8">
-              <div className="mb-10 text-center">
-                <h2 className="mb-3 text-2xl font-bold tracking-tight text-[#0F172A] md:text-3xl">
-                  How it works
+            <div className="mx-auto max-w-7xl px-6 py-20 md:px-8">
+              <div className="mb-12 text-center">
+                <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-[#4F46E5]/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-[#4F46E5]">
+                  <span className="h-2 w-2 rounded-full bg-[#4F46E5]" />
+                  Your Journey
+                </div>
+                <h2 className="text-3xl font-bold tracking-tight text-[#0F172A] md:text-4xl">
+                  From enrollment to career launch
                 </h2>
-                <p className="text-slate-600">Your journey from enrollment to earning</p>
+                <p className="mt-4 text-lg text-slate-600">A clear path to measurable career growth</p>
               </div>
-              <div className="grid grid-cols-1 gap-8 md:grid-cols-4">
-                {[
-                  { step: '01', title: 'Choose a Track', desc: 'Pick a path that matches your goals and schedule' },
-                  { step: '02', title: 'Build Projects', desc: 'Complete real assignments that build your portfolio' },
-                  { step: '03', title: 'Get Certified', desc: 'Earn credentials that prove your skills' },
-                  { step: '04', title: 'Start Earning', desc: 'Apply for gigs with your portfolio and proof' },
-                ].map((item) => (
-                  <div key={item.step} className="text-center">
-                    <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-[#4F46E5]/10 text-lg font-bold text-[#4F46E5]">
-                      {item.step}
+              
+              <div className="relative">
+                <div className="absolute left-1/2 top-0 bottom-0 hidden w-px bg-gradient-to-b from-transparent via-[#4F46E5]/30 to-transparent lg:block" />
+                
+                <div className="grid grid-cols-1 gap-8 lg:grid-cols-4 lg:gap-8">
+                  {processSteps.map((step, index) => (
+                    <div key={step.num} className={`relative lg:text-center ${index % 2 === 0 ? 'lg:pr-8' : 'lg:pl-8'}`}>
+                      <div className="mb-4 flex items-center gap-4 lg:mb-6 lg:justify-center">
+                        <div className="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-[#4F46E5] to-[#7C3AED] text-xl font-bold text-white shadow-lg shadow-indigo-500/25">
+                          {step.num}
+                        </div>
+                      </div>
+                      <div className="lg:bg-white lg:p-6 lg:rounded-2xl lg:border lg:border-slate-100 lg:shadow-sm">
+                        <h3 className="mb-2 text-lg font-bold text-[#0F172A]">{step.title}</h3>
+                        <p className="text-sm text-slate-600 leading-relaxed">{step.desc}</p>
+                      </div>
                     </div>
-                    <h3 className="mb-2 font-semibold text-[#0F172A]">{item.title}</h3>
-                    <p className="text-sm text-slate-600">{item.desc}</p>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
             </div>
           </section>
         )}
 
         {!loading && careerTracks.length > 0 && (
-          <section className="bg-[#0F172A] py-16">
-            <div className="mx-auto max-w-7xl px-6 text-center md:px-8">
-              <h2 className="mb-4 text-2xl font-bold tracking-tight text-white md:text-3xl">
-                Ready to start learning?
+          <section className="relative overflow-hidden bg-[#0F172A] py-20">
+            <div className="absolute inset-0">
+              <div className="absolute top-0 left-1/4 h-64 w-64 rounded-full bg-[#4F46E5]/20 blur-3xl" />
+              <div className="absolute bottom-0 right-1/4 h-64 w-64 rounded-full bg-[#7C3AED]/20 blur-3xl" />
+            </div>
+            
+            <div className="relative mx-auto max-w-4xl px-6 text-center md:px-8">
+              <h2 className="mb-6 text-3xl font-bold tracking-tight text-white md:text-4xl">
+                Ready to transform your career?
               </h2>
-              <p className="mb-8 text-slate-300">
-                Join learners who are building real skills and real careers
+              <p className="mb-8 text-lg text-slate-300">
+                Join thousands of learners who have built real skills and real careers through UpskillBay.
               </p>
-              {!session?.user ? (
-                <Link
-                  href="/auth/signup"
-                  className="inline-flex rounded-xl bg-[#4F46E5] px-8 py-3 text-base font-semibold text-white transition-colors hover:bg-[#4338CA]"
-                >
-                  Get Started Free
-                </Link>
-              ) : (
-                <p className="font-medium text-white">You're signed in. Browse tracks above to continue.</p>
-              )}
+              <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
+                {!session?.user ? (
+                  <>
+                    <Link
+                      href="/auth/signup"
+                      className="rounded-xl bg-gradient-to-r from-[#4F46E5] to-[#7C3AED] px-8 py-3.5 text-base font-semibold text-white shadow-lg shadow-indigo-500/25 transition-all hover:shadow-xl hover:shadow-indigo-500/30 hover:-translate-y-0.5"
+                    >
+                      Get Started Free
+                    </Link>
+                    <Link
+                      href="/career-tracks"
+                      className="rounded-xl border border-slate-600 px-8 py-3.5 text-base font-semibold text-white transition-all hover:bg-white/10"
+                    >
+                      Browse Tracks
+                    </Link>
+                  </>
+                ) : (
+                  <p className="text-lg font-medium text-white">You're signed in. Start exploring tracks above!</p>
+                )}
+              </div>
             </div>
           </section>
         )}
