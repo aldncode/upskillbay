@@ -12,13 +12,9 @@ import {
   Building2, 
   Zap,
   Target,
-  BookOpen,
   Code,
   Briefcase,
   TrendingUp,
-  Users,
-  Award,
-  ChevronRight,
   Sparkles,
   Play,
   Shield

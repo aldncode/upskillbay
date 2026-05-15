@@ -1,11 +1,9 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
-import { useSession } from 'next-auth/react';
+import { useState } from 'react';
 import Link from 'next/link';
 import { motion, type Variants } from 'framer-motion';
 import { 
-  Cpu, 
   Database, 
   Cloud, 
   Shield, 
@@ -20,24 +18,10 @@ import {
   Sparkles,
   CheckCircle2,
   ChevronRight,
-  Zap,
-  Target,
-  TrendingUp
+  Target
 } from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
-
-interface CareerTrack {
-  id: string;
-  title: string;
-  description: string;
-  outcome: string;
-  duration: string;
-  earningPotential: string;
-  skills: string[];
-  level: string;
-  enrollments?: { userId: string }[];
-}
 
 const careerTracksData = [
   {
@@ -200,17 +184,7 @@ const glowColors: Record<string, string> = {
 };
 
 export default function CareerTracksPage() {
-  const { data: session } = useSession();
-  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
   const [hoveredCard, setHoveredCard] = useState<string | null>(null);
-
-  useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      setMousePosition({ x: e.clientX, y: e.clientY });
-    };
-    window.addEventListener('mousemove', handleMouseMove);
-    return () => window.removeEventListener('mousemove', handleMouseMove);
-  }, []);
 
   return (
     <>
@@ -350,7 +324,7 @@ export default function CareerTracksPage() {
               viewport={{ once: true }}
               className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3"
             >
-              {careerTracksData.map((track, index) => (
+              {careerTracksData.map((track) => (
                 <motion.div
                   key={track.id}
                   variants={cardVariants}
@@ -469,7 +443,7 @@ export default function CareerTracksPage() {
                         <div className="mb-5">
                           <p className="mb-2 text-[10px] font-semibold uppercase tracking-wider text-slate-500">Projects You Will Build</p>
                           <div className="flex gap-2">
-                            {track.projects.map((project, i) => (
+                            {track.projects.map((project) => (
                               <div 
                                 key={project}
                                 className="flex-1 rounded-lg border border-slate-800 bg-slate-950/50 px-3 py-2 text-center"

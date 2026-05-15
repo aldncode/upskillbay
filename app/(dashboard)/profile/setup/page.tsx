@@ -388,7 +388,7 @@ function SetupContent() {
                         name="availability"
                         value={opt.value}
                         checked={formData.availability === opt.value}
-                        onChange={(e) => handleChange('availability', opt.value)}
+                        onChange={() => handleChange('availability', opt.value)}
                         className="h-4 w-4 accent-[#4F46E5]"
                       />
                       <div>
