@@ -35,9 +35,6 @@ enrollments: {
         },
         applications: true,
         trackApplications: {
-          include: {
-            careerTrack: true,
-          },
           orderBy: { createdAt: 'desc' },
         },
         portfolio: true,
