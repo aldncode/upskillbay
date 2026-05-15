@@ -6,8 +6,8 @@ import './globals.css';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'UpskillBay - Work-Integrated Career Platform',
-  description: 'Complete tasks, build proof, earn from gigs, and get hired',
+  title: 'UpskillBay - AI-Powered Career Acceleration Platform',
+  description: 'Transform your career with AI-personalized learning. Build real skills, earn from real projects, land your dream job.',
 };
 
 export default function RootLayout({
@@ -16,8 +16,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      <body className={`${inter.className} bg-[#F8FAFC] text-[#0F172A]`}>
+    <html lang="en" className="dark">
+      <body className={`${inter.className} bg-[#030712] text-white`}>
         <Providers>
           {children}
         </Providers>

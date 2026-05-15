@@ -8,14 +8,14 @@ import CtaSection from '@/components/CtaSection';
 import Footer from '@/components/Footer';
 
 export const metadata = {
-  title: 'UpskillBay - Build Skills, Earn Income, Get Hired',
-  description: 'Learn real skills through client projects, earn money from your first week, and become hireable. No experience needed.',
+  title: 'UpskillBay - AI-Powered Career Acceleration Platform',
+  description: 'Transform your career with AI-personalized learning. Build real skills, earn from real projects, land your dream job.',
 };
 
 export default function Home() {
   return (
     <>
-      <Navbar />
+      <Navbar variant="dark" />
       <main className="relative">
         <Hero />
         <SocialProof />
@@ -24,7 +24,7 @@ export default function Home() {
         <StatsSection />
         <CtaSection />
       </main>
-      <Footer />
+      <Footer variant="dark" />
     </>
   );
 }

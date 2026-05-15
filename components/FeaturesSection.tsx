@@ -2,7 +2,7 @@
 
 import { motion } from 'framer-motion';
 import Link from 'next/link';
-import AnimatedSection from './AnimatedSection';
+import { ArrowRight, CheckCircle2 } from 'lucide-react';
 
 function TrackIcon({ className }: { className?: string }) {
   return (
@@ -20,43 +20,47 @@ function TrackIcon({ className }: { className?: string }) {
 
 const trackData = [
   {
-    title: 'Web Development',
-    description: 'Build real websites and applications from scratch. Learn frontend, backend, and deployment through hands-on projects.',
-    outcome: 'Build and deploy client-ready websites',
-    duration: '8-12 weeks',
-    earning: '₹10k-40k/project',
-    level: 'Beginner',
-    skills: ['React', 'Node.js', 'SQL'],
-  },
-  {
-    title: 'Digital Marketing',
-    description: 'Create and manage campaigns that drive real results. Master analytics, content strategy, and paid channels.',
-    outcome: 'Run measurable campaigns for brands',
-    duration: '6-10 weeks',
-    earning: '₹8k-30k/project',
-    level: 'Beginner',
-    skills: ['Meta Ads', 'Analytics', 'SEO'],
+    title: 'AI Engineering',
+    description: 'Build intelligent applications using machine learning and AI tools that companies actually need.',
+    outcome: 'Build and deploy AI-powered applications',
+    duration: '16 weeks',
+    earning: '₹8L - 18L/yr',
+    level: 'Intermediate',
+    skills: ['Python', 'TensorFlow', 'OpenAI API', 'LangChain'],
+    color: 'from-violet-500 to-purple-600',
+    icon: TrackIcon,
+    gradient: 'violet',
   },
   {
     title: 'Data Analytics',
     description: 'Turn data into insights. Learn SQL, visualization, and storytelling to help businesses make better decisions.',
     outcome: 'Create decision-ready data reports',
-    duration: '8-12 weeks',
-    earning: '₹12k-45k/project',
+    duration: '12 weeks',
+    earning: '₹6L - 12L/yr',
+    level: 'Beginner',
+    skills: ['Excel', 'SQL', 'Python', 'Tableau'],
+    color: 'from-cyan-500 to-blue-600',
+    icon: TrackIcon,
+    gradient: 'cyan',
+  },
+  {
+    title: 'DevOps Engineer',
+    description: 'Learn to build and manage cloud infrastructure that powers modern apps and websites.',
+    outcome: 'Deploy and manage production systems',
+    duration: '14 weeks',
+    earning: '₹9L - 16L/yr',
     level: 'Intermediate',
-    skills: ['Python', 'Tableau', 'Excel'],
+    skills: ['AWS', 'Docker', 'Kubernetes', 'Terraform'],
+    color: 'from-orange-500 to-red-600',
+    icon: TrackIcon,
+    gradient: 'orange',
   },
 ];
 
-const levelConfig: Record<string, { badge: string; color: string }> = {
-  beginner: { badge: 'bg-sky-100 text-sky-700', color: '#0284C7' },
-  intermediate: { badge: 'bg-amber-100 text-amber-700', color: '#D97706' },
-};
-
-const iconColors: Record<string, { bg: string; icon: string }> = {
-  'Web Development': { bg: 'from-[#EEF2FF] to-[#E0E7FF]', icon: '#4F46E5' },
-  'Digital Marketing': { bg: 'from-[#ECFDF5] to-[#D1FAE5]', icon: '#059669' },
-  'Data Analytics': { bg: 'from-[#F8FAFC] to-[#E2E8F0]', icon: '#475569' },
+const glowColors: Record<string, string> = {
+  violet: 'rgba(139, 92, 246, 0.4)',
+  cyan: 'rgba(6, 182, 212, 0.4)',
+  orange: 'rgba(249, 115, 22, 0.4)',
 };
 
 export default function FeaturesSection() {
@@ -69,38 +73,49 @@ export default function FeaturesSection() {
   };
 
   const itemVariants = {
-    hidden: { opacity: 0, y: 16 },
-    visible: { opacity: 1, y: 0, transition: { duration: 0.4 } },
+    hidden: { opacity: 0, y: 20, scale: 0.98 },
+    visible: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.4 } },
   };
 
   return (
-    <AnimatedSection background="slate">
-      <div className="mx-auto max-w-7xl">
-        <div className="mb-10 flex flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
-          <div className="max-w-xl">
-            <div className="mb-3 flex items-center gap-2 text-xs font-semibold uppercase tracking-widest text-[#4F46E5]">
-              <span className="h-px w-6 bg-[#4F46E5]" />
-              Career Tracks
-            </div>
-            <h2 className="text-3xl font-bold tracking-tight text-[#0F172A] sm:text-4xl">
-              Explore pathways to your next career
-            </h2>
-            <p className="mt-3 text-base leading-relaxed text-slate-600">
-              Structured programs with real projects, clear outcomes, and earning potential.
-            </p>
+    <section className="relative overflow-hidden py-20 md:py-28">
+      {/* Background effects */}
+      <div className="absolute inset-0">
+        <div className="absolute inset-0 bg-[#030712]" />
+        <div 
+          className="absolute inset-0 opacity-30"
+          style={{
+            backgroundImage: `
+              linear-gradient(rgba(99, 102, 241, 0.1) 1px, transparent 1px),
+              linear-gradient(90deg, rgba(99, 102, 241, 0.1) 1px, transparent 1px)
+            `,
+            backgroundSize: '60px 60px',
+          }}
+        />
+        <div className="absolute top-0 left-1/4 h-96 w-96 rounded-full bg-indigo-600/10 blur-3xl" />
+        <div className="absolute bottom-0 right-1/4 h-96 w-96 rounded-full bg-purple-600/10 blur-3xl" />
+      </div>
+
+      <div className="mx-auto max-w-7xl px-6 md:px-8 relative">
+        {/* Header */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+          className="mb-16 text-center"
+        >
+          <div className="mb-4 inline-flex items-center gap-2 rounded-full border border-indigo-500/30 bg-indigo-500/10 px-4 py-1.5">
+            <span className="h-px w-4 bg-indigo-400" />
+            <span className="text-xs font-semibold uppercase tracking-widest text-indigo-400">Career Tracks</span>
           </div>
-          <div className="flex flex-wrap items-center gap-3">
-            <span className="rounded-full bg-white px-4 py-2 text-sm font-medium text-slate-600 shadow-sm border border-slate-200">
-              3 tracks available
-            </span>
-            <Link
-              href="/career-tracks"
-              className="rounded-full bg-[#4F46E5] px-5 py-2 text-sm font-semibold text-white transition-all hover:bg-[#4338CA] hover:shadow-lg hover:shadow-indigo-500/25"
-            >
-              View All
-            </Link>
-          </div>
-        </div>
+          <h2 className="mb-4 text-4xl font-bold tracking-tight text-white md:text-5xl">
+            Explore pathways to your next career
+          </h2>
+          <p className="mx-auto max-w-2xl text-lg text-slate-400">
+            Structured programs with real projects, clear outcomes, and earning potential.
+          </p>
+        </motion.div>
 
         <motion.div
           className="grid grid-cols-1 gap-6 lg:grid-cols-3"
@@ -110,105 +125,131 @@ export default function FeaturesSection() {
           viewport={{ once: true }}
         >
           {trackData.map((track, index) => {
-            const colors = iconColors[track.title] || { bg: 'from-slate-100 to-slate-50', icon: '#475569' };
-            const level = levelConfig[track.level.toLowerCase()] || levelConfig.beginner;
-
             return (
               <motion.div
                 key={track.title}
                 variants={itemVariants}
-                className={`group relative ${index === 0 ? 'lg:col-span-1' : ''}`}
+                className="group relative"
               >
-                <div className={`h-full rounded-2xl border bg-white p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-slate-200/50 ${index === 0 ? 'border-[#4F46E5]/20 ring-1 ring-[#4F46E5]/10' : 'border-slate-200'}`}>
+                <div 
+                  className="h-full rounded-2xl border border-slate-800 bg-slate-900/60 p-6 backdrop-blur-xl transition-all duration-500 hover:border-slate-700"
+                  style={{
+                    boxShadow: '0 4px 24px rgba(0,0,0,0.3)',
+                  }}
+                >
+                  {/* Gradient Background */}
+                  <div 
+                    className="absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+                    style={{
+                      background: `linear-gradient(135deg, ${glowColors[track.gradient]}10 0%, transparent 50%, ${glowColors[track.gradient]}05 100%)`,
+                    }}
+                  />
+
+                  {/* Glowing Border */}
+                  <div 
+                    className="absolute inset-0 rounded-2xl opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+                    style={{
+                      background: `linear-gradient(135deg, ${glowColors[track.gradient]}40, transparent 50%, ${glowColors[track.gradient]}20)`,
+                      mask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
+                      maskComposite: 'exclude',
+                      padding: '1px',
+                    }}
+                  />
+
                   {index === 0 && (
-                    <div className="absolute -top-3 left-6">
-                      <span className="inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-[#4F46E5] to-[#7C3AED] px-3 py-1 text-xs font-semibold text-white shadow-lg shadow-indigo-500/25">
-                        <svg className="h-3 w-3" fill="currentColor" viewBox="0 0 20 20">
-                          <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                        </svg>
+                    <div className="absolute -top-3 left-6 z-10">
+                      <span className="inline-flex items-center gap-1.5 rounded-full bg-gradient-to-r from-indigo-600 to-purple-600 px-3 py-1 text-xs font-semibold text-white shadow-lg shadow-indigo-500/25">
+                        <CheckCircle2 className="h-3 w-3" />
                         Most Popular
                       </span>
                     </div>
                   )}
 
-                  <div className="mb-5 flex items-start gap-4">
-                    <div
-                      className={`flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl bg-gradient-to-br ${colors.bg}`}
-                      style={{ color: colors.icon }}
-                    >
-                      <TrackIcon className="h-5 w-5" />
-                    </div>
-                    <div className="min-w-0">
-                      <h3 className="text-lg font-bold text-[#0F172A]">{track.title}</h3>
-                      <span className={`mt-1 inline-flex rounded-full px-2.5 py-0.5 text-[10px] font-semibold ${level.badge}`}>
-                        {track.level}
-                      </span>
-                    </div>
-                  </div>
-
-                  <p className="mb-5 text-sm leading-relaxed text-slate-600">
-                    {track.description}
-                  </p>
-
-                  <div className="mb-5 rounded-xl border border-emerald-100 bg-emerald-50/50 px-4 py-3">
-                    <p className="text-xs font-semibold text-emerald-700">
-                      {track.outcome}
-                    </p>
-                  </div>
-
-                  <div className="mb-5 flex flex-wrap gap-2">
-                    {track.skills.map((skill) => (
-                      <span
-                        key={skill}
-                        className="rounded-md border border-slate-200 bg-slate-50 px-2 py-1 text-[11px] font-medium text-slate-600"
+                  <div className="relative">
+                    {/* Header */}
+                    <div className="mb-5 flex items-start gap-4">
+                      <div
+                        className={`flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-xl bg-gradient-to-br ${track.color}`}
                       >
-                        {skill}
-                      </span>
-                    ))}
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-3 border-t border-slate-100 pt-4">
-                    <div>
-                      <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-500">Duration</p>
-                      <p className="mt-1 text-sm font-bold text-[#0F172A]">{track.duration}</p>
+                        <track.icon className="h-5 w-5 text-white" />
+                      </div>
+                      <div className="min-w-0">
+                        <h3 className="text-xl font-bold text-white">{track.title}</h3>
+                        <span className={`mt-1 inline-flex rounded-full px-2.5 py-0.5 text-[10px] font-semibold ${
+                          track.level === 'Beginner' 
+                            ? 'bg-blue-500/10 border border-blue-500/20 text-blue-400'
+                            : track.level === 'Intermediate'
+                            ? 'bg-amber-500/10 border border-amber-500/20 text-amber-400'
+                            : 'bg-red-500/10 border border-red-500/20 text-red-400'
+                        }`}>
+                          {track.level}
+                        </span>
+                      </div>
                     </div>
-                    <div>
-                      <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-500">Earning</p>
-                      <p className="mt-1 text-sm font-bold text-[#4F46E5]">{track.earning}</p>
-                    </div>
-                  </div>
 
-                  <Link
-                    href="/career-tracks"
-                    className={`mt-5 flex w-full items-center justify-center gap-2 rounded-xl py-2.5 text-sm font-semibold transition-all duration-200 ${
-                      index === 0
-                        ? 'bg-[#4F46E5] text-white hover:bg-[#4338CA] hover:shadow-lg hover:shadow-indigo-500/25'
-                        : 'border border-slate-200 text-slate-700 hover:border-[#4F46E5] hover:bg-[#4F46E5]/5'
-                    }`}
-                  >
-                    View Track
-                    <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                    </svg>
-                  </Link>
+                    <p className="mb-5 text-sm leading-relaxed text-slate-400">
+                      {track.description}
+                    </p>
+
+                    <div className="mb-5 rounded-xl border border-emerald-500/20 bg-emerald-500/5 px-4 py-3">
+                      <div className="flex items-center gap-2">
+                        <CheckCircle2 className="h-4 w-4 text-emerald-400" />
+                        <p className="text-xs font-semibold text-emerald-400">
+                          {track.outcome}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="mb-5 flex flex-wrap gap-2">
+                      {track.skills.map((skill) => (
+                        <span
+                          key={skill}
+                          className="rounded-md border border-slate-700 bg-slate-800/50 px-2.5 py-1 text-[11px] font-medium text-slate-300"
+                        >
+                          {skill}
+                        </span>
+                      ))}
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-3 border-t border-slate-800 pt-4">
+                      <div>
+                        <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-500">Duration</p>
+                        <p className="mt-1 text-sm font-bold text-white">{track.duration}</p>
+                      </div>
+                      <div>
+                        <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-500">Earning</p>
+                        <p className="mt-1 text-sm font-bold text-indigo-400">{track.earning}</p>
+                      </div>
+                    </div>
+
+                    <Link
+                      href="/career-tracks"
+                      className={`mt-5 flex w-full items-center justify-center gap-2 rounded-xl py-3 text-sm font-semibold transition-all duration-200 ${
+                        index === 0
+                          ? 'bg-gradient-to-r from-indigo-600 to-purple-600 text-white hover:shadow-lg hover:shadow-indigo-500/25'
+                          : 'border border-slate-700 text-slate-300 hover:border-indigo-500 hover:bg-indigo-500/5'
+                      }`}
+                    >
+                      View Track
+                      <ArrowRight className="h-4 w-4" />
+                    </Link>
+                  </div>
                 </div>
               </motion.div>
             );
           })}
         </motion.div>
 
-        <div className="mt-10 text-center">
+        <div className="mt-12 text-center">
           <Link
             href="/career-tracks"
-            className="inline-flex items-center gap-2 text-sm font-semibold text-[#4F46E5] transition-colors hover:text-[#4338CA]"
+            className="inline-flex items-center gap-2 text-sm font-semibold text-indigo-400 transition-colors hover:text-indigo-300"
           >
             See all career tracks
-            <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
-            </svg>
+            <ArrowRight className="h-4 w-4" />
           </Link>
         </div>
       </div>
-    </AnimatedSection>
+    </section>
   );
 }

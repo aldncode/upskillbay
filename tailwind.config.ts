@@ -9,29 +9,30 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // Primary - Vibrant indigo
+        premium: {
+          dark: '#030712',
+          surface: '#0A0F1A',
+          card: '#0F1729',
+          border: '#1E293B',
+          'border-light': '#334155',
+        },
         primary: {
           50: '#EEF2FF',
           100: '#E0E7FF',
+          400: '#818CF8',
           500: '#4F46E5',
           600: '#4F46E5',
           700: '#4338CA',
         },
-        
-        // Accent - Vibrant orange
         accent: {
           50: '#FEF3C7',
           500: '#F97316',
           600: '#EA580C',
         },
-        
-        // Secondary - Vibrant green
         eco: {
           50: '#E0F2FE',
           600: '#059669',
         },
-        
-        // Neutral - Warm grays
         warm: {
           50: '#FAFAF8',
           100: '#F5F2F0',
@@ -44,16 +45,12 @@ const config: Config = {
           800: '#4A4540',
           900: '#1A1612',
         },
-        
-        // Semantic
         success: {
           50: '#EBF8F1',
           100: '#D1F0E4',
           500: '#2D9D7F',
           600: '#0D7659',
         },
-        
-        // Legacy support
         indigo: {
           50: '#EFE9F9',
           600: '#5B4A9E',
@@ -86,34 +83,29 @@ const config: Config = {
       },
       
       borderRadius: {
-        // Organic shapes
         organic: '20px 24px 22px 18px / 22px 20px 18px 24px',
         organicSm: '12px 14px 13px 11px / 13px 12px 11px 14px',
         organicLg: '28px 32px 30px 26px / 30px 28px 26px 32px',
       },
       
       boxShadow: {
-        // 2026 Subtle shadows
         sm: '0 2px 8px rgba(0, 0, 0, 0.04)',
         md: '0 8px 24px rgba(26, 22, 18, 0.08)',
         lg: '0 16px 40px rgba(26, 22, 18, 0.12)',
         xl: '0 20px 50px rgba(26, 22, 18, 0.16)',
-        
-        // Organic depth
         organic: '0 8px 24px -12px rgba(26, 22, 18, 0.08)',
         organicHover: '0 16px 40px -16px rgba(26, 22, 18, 0.12)',
-        
-        // Inset for glass effect
         inset: 'inset 0 1px 2px rgba(255, 255, 255, 0.8)',
       },
       
       animation: {
-        // 2026 Fluid animations
         organicBreathe: 'organicBreathe 20s ease-in-out infinite',
         fluidMove: 'fluidMove 15s ease-in-out infinite',
         slideIn: 'slideIn 300ms ease-out',
         ripple: 'ripple 600ms ease-out',
         shimmer: 'shimmer 2s infinite',
+        float: 'float 6s ease-in-out infinite',
+        pulse: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite',
       },
       
       keyframes: {
@@ -160,6 +152,14 @@ const config: Config = {
           '0%': { backgroundPosition: '-1000px 0' },
           '100%': { backgroundPosition: '1000px 0' },
         },
+        float: {
+          '0%, 100%': { transform: 'translateY(0px)' },
+          '50%': { transform: 'translateY(-10px)' },
+        },
+        pulse: {
+          '0%, 100%': { opacity: '1' },
+          '50%': { opacity: '0.5' },
+        },
       },
       
       backgroundColor: {
@@ -178,7 +178,6 @@ const config: Config = {
         muted: '#64748B',
       },
       
-      // Personalization utilities
       opacity: {
         personalization: 'var(--personalization-intensity)',
       },

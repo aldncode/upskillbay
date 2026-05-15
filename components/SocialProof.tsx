@@ -1,84 +1,90 @@
 'use client';
 
-import { motion } from 'framer-motion';
+import { motion, type Variants } from 'framer-motion';
+import { Users, DollarSign, Trophy, Briefcase } from 'lucide-react';
 
-const floatingCardVariants = {
+const float1Variants: Variants = {
   initial: { y: 0 },
   animate: {
-    y: [-6, 6, -6],
+    y: [-8, 8, -8],
     transition: {
       duration: 5,
       repeat: Infinity,
-      ease: 'easeInOut',
+      ease: 'easeInOut' as const,
     },
   },
 };
 
-const floatingCard2Variants = {
+const float2Variants: Variants = {
   initial: { y: 0 },
   animate: {
-    y: [4, -4, 4],
+    y: [6, -6, 6],
     transition: {
       duration: 6,
       repeat: Infinity,
-      ease: 'easeInOut',
+      ease: 'easeInOut' as const,
     },
   },
 };
 
-const pillVariants = {
-  initial: { opacity: 0, x: -10 },
+const pillVariants: Variants = {
+  initial: { opacity: 0, scale: 0.9 },
   animate: {
     opacity: 1,
-    x: 0,
-    transition: { duration: 0.4 },
+    scale: 1,
+    transition: { duration: 0.3 },
   },
 };
 
+const metrics = [
+  { value: '2,400+', label: 'Projects Completed', icon: Briefcase, highlight: false },
+  { value: '₹12.5L', label: 'Earned by Learners', icon: DollarSign, highlight: true },
+  { value: '850+', label: 'Skills Mastered', icon: Trophy, highlight: false },
+  { value: '1,000+', label: 'Career Transformed', icon: Users, highlight: false },
+];
+
+const tools = [
+  'React', 'Python', 'SQL', 'Figma', 'Node.js', 'Meta Ads', 'Tableau', 'Next.js'
+];
+
+const avatars = [
+  { initials: 'AK', color: 'from-indigo-500 to-purple-500' },
+  { initials: 'RJ', color: 'from-purple-500 to-pink-500' },
+  { initials: 'MP', color: 'from-emerald-500 to-teal-500' },
+  { initials: 'SK', color: 'from-orange-500 to-red-500' },
+  { initials: 'DV', color: 'from-cyan-500 to-blue-500' },
+];
+
 export default function SocialProof() {
-  const metrics = [
-    { value: '2,400+', label: 'Projects Done', icon: 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z' },
-    { value: '₹12.5L', label: 'Earned', icon: 'M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z', highlight: true },
-    { value: '850+', label: 'Skills Mastered', icon: 'M13 10V3L4 14h7v7l9-11h-7z' },
-    { value: '320+', label: 'Portfolios Built', icon: 'M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z' },
-  ];
-
-  const tools = [
-    'React', 'Python', 'SQL', 'Figma', 'Node.js', 'Meta Ads', 'Tableau', 'Next.js'
-  ];
-
-  const avatars = [
-    { initials: 'AK', color: 'bg-[#4F46E5]' },
-    { initials: 'RJ', color: 'bg-[#7C3AED]' },
-    { initials: 'MP', color: 'bg-[#059669]' },
-    { initials: 'SK', color: 'bg-[#EA580C]' },
-    { initials: 'DV', color: 'bg-[#0891B2]' },
-  ];
-
   return (
-    <section className="bg-[#F8FAFC] py-10 md:py-12 relative overflow-hidden">
+    <section className="relative overflow-hidden border-y border-slate-800/50 bg-[#030712]/50 py-10 md:py-12">
+      {/* Background effects */}
       <div className="absolute inset-0">
-        <div className="absolute top-0 left-1/4 w-96 h-96 bg-gradient-to-br from-[#4F46E5]/3 to-transparent rounded-full blur-3xl" />
-        <div className="absolute bottom-0 right-1/4 w-80 h-80 bg-gradient-to-tl from-[#7C3AED]/3 to-transparent rounded-full blur-3xl" />
+        <div className="absolute top-0 left-1/4 w-96 h-96 bg-indigo-600/10 rounded-full blur-3xl" />
+        <div className="absolute bottom-0 right-1/4 w-80 h-80 bg-purple-600/10 rounded-full blur-3xl" />
       </div>
 
-      <div className="container relative">
+      <div className="mx-auto max-w-7xl px-6 md:px-8 relative">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-center">
+          
           {/* LEFT: Trust + Avatars */}
           <div className="lg:col-span-3 flex items-center gap-4">
-            <div className="flex -space-x-2">
+            <div className="flex -space-x-3">
               {avatars.map((avatar, i) => (
-                <div
+                <motion.div
                   key={i}
-                  className={`w-8 h-8 rounded-full ${avatar.color} flex items-center justify-center text-[10px] font-bold text-white border-2 border-white`}
+                  initial={{ scale: 0, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  transition={{ delay: i * 0.1 }}
+                  className={`w-9 h-9 rounded-full bg-gradient-to-br ${avatar.color} flex items-center justify-center text-[10px] font-bold text-white border-2 border-[#030712] shadow-lg`}
                 >
                   {avatar.initials}
-                </div>
+                </motion.div>
               ))}
             </div>
             <div>
-              <p className="text-sm font-bold text-[#0F172A]">1,000+ learners</p>
-              <p className="text-[11px] text-[#64748B]">trust UpskillBay</p>
+              <p className="text-sm font-semibold text-white">1,000+ learners</p>
+              <p className="text-xs text-slate-500">trust UpskillBay</p>
             </div>
           </div>
 
@@ -88,35 +94,30 @@ export default function SocialProof() {
               {metrics.map((metric, i) => (
                 <motion.div
                   key={metric.label}
-                  variants={i % 2 === 0 ? floatingCardVariants : floatingCard2Variants}
+                  variants={i % 2 === 0 ? float1Variants : float2Variants}
                   initial="initial"
                   animate="animate"
                   className="relative"
                 >
-                  <div className={`flex items-center gap-2.5 px-4 py-2.5 rounded-xl border backdrop-blur-sm ${
-                    metric.highlight
-                      ? 'bg-gradient-to-r from-[#EEF2FF] to-white border-[#C7D2FE] shadow-md shadow-indigo-500/10'
-                      : 'bg-white/90 border-[#E2E8F0]'
-                  }`}>
-                    <div className={`w-7 h-7 rounded-lg flex items-center justify-center ${
+                  <div 
+                    className={`flex items-center gap-3 px-5 py-3 rounded-xl border backdrop-blur-sm transition-all duration-300 hover:scale-105 ${
                       metric.highlight
-                        ? 'bg-gradient-to-br from-[#4F46E5] to-[#7C3AED]'
-                        : 'bg-[#F8FAFC]'
+                        ? 'bg-gradient-to-r from-indigo-500/20 to-purple-500/20 border-indigo-500/30 shadow-lg shadow-indigo-500/10'
+                        : 'bg-slate-900/50 border-slate-800 hover:border-slate-700'
+                    }`}
+                  >
+                    <div className={`w-9 h-9 rounded-lg flex items-center justify-center ${
+                      metric.highlight
+                        ? 'bg-gradient-to-br from-indigo-500 to-purple-500'
+                        : 'bg-slate-800'
                     }`}>
-                      <svg
-                        className={`w-3.5 h-3.5 ${metric.highlight ? 'text-white' : 'text-[#4F46E5]'}`}
-                        fill="none"
-                        stroke="currentColor"
-                        viewBox="0 0 24 24"
-                      >
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={metric.icon} />
-                      </svg>
+                      <metric.icon className={`w-4 h-4 ${metric.highlight ? 'text-white' : 'text-indigo-400'}`} />
                     </div>
                     <div>
-                      <p className={`text-sm font-black ${metric.highlight ? 'text-[#4F46E5]' : 'text-[#0F172A]'}`}>
+                      <p className={`text-base font-bold ${metric.highlight ? 'text-indigo-400' : 'text-white'}`}>
                         {metric.value}
                       </p>
-                      <p className="text-[10px] text-[#64748B] font-medium">{metric.label}</p>
+                      <p className="text-[10px] text-slate-500 font-medium">{metric.label}</p>
                     </div>
                   </div>
                 </motion.div>
@@ -134,7 +135,7 @@ export default function SocialProof() {
                 whileInView="animate"
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.03 }}
-                className="px-3 py-1.5 rounded-full text-[11px] font-semibold text-[#475569] bg-white border border-[#E2E8F0] hover:border-[#C7D2FE] hover:text-[#4F46E5] transition-colors cursor-default"
+                className="px-3 py-1.5 rounded-full text-[11px] font-medium text-slate-400 bg-slate-900/50 border border-slate-800 hover:border-indigo-500/50 hover:text-indigo-400 transition-all duration-200 cursor-default"
               >
                 {tool}
               </motion.span>

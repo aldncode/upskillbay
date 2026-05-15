@@ -7,6 +7,7 @@ import Link from 'next/link';
 import toast from 'react-hot-toast';
 import { motion } from 'framer-motion';
 import { authSchema, getZodErrorMessage } from '@/lib/validations/auth';
+import { ArrowRight } from 'lucide-react';
 
 export default function Login() {
   const router = useRouter();
@@ -59,51 +60,63 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-slate-50 px-4 py-12">
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-[#4F46E5]/5 rounded-full blur-3xl" />
-        <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-[#7C3AED]/4 rounded-full blur-3xl" />
+    <div className="relative min-h-screen flex items-center justify-center px-4 py-12 overflow-hidden">
+      {/* Background effects */}
+      <div className="absolute inset-0">
+        <div className="absolute inset-0 bg-[#030712]" />
+        <div 
+          className="absolute inset-0 opacity-20"
+          style={{
+            backgroundImage: `
+              linear-gradient(rgba(99, 102, 241, 0.15) 1px, transparent 1px),
+              linear-gradient(90deg, rgba(99, 102, 241, 0.15) 1px, transparent 1px)
+            `,
+            backgroundSize: '60px 60px',
+          }}
+        />
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-indigo-600/20 rounded-full blur-3xl" />
+        <div className="absolute bottom-1/4 right-1/4 w-80 h-80 bg-purple-600/20 rounded-full blur-3xl" />
       </div>
 
       <motion.div
         className="relative w-full max-w-md"
-        initial={{ opacity: 0, y: 16 }}
+        initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
       >
-        <div className="rounded-2xl border border-slate-200/60 bg-white/80 p-8 shadow-xl shadow-slate-900/5 backdrop-blur-sm">
+        <div className="rounded-2xl border border-slate-800 bg-slate-900/80 p-8 shadow-2xl shadow-indigo-500/10 backdrop-blur-xl">
           <div className="mb-8 text-center">
             <div className="mb-4 flex justify-center">
-              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-[#4F46E5] to-[#7C3AED] shadow-lg shadow-indigo-500/25">
-                <svg className="h-6 w-6 text-white" fill="currentColor" viewBox="0 0 20 20">
-                  <path d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4.125-1.625a1 1 0 00.788-.38l-.003.003a1 1 0 01-.14.09l-1.975 1.02a1 1 0 00-.37.306l.002.002a1 1 0 01.37.306l1.976-1.02a1 1 0 00.14-.09l1.975-1.022a.999.999 0 01.356.257l4.125 1.625a1 1 0 00.788.38l.003-.003a1 1 0 01-.37.306l-.002.002a1 1 0 00-.37.306l1.976 1.02a1 1 0 00.14.09l1.975 1.022a.999.999 0 01-.356.257l-4.125-1.625a1 1 0 00-.788-.38l-1.976-1.022a1 1 0 01-.37-.306l.002-.002a1 1 0 00.37-.306l1.976-1.02a1 1 0 00.14-.09l1.975-1.022.003.003zM6.894 9.06a1 1 0 00-1.788 0l-3.5 2a1 1 0 000 1.788l3.5 2a1 1 0 001.788 0l3.5-2a1 1 0 000-1.788l-3.5-2zM10.5 7.5a1 1 0 10-2 0v2.268a3 3 0 00-.879 2.098l1.536 2.98a1 1 0 001.756-.233l1.5-2.866A3 3 0 0012.5 9.768V7.5a1 1 0 00-2 0zM13.106 9.06a1 1 0 00-1.788 0l-3.5 2a1 1 0 000 1.788l3.5 2a1 1 0 001.788 0l3.5-2a1 1 0 000-1.788l-3.5-2z" />
-                </svg>
-              </div>
+              <Link href="/" className="flex items-center gap-3">
+                <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-500 via-purple-500 to-cyan-500 shadow-lg shadow-indigo-500/25">
+                  <span className="text-lg font-bold text-white">U</span>
+                </div>
+              </Link>
             </div>
-            <h1 className="text-2xl font-bold tracking-tight text-[#0F172A]">Welcome back</h1>
-            <p className="mt-2 text-sm text-slate-500">Sign in to continue your learning journey</p>
+            <h1 className="text-2xl font-bold tracking-tight text-white">Welcome back</h1>
+            <p className="mt-2 text-sm text-slate-400">Sign in to continue your learning journey</p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-5">
             <div>
-              <label className="mb-2 block text-sm font-medium text-slate-700">Email</label>
+              <label className="mb-2 block text-sm font-medium text-slate-300">Email</label>
               <input
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 transition-all focus:border-[#4F46E5] focus:bg-white focus:outline-none focus:ring-4 focus:ring-[#4F46E5]/10"
+                className="w-full rounded-xl border border-slate-700 bg-slate-800/50 px-4 py-3 text-sm text-white placeholder:text-slate-500 transition-all focus:border-indigo-500 focus:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
                 placeholder="e.g. priya@example.com"
                 required
               />
               {emailError && (
-                <p className="mt-1.5 text-xs text-red-500">{emailError}</p>
+                <p className="mt-1.5 text-xs text-red-400">{emailError}</p>
               )}
             </div>
 
             <div>
               <div className="flex items-center justify-between">
-                <label className="text-sm font-medium text-slate-700">Password</label>
-                <Link href="#" className="text-xs font-medium text-[#4F46E5] hover:text-[#4338CA]">
+                <label className="text-sm font-medium text-slate-300">Password</label>
+                <Link href="#" className="text-xs font-medium text-indigo-400 hover:text-indigo-300">
                   Forgot password?
                 </Link>
               </div>
@@ -111,17 +124,17 @@ export default function Login() {
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="mt-2 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 placeholder:text-slate-400 transition-all focus:border-[#4F46E5] focus:bg-white focus:outline-none focus:ring-4 focus:ring-[#4F46E5]/10"
+                className="mt-2 w-full rounded-xl border border-slate-700 bg-slate-800/50 px-4 py-3 text-sm text-white placeholder:text-slate-500 transition-all focus:border-indigo-500 focus:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-indigo-500/20"
                 placeholder="Enter your password"
                 required
               />
               {passwordError && (
-                <p className="mt-1.5 text-xs text-red-500">{passwordError}</p>
+                <p className="mt-1.5 text-xs text-red-400">{passwordError}</p>
               )}
             </div>
 
             {apiError && (
-              <div className="rounded-lg bg-red-50 px-4 py-3 text-xs font-medium text-red-600">
+              <div className="rounded-lg bg-red-500/10 border border-red-500/20 px-4 py-3 text-xs font-medium text-red-400">
                 {apiError}
               </div>
             )}
@@ -129,7 +142,7 @@ export default function Login() {
             <button
               type="submit"
               disabled={loading || !validation.success}
-              className="w-full rounded-xl bg-gradient-to-r from-[#4F46E5] to-[#7C3AED] py-3.5 text-sm font-semibold text-white shadow-lg shadow-indigo-500/25 transition-all hover:shadow-xl hover:shadow-indigo-500/30 hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-60"
+              className="group w-full rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 py-3.5 text-sm font-semibold text-white shadow-lg shadow-indigo-500/20 transition-all hover:shadow-xl hover:shadow-indigo-500/30 hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-60"
             >
               {loading ? (
                 <span className="flex items-center justify-center gap-2">
@@ -140,23 +153,26 @@ export default function Login() {
                   Signing in...
                 </span>
               ) : (
-                'Sign in'
+                <span className="flex items-center justify-center gap-2">
+                  Sign in
+                  <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                </span>
               )}
             </button>
           </form>
 
           <div className="relative my-6">
             <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-slate-200" />
+              <div className="w-full border-t border-slate-800" />
             </div>
             <div className="relative flex justify-center text-xs">
-              <span className="bg-white px-4 text-slate-400">or</span>
+              <span className="bg-slate-900 px-4 text-slate-500">or</span>
             </div>
           </div>
 
           <button
             onClick={() => signIn('google', { callbackUrl: '/dashboard' })}
-            className="flex w-full items-center justify-center gap-3 rounded-xl border border-slate-200 bg-white py-3 text-sm font-medium text-slate-700 transition-all hover:border-slate-300 hover:bg-slate-50"
+            className="flex w-full items-center justify-center gap-3 rounded-xl border border-slate-700 bg-slate-800/30 py-3 text-sm font-medium text-slate-300 transition-all hover:border-slate-600 hover:bg-slate-800/50"
           >
             <svg className="h-4 w-4" viewBox="0 0 24 24">
               <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" />
@@ -167,19 +183,19 @@ export default function Login() {
             Continue with Google
           </button>
 
-          <p className="mt-8 text-center text-sm text-slate-500">
+          <p className="mt-8 text-center text-sm text-slate-400">
             Don't have an account?{' '}
-            <Link href="/auth/signup" className="font-semibold text-[#4F46E5] hover:text-[#4338CA]">
+            <Link href="/auth/signup" className="font-semibold text-indigo-400 hover:text-indigo-300">
               Create one
             </Link>
           </p>
         </div>
 
-        <p className="mt-6 text-center text-xs text-slate-400">
+        <p className="mt-6 text-center text-xs text-slate-500">
           By signing in, you agree to our{' '}
-          <Link href="#" className="text-slate-500 underline hover:text-slate-600">Terms</Link>
+          <Link href="#" className="text-slate-400 underline hover:text-slate-300">Terms</Link>
           {' '}and{' '}
-          <Link href="#" className="text-slate-500 underline hover:text-slate-600">Privacy Policy</Link>
+          <Link href="#" className="text-slate-400 underline hover:text-slate-300">Privacy Policy</Link>
         </p>
       </motion.div>
     </div>
