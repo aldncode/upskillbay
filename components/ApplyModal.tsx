@@ -26,6 +26,7 @@ export default function ApplyModal({
   const { data: session, status } = useSession();
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false);
   const [agreedToTerms, setAgreedToTerms] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
@@ -119,7 +120,7 @@ export default function ApplyModal({
       toast.success('Application submitted successfully!');
       setFormData({ name: session?.user?.name || '', email: session?.user?.email || '', phone: '', experience: '', motivation: '' });
       setAgreedToTerms(false);
-      onClose();
+      setIsSubmitted(true);
       onSuccess?.();
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : 'Application failed';
@@ -303,12 +304,46 @@ export default function ApplyModal({
                             I agree to the terms and conditions and confirm that the information provided is accurate.
                           </label>
                         </div>
+
+                        {isSubmitted && (
+                          <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-6">
+                            <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-emerald-100">
+                              <svg className="h-6 w-6 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                              </svg>
+                            </div>
+                            <h3 className="mb-2 text-lg font-bold text-emerald-900">Application Submitted!</h3>
+                            <p className="mb-4 text-sm text-emerald-700">
+                              Your application for <span className="font-semibold">{targetName}</span> has been received and is now under review.
+                            </p>
+                            <div className="mb-4 rounded-lg bg-white/60 p-4">
+                              <p className="mb-3 text-xs font-semibold uppercase text-emerald-800">Application Timeline</p>
+                              <div className="space-y-2 text-sm">
+                                <div className="flex items-center gap-2 text-emerald-700">
+                                  <span className="flex h-5 w-5 items-center justify-center rounded-full bg-emerald-200 text-[10px] font-bold">1</span>
+                                  <span>Submitted - Application received</span>
+                                </div>
+                                <div className="flex items-center gap-2 text-slate-500">
+                                  <span className="flex h-5 w-5 items-center justify-center rounded-full bg-slate-200 text-[10px] font-bold">2</span>
+                                  <span>Under Review - Being evaluated</span>
+                                </div>
+                                <div className="flex items-center gap-2 text-slate-500">
+                                  <span className="flex h-5 w-5 items-center justify-center rounded-full bg-slate-200 text-[10px] font-bold">3</span>
+                                  <span>Decision - Final outcome</span>
+                                </div>
+                              </div>
+                            </div>
+                            <p className="text-xs text-emerald-600">
+                              We'll notify you via email within 24-48 hours about your application status.
+                            </p>
+                          </div>
+                        )}
                       </>
                     )}
                   </form>
                 </div>
 
-                {status === 'authenticated' && (
+                {status === 'authenticated' && !isSubmitted && (
                   <div className="flex-shrink-0 border-t border-slate-100 bg-white px-6 pb-6 pt-4 sm:px-8 sm:pb-8 sm:pt-5">
                     <button
                       type="submit"
@@ -335,6 +370,18 @@ export default function ApplyModal({
                     <p className="mt-3 text-center text-xs text-slate-400">
                       We'll review your application and get back to you within 24-48 hours
                     </p>
+                  </div>
+                )}
+
+                {status === 'authenticated' && isSubmitted && (
+                  <div className="flex-shrink-0 border-t border-slate-100 bg-white px-6 pb-6 pt-4 sm:px-8 sm:pb-8 sm:pt-5">
+                    <button
+                      type="button"
+                      onClick={() => { setIsSubmitted(false); onClose(); }}
+                      className="w-full rounded-xl bg-gradient-to-r from-[#4F46E5] to-[#7C3AED] py-3.5 text-sm font-semibold text-white shadow-lg shadow-indigo-500/25 hover:shadow-xl hover:shadow-indigo-500/30 hover:-translate-y-0.5"
+                    >
+                      View My Applications
+                    </button>
                   </div>
                 )}
               </div>

@@ -3,7 +3,6 @@
 import { useSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import toast from 'react-hot-toast';
 import { motion } from 'framer-motion';
 
 interface UserProfile {
@@ -36,6 +35,7 @@ interface DashboardData {
   enrollments: any[];
   submissions: any[];
   applications: any[];
+  trackApplications: any[];
   careerTrackEnrollments?: any[];
 }
 
@@ -45,6 +45,7 @@ export default function Dashboard() {
     enrollments: [],
     submissions: [],
     applications: [],
+    trackApplications: [],
     careerTrackEnrollments: [],
   });
   const [profile, setProfile] = useState<UserProfile>({});
@@ -68,6 +69,7 @@ export default function Dashboard() {
           enrollments: userData.enrollments || [],
           submissions: userData.submissions || [],
           applications: userData.applications || [],
+          trackApplications: userData.trackApplications || [],
           careerTrackEnrollments: userData.careerTrackEnrollments || [],
         });
       } catch (error) {
@@ -102,8 +104,8 @@ export default function Dashboard() {
     const fields = ['interest', 'experienceLevel', 'goal', 'skills', 'location', 'linkedinURL', 'portfolioLinks'];
     let filled = 0;
     fields.forEach(f => {
-      if (f === 'skills' && profile.skills?.length > 0) filled++;
-      else if (f === 'portfolioLinks' && profile.portfolioLinks?.length > 0) filled++;
+      if (f === 'skills' && (profile.skills?.length ?? 0) > 0) filled++;
+      else if (f === 'portfolioLinks' && (profile.portfolioLinks?.length ?? 0) > 0) filled++;
       else if (profile[f as keyof UserProfile]) filled++;
     });
     return Math.round((filled / fields.length) * 100);
@@ -112,9 +114,24 @@ export default function Dashboard() {
   const completionPercent = profileCompleteness();
   const hasEnrollments = (data.careerTrackEnrollments?.length || 0) > 0;
   const approvedCount = data.submissions?.filter((s) => s.status === 'approved').length || 0;
-  const pendingCount = data.submissions?.filter((s) => s.status === 'pending').length || 0;
-  const applicationsCount = data.applications?.length || 0;
-  const enrolledTracksSet = new Set(data.careerTrackEnrollments?.map((e: any) => e.careerTrackId) || []);
+  const applicationsCount = data.trackApplications?.length || 0;
+  
+  const getStatusConfig = (status: string) => {
+    switch (status) {
+      case 'submitted':
+        return { label: 'Submitted', color: 'bg-blue-100 text-blue-700', step: 1 };
+      case 'under_review':
+        return { label: 'Under Review', color: 'bg-amber-100 text-amber-700', step: 2 };
+      case 'shortlisted':
+        return { label: 'Shortlisted', color: 'bg-purple-100 text-purple-700', step: 3 };
+      case 'approved':
+        return { label: 'Approved', color: 'bg-emerald-100 text-emerald-700', step: 4 };
+      case 'rejected':
+        return { label: 'Rejected', color: 'bg-red-100 text-red-700', step: -1 };
+      default:
+        return { label: status, color: 'bg-slate-100 text-slate-700', step: 0 };
+    }
+  };
 
   const getGreeting = () => {
     const hour = new Date().getHours();
@@ -234,11 +251,11 @@ export default function Dashboard() {
         animate="visible"
       >
         {[
-          { label: 'Career Tracks', value: data.careerTrackEnrollments?.length || 0, sub: 'enrolled', color: '[#4F46E5]' },
+          { label: 'Active Tracks', value: data.careerTrackEnrollments?.length || 0, sub: 'enrolled', color: '[#4F46E5]' },
           { label: 'Completed', value: approvedCount, sub: 'tasks done', color: 'emerald-600' },
-          { label: 'In Review', value: pendingCount, sub: 'pending', color: 'amber-600' },
+          { label: 'In Review', value: data.trackApplications?.filter((a: any) => a.status !== 'approved' && a.status !== 'rejected').length || 0, sub: 'pending', color: 'amber-600' },
           { label: 'Applications', value: applicationsCount, sub: 'submitted', color: 'slate-700' },
-        ].map((stat, i) => (
+        ].map((stat) => (
           <motion.div key={stat.label} variants={itemVariants} className="rounded-xl border border-slate-200 bg-white p-5">
             <p className="text-xs font-semibold uppercase tracking-wider text-slate-500">{stat.label}</p>
             <p className={`mt-2 text-3xl font-bold text-${stat.color}`}>{stat.value}</p>
@@ -314,27 +331,65 @@ export default function Dashboard() {
               </div>
             </div>
             
-            {(data.applications?.length || 0) === 0 ? (
-              <div className="py-8 text-center">
-                <p className="text-sm text-slate-500">No applications yet</p>
+            {(data.trackApplications?.length || 0) === 0 ? (
+              <div className="rounded-xl border border-dashed border-slate-200 bg-slate-50 p-8 text-center">
+                <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-[#4F46E5]/10">
+                  <svg className="h-6 w-6 text-[#4F46E5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg>
+                </div>
+                <h3 className="mb-2 font-semibold text-slate-700">No applications yet</h3>
+                <p className="mb-4 text-sm text-slate-500">Apply for a career track to get started</p>
+                <Link
+                  href="/career-tracks"
+                  className="inline-flex rounded-xl bg-[#4F46E5] px-5 py-2.5 text-sm font-semibold text-white transition-all hover:bg-[#4338CA]"
+                >
+                  Browse Tracks
+                </Link>
               </div>
             ) : (
-              <div className="space-y-3">
-                {data.applications?.map((app: any) => (
-                  <div key={app.id} className="flex items-center justify-between rounded-lg border border-slate-100 bg-slate-50/50 p-4">
-                    <div className="min-w-0">
-                      <p className="font-medium text-slate-900 truncate">{app.type === 'track' ? 'Career Track' : 'Project'} Application</p>
-                      <p className="text-xs text-slate-500">Applied {new Date(app.createdAt).toLocaleDateString()}</p>
+              <div className="space-y-4">
+                {data.trackApplications?.map((app: any) => {
+                  const statusConfig = getStatusConfig(app.status);
+                  const isRejected = app.status === 'rejected';
+                  return (
+                    <div key={app.id} className={`rounded-xl border p-4 transition-all ${isRejected ? 'border-red-200 bg-red-50/50' : 'border-slate-200 bg-slate-50/50'}`}>
+                      <div className="mb-3 flex items-center justify-between">
+                        <div className="min-w-0">
+                          <p className="font-semibold text-slate-900">{app.careerTrack?.title || app.type}</p>
+                          <p className="text-xs text-slate-500">Applied {new Date(app.createdAt).toLocaleDateString()}</p>
+                        </div>
+                        <span className={`shrink-0 rounded-full px-3 py-1 text-xs font-semibold ${statusConfig.color}`}>
+                          {statusConfig.label}
+                        </span>
+                      </div>
+                      
+                      {!isRejected && app.status !== 'approved' && (
+                        <div className="flex items-center gap-1">
+                          {['submitted', 'under_review', 'shortlisted', 'approved'].map((step, idx) => {
+                            const stepNum = idx + 1;
+                            const isCompleted = statusConfig.step >= stepNum;
+                            const isCurrent = statusConfig.step === stepNum;
+                            return (
+                              <div key={step} className="flex flex-1 items-center">
+                                <div className={`h-2 flex-1 rounded-full ${isCompleted ? 'bg-[#4F46E5]' : 'bg-slate-200'} ${isCurrent ? 'ring-2 ring-[#4F46E5]/30' : ''}`} />
+                              </div>
+                            );
+                          })}
+                        </div>
+                      )}
+                      
+                      {!isRejected && (
+                        <div className="mt-2 flex justify-between text-[10px] text-slate-400">
+                          <span>Submitted</span>
+                          <span>Review</span>
+                          <span>Shortlist</span>
+                          <span>Approved</span>
+                        </div>
+                      )}
                     </div>
-                    <span className={`shrink-0 rounded-full px-3 py-1 text-xs font-semibold ${
-                      app.status === 'approved' ? 'bg-emerald-100 text-emerald-700' :
-                      app.status === 'pending' ? 'bg-amber-100 text-amber-700' :
-                      'bg-red-100 text-red-700'
-                    }`}>
-                      {app.status === 'approved' ? 'Approved' : app.status === 'pending' ? 'Pending' : 'Rejected'}
-                    </span>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             )}
           </motion.section>

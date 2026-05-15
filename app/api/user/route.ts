@@ -25,7 +25,7 @@ export async function GET(_: NextRequest) {
         role: true,
         createdAt: true,
         updatedAt: true,
-        enrollments: {
+enrollments: {
           include: {
             capsule: true,
           },
@@ -34,6 +34,12 @@ export async function GET(_: NextRequest) {
           where: { status: 'approved' },
         },
         applications: true,
+        trackApplications: {
+          include: {
+            careerTrack: true,
+          },
+          orderBy: { createdAt: 'desc' },
+        },
         portfolio: true,
         careerTrackEnrollments: {
           include: {

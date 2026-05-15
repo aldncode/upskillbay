@@ -3,9 +3,27 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useSession } from 'next-auth/react';
 import Link from 'next/link';
-import toast from 'react-hot-toast';
 import { motion, type Variants } from 'framer-motion';
-import CareerTrackCard from '@/components/CareerTrackCard';
+import { 
+  Cpu, 
+  Database, 
+  Cloud, 
+  Shield, 
+  Palette, 
+  Megaphone, 
+  Server, 
+  Bot,
+  ArrowRight,
+  DollarSign,
+  Clock,
+  Building2,
+  Sparkles,
+  CheckCircle2,
+  ChevronRight,
+  Zap,
+  Target,
+  TrendingUp
+} from 'lucide-react';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 
@@ -21,343 +39,503 @@ interface CareerTrack {
   enrollments?: { userId: string }[];
 }
 
-const benefits = [
-  { icon: 'M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z', title: 'Real Projects', desc: 'Build portfolio pieces that prove your skills' },
-  { icon: 'M13 10V3L4 14h7v7l9-11h-7z', title: 'Career Ready', desc: 'Skills that employers and clients actually need' },
-  { icon: 'M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z', title: 'Flexible Pace', desc: 'Learn at your speed, on your schedule' },
-  { icon: 'M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a4 4 0 11-8 0 4 4 0 018 0zM17 20a4 4 0 100-8 4 4 0 000 8z', title: 'Expert Support', desc: 'Guidance from industry professionals' },
+const careerTracksData = [
+  {
+    id: 'ai-engineer',
+    title: 'AI Engineer',
+    shortDesc: 'Build AI apps like ChatGPT',
+    description: 'Create intelligent applications using machine learning and AI tools that companies actually need.',
+    outcome: 'Job Ready',
+    duration: '16 weeks',
+    earningPotential: '$80k - $180k',
+    level: 'intermediate',
+    skills: ['Python', 'TensorFlow', 'PyTorch', 'OpenAI API', 'LangChain', 'Hugging Face'],
+    companies: ['Google', 'Microsoft', 'OpenAI', 'Meta', 'Startups'],
+    projects: ['Chatbot', 'Image Generator', 'AI Analyzer'],
+    color: 'from-violet-500 to-purple-600',
+    icon: Bot,
+    gradient: 'violet'
+  },
+  {
+    id: 'data-analyst',
+    title: 'Data Analyst',
+    shortDesc: 'Learn dashboards companies actually use',
+    description: 'Master data visualization and analysis tools to help businesses make smarter decisions.',
+    outcome: 'Job Ready',
+    duration: '12 weeks',
+    earningPotential: '$60k - $120k',
+    level: 'beginner',
+    skills: ['Excel', 'SQL', 'Python', 'Tableau', 'Power BI', 'Looker'],
+    companies: ['Amazon', 'Netflix', 'Banks', 'Consulting Firms'],
+    projects: ['Sales Dashboard', 'Customer Analysis', 'Financial Report'],
+    color: 'from-cyan-500 to-blue-600',
+    icon: Database,
+    gradient: 'cyan'
+  },
+  {
+    id: 'devops-engineer',
+    title: 'DevOps Engineer',
+    shortDesc: 'Keep systems running 24/7',
+    description: 'Learn to build and manage cloud infrastructure that powers modern apps and websites.',
+    outcome: 'Job Ready',
+    duration: '14 weeks',
+    earningPotential: '$90k - $160k',
+    level: 'intermediate',
+    skills: ['AWS', 'Docker', 'Kubernetes', 'Jenkins', 'Terraform', 'Linux'],
+    companies: ['Netflix', 'Spotify', 'Airbnb', 'Tech Giants'],
+    projects: ['CI/CD Pipeline', 'Cloud Infrastructure', 'Monitoring System'],
+    color: 'from-orange-500 to-red-600',
+    icon: Server,
+    gradient: 'orange'
+  },
+  {
+    id: 'salesforce-admin',
+    title: 'Salesforce Admin',
+    shortDesc: 'Manage tools that sales teams use',
+    description: 'Become the go-to person for CRM systems that help businesses track customers and deals.',
+    outcome: 'Job Ready',
+    duration: '10 weeks',
+    earningPotential: '$60k - $130k',
+    level: 'beginner',
+    skills: ['Salesforce', 'Flow Builder', 'Reports', 'Dashboards', 'Apex', 'Lightning'],
+    companies: ['Salesforce', 'Accenture', 'Deloitte', 'Any Enterprise'],
+    projects: ['Sales Pipeline', 'Automation Setup', 'Custom App'],
+    color: 'from-sky-500 to-blue-600',
+    icon: Target,
+    gradient: 'sky'
+  },
+  {
+    id: 'cloud-engineer',
+    title: 'Cloud Engineer',
+    shortDesc: 'Manage cloud systems used by startups',
+    description: 'Learn to design and maintain cloud solutions that scale from small startups to big companies.',
+    outcome: 'Job Ready',
+    duration: '14 weeks',
+    earningPotential: '$85k - $170k',
+    level: 'intermediate',
+    skills: ['AWS', 'Azure', 'GCP', 'Python', 'CloudFormation', 'Lambda'],
+    companies: ['AWS Partners', 'Startups', 'Enterprise Tech'],
+    projects: ['Cloud Architecture', 'Serverless App', 'Cloud Migration'],
+    color: 'from-emerald-500 to-teal-600',
+    icon: Cloud,
+    gradient: 'emerald'
+  },
+  {
+    id: 'cybersecurity-analyst',
+    title: 'Cybersecurity Analyst',
+    shortDesc: 'Protect company data from hackers',
+    description: 'Learn to find vulnerabilities and keep systems safe from cyber threats.',
+    outcome: 'Job Ready',
+    duration: '16 weeks',
+    earningPotential: '$70k - $150k',
+    level: 'intermediate',
+    skills: ['Network Security', 'Penetration Testing', 'SIEM', 'Python', 'Firewalls', 'Compliance'],
+    companies: ['Banks', 'Tech Companies', 'Government', 'Consulting'],
+    projects: ['Security Audit', 'Threat Detection', 'Risk Assessment'],
+    color: 'from-red-500 to-pink-600',
+    icon: Shield,
+    gradient: 'red'
+  },
+  {
+    id: 'ui-ux-designer',
+    title: 'UI/UX Designer',
+    shortDesc: 'Design apps people love to use',
+    description: 'Create beautiful, easy-to-use interfaces that make apps and websites a joy to use.',
+    outcome: 'Job Ready',
+    duration: '12 weeks',
+    earningPotential: '$60k - $140k',
+    level: 'beginner',
+    skills: ['Figma', 'Prototyping', 'User Research', 'Design Systems', 'Adobe XD', 'UI Animation'],
+    companies: ['Design Agencies', 'Tech Startups', 'Product Companies'],
+    projects: ['Mobile App Design', 'Website Redesign', 'Design System'],
+    color: 'from-pink-500 to-rose-600',
+    icon: Palette,
+    gradient: 'pink'
+  },
+  {
+    id: 'digital-marketing',
+    title: 'Digital Marketing Specialist',
+    shortDesc: 'Help businesses grow online',
+    description: 'Master online marketing strategies that drive real results for businesses.',
+    outcome: 'Job Ready',
+    duration: '10 weeks',
+    earningPotential: '$50k - $100k',
+    level: 'beginner',
+    skills: ['SEO', 'Google Ads', 'Social Media', 'Content Marketing', 'Analytics', 'Email Marketing'],
+    companies: ['Marketing Agencies', 'E-commerce', 'Startups', 'Brands'],
+    projects: ['Marketing Campaign', 'SEO Strategy', 'Social Media Growth'],
+    color: 'from-lime-500 to-green-600',
+    icon: Megaphone,
+    gradient: 'lime'
+  }
 ];
 
-const processSteps = [
-  { num: '01', title: 'Choose Your Path', desc: 'Select a career track that matches your goals and current skill level', icon: 'M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z' },
-  { num: '02', title: 'Build Real Projects', desc: 'Complete hands-on assignments that create tangible portfolio pieces', icon: 'M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4' },
-  { num: '03', title: 'Get Certified', desc: 'Earn credentials that validate your new skills and capabilities', icon: 'M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z' },
-  { num: '04', title: 'Launch Your Career', desc: 'Apply with your portfolio and proof to start earning', icon: 'M13 7h8m0 0v8m0-8l-8 8-4-4-6 6' },
-];
+const containerVariants: Variants = {
+  hidden: { opacity: 0 },
+  visible: {
+    opacity: 1,
+    transition: { staggerChildren: 0.08 },
+  },
+};
+
+const cardVariants: Variants = {
+  hidden: { opacity: 0, y: 20, scale: 0.98 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    scale: 1,
+    transition: { duration: 0.4, ease: 'easeOut' },
+  },
+};
+
+const glowColors: Record<string, string> = {
+  violet: 'rgba(139, 92, 246, 0.4)',
+  cyan: 'rgba(6, 182, 212, 0.4)',
+  orange: 'rgba(249, 115, 22, 0.4)',
+  sky: 'rgba(14, 165, 233, 0.4)',
+  emerald: 'rgba(16, 185, 129, 0.4)',
+  red: 'rgba(239, 68, 68, 0.4)',
+  pink: 'rgba(236, 72, 153, 0.4)',
+  lime: 'rgba(132, 204, 22, 0.4)',
+};
 
 export default function CareerTracksPage() {
   const { data: session } = useSession();
-  const [careerTracks, setCareerTracks] = useState<CareerTrack[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [search, setSearch] = useState('');
-  const [level, setLevel] = useState('');
-  const [userEnrollments, setUserEnrollments] = useState<Set<string>>(new Set());
-
-  const filteredTracks = useMemo(() => {
-    return careerTracks.filter((track) => {
-      if (search && !track.title.toLowerCase().includes(search.toLowerCase()) && 
-          !track.description.toLowerCase().includes(search.toLowerCase())) {
-        return false;
-      }
-      if (level && track.level.toLowerCase() !== level.toLowerCase()) {
-        return false;
-      }
-      return true;
-    });
-  }, [careerTracks, search, level]);
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const [hoveredCard, setHoveredCard] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchCareerTracks = async () => {
-      try {
-        setLoading(true);
-        const res = await fetch('/api/career-tracks');
-        const data = await res.json();
-        setCareerTracks(data);
-      } catch (error) {
-        console.error('Error fetching career tracks:', error);
-        toast.error('Failed to load career tracks');
-      } finally {
-        setLoading(false);
-      }
+    const handleMouseMove = (e: MouseEvent) => {
+      setMousePosition({ x: e.clientX, y: e.clientY });
     };
-    fetchCareerTracks();
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => window.removeEventListener('mousemove', handleMouseMove);
   }, []);
-
-  useEffect(() => {
-    const fetchUserEnrollments = async () => {
-      if (!session?.user) return;
-      try {
-        const res = await fetch('/api/enrollments');
-        const data = await res.json();
-        const enrolledTrackIds = new Set<string>(
-          (data.enrollments?.map((e: any) => e.careerTrackId as string) || []) as string[]
-        );
-        setUserEnrollments(enrolledTrackIds);
-      } catch (error) {
-        console.error('Error fetching enrollments:', error);
-      }
-    };
-    fetchUserEnrollments();
-  }, [session]);
-
-  const containerVariants: Variants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: { staggerChildren: 0.06 },
-    },
-  };
-
-  const itemVariants: Variants = {
-    hidden: { opacity: 0, y: 12 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.35, ease: 'easeOut' },
-    },
-  };
-
-  const filterTabs = [
-    { value: '', label: 'All' },
-    { value: 'beginner', label: 'Beginner' },
-    { value: 'intermediate', label: 'Intermediate' },
-    { value: 'advanced', label: 'Advanced' },
-  ];
 
   return (
     <>
-      <Navbar />
-      <main className="min-h-screen bg-slate-50">
-        <section className="relative overflow-hidden bg-white">
-          <div className="absolute inset-0 bg-gradient-to-b from-slate-50/50 to-white" />
-          <div className="absolute inset-0 overflow-hidden">
-            <div className="absolute -top-40 -right-40 h-80 w-80 rounded-full bg-[#4F46E5]/5 blur-3xl" />
-            <div className="absolute -bottom-40 -left-40 h-80 w-80 rounded-full bg-[#7C3AED]/5 blur-3xl" />
+      <Navbar variant="dark" />
+      <main className="min-h-screen bg-[#030712]">
+        {/* Animated Grid Background */}
+        <div className="relative overflow-hidden">
+          <div className="absolute inset-0">
+            <div 
+              className="absolute inset-0 opacity-30"
+              style={{
+                backgroundImage: `
+                  linear-gradient(rgba(99, 102, 241, 0.1) 1px, transparent 1px),
+                  linear-gradient(90deg, rgba(99, 102, 241, 0.1) 1px, transparent 1px)
+                `,
+                backgroundSize: '60px 60px',
+              }}
+            />
+            <div className="absolute inset-0 bg-gradient-to-b from-[#030712] via-transparent to-[#030712]" />
           </div>
           
-          <div className="relative mx-auto max-w-7xl px-6 py-16 md:px-8 md:py-20">
-            <div className="grid gap-12 lg:grid-cols-[1fr_380px] lg:gap-16">
-              <div>
-                <div className="mb-6 flex items-center gap-3">
-                  <span className="inline-flex items-center gap-2 rounded-full bg-[#4F46E5]/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-[#4F46E5]">
-                    <span className="h-2 w-2 rounded-full bg-[#4F46E5]" />
-                    Career Tracks
-                  </span>
-                </div>
-                <h1 className="mb-6 text-4xl font-bold tracking-tight text-[#0F172A] md:text-5xl lg:text-[56px] leading-tight">
-                  Transform your career with <span className="text-[#4F46E5]">real skills</span>
-                </h1>
-                <p className="mb-8 max-w-2xl text-lg leading-relaxed text-slate-600">
-                  Structured learning paths designed by industry experts. Build real projects, 
-                  earn recognized credentials, and launch your career with confidence.
-                </p>
-                <div className="flex flex-wrap items-center gap-4">
-                  <div className="flex items-center gap-2 rounded-full bg-slate-100 px-4 py-2 text-sm font-medium text-slate-700">
-                    <svg className="h-4 w-4 text-[#4F46E5]" fill="currentColor" viewBox="0 0 20 20">
-                      <path d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4.125-1.625a1 1 0 00.788-.38l-.003.003a1 1 0 01-.14.09l-1.975 1.02a1 1 0 00-.37.306l.002.002a1 1 0 01.37.306l1.976-1.02a1 1 0 00.14-.09l1.975-1.022a.999.999 0 01.356.257l4.125 1.625a1 1 0 00.788.38l.003-.003a1 1 0 01-.37.306l-.002.002a1 1 0 00-.37.306l1.976 1.02a1 1 0 00.14.09l1.975 1.022a.999.999 0 01-.356.257l-4.125-1.625a1 1 0 00-.788-.38l-1.976-1.022a1 1 0 01-.37-.306l.002-.002a1 1 0 00.37-.306l1.976-1.02a1 1 0 00.14-.09l1.975-1.022.003.003z" />
-                    </svg>
-                    {careerTracks.length} career paths
-                  </div>
-                  <div className="flex items-center gap-2 rounded-full bg-slate-100 px-4 py-2 text-sm font-medium text-slate-700">
-                    <svg className="h-4 w-4 text-[#4F46E5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                    </svg>
-                    4-16 week programs
-                  </div>
-                  <div className="flex items-center gap-2 rounded-full bg-slate-100 px-4 py-2 text-sm font-medium text-slate-700">
-                    <svg className="h-4 w-4 text-[#4F46E5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-                    </svg>
-                    Job-ready outcomes
-                  </div>
-                </div>
-              </div>
+          {/* Glowing Orbs */}
+          <div className="absolute top-20 left-1/4 h-[500px] w-[500px] rounded-full bg-indigo-600/20 blur-[120px]" />
+          <div className="absolute top-40 right-1/4 h-[400px] w-[400px] rounded-full bg-purple-600/15 blur-[100px]" />
+          <div className="absolute bottom-20 left-1/3 h-[300px] w-[300px] rounded-full bg-cyan-600/15 blur-[80px]" />
 
-              <div className="hidden lg:block">
-                <div className="relative rounded-2xl border border-slate-200/60 bg-white/80 p-6 shadow-xl shadow-slate-200/50 backdrop-blur-sm">
-                  <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-[#4F46E5]/5 via-transparent to-[#7C3AED]/5" />
-                  <div className="relative">
-                    <h3 className="mb-5 text-lg font-bold text-[#0F172A]">Why UpskillBay?</h3>
-                    <div className="space-y-4">
-                      {benefits.map((item) => (
-                        <div key={item.title} className="flex items-start gap-3">
-                          <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-[#4F46E5]/10">
-                            <svg className="h-4 w-4 text-[#4F46E5]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={item.icon} />
-                            </svg>
-                          </div>
-                          <div>
-                            <p className="text-sm font-semibold text-[#0F172A]">{item.title}</p>
-                            <p className="text-xs text-slate-500">{item.desc}</p>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                    {!session?.user && (
-                      <Link
-                        href="/auth/signup"
-                        className="mt-6 block w-full rounded-xl bg-gradient-to-r from-[#4F46E5] to-[#7C3AED] py-3 text-center text-sm font-semibold text-white shadow-lg shadow-indigo-500/25 transition-all hover:shadow-xl hover:shadow-indigo-500/30 hover:-translate-y-0.5"
-                      >
-                        Start Learning Free
-                      </Link>
-                    )}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section className="sticky top-16 z-30 border-b border-slate-200 bg-white/95 backdrop-blur-md">
-          <div className="mx-auto max-w-7xl px-6 py-4 md:px-8">
-            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-              <div className="flex items-center gap-2">
-                {filterTabs.map((tab) => (
-                  <button
-                    key={tab.value}
-                    onClick={() => setLevel(tab.value)}
-                    className={`whitespace-nowrap rounded-lg px-4 py-2 text-sm font-medium transition-all ${
-                      level === tab.value
-                        ? 'bg-[#4F46E5] text-white'
-                        : 'text-slate-600 hover:bg-slate-100'
-                    }`}
-                  >
-                    {tab.label}
-                  </button>
-                ))}
-              </div>
-              <div className="relative">
-                <svg className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                </svg>
-                <input
-                  type="text"
-                  placeholder="Search careers..."
-                  value={search}
-                  onChange={(e) => setSearch(e.target.value)}
-                  className="w-full rounded-xl border border-slate-200 bg-slate-50 py-2.5 pl-10 pr-4 text-sm outline-none transition-all focus:border-[#4F46E5] focus:bg-white focus:ring-4 focus:ring-[#4F46E5]/10 sm:w-72"
-                />
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section className="mx-auto max-w-7xl px-6 py-10 md:px-8">
-          <div className="mb-8 flex items-center justify-between">
-            <div>
-              <h2 className="text-xl font-bold text-[#0F172A]">Browse Career Tracks</h2>
-              <p className="mt-1 text-sm text-slate-500">
-                {loading ? 'Loading...' : `Showing ${filteredTracks.length} of ${careerTracks.length} tracks`}
-              </p>
-            </div>
-          </div>
-
-          {loading ? (
-            <div className="flex items-center justify-center py-20">
-              <div className="h-8 w-8 animate-spin rounded-full border-2 border-slate-200 border-t-[#4F46E5]" />
-            </div>
-          ) : filteredTracks.length === 0 ? (
-            <div className="rounded-2xl border border-slate-200 bg-white p-12 text-center">
-              <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-slate-100">
-                <svg className="h-6 w-6 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-              </div>
-              <h3 className="mb-2 text-lg font-semibold text-[#0F172A]">No tracks found</h3>
-              <p className="mb-6 text-slate-600">Try adjusting your filters or search terms</p>
-              <button
-                onClick={() => { setSearch(''); setLevel(''); }}
-                className="rounded-xl bg-[#4F46E5] px-6 py-2.5 text-sm font-semibold text-white transition-all hover:bg-[#4338CA]"
-              >
-                Clear filters
-              </button>
-            </div>
-          ) : (
+          {/* Hero Section */}
+          <section className="relative mx-auto max-w-7xl px-6 pt-24 pb-32 md:px-8 md:pt-32 md:pb-40">
             <motion.div
-              className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3"
-              variants={containerVariants}
-              initial="hidden"
-              animate="visible"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              className="text-center"
             >
-              {filteredTracks.map((track, index) => (
-                <motion.div key={track.id} variants={itemVariants}>
-                  <CareerTrackCard
-                    track={track}
-                    enrolled={userEnrollments.has(track.id)}
-                    featured={index === 0}
-                  />
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 0.1, duration: 0.5 }}
+                className="mb-6 inline-flex items-center gap-2 rounded-full border border-indigo-500/30 bg-indigo-500/10 px-4 py-1.5"
+              >
+                <span className="relative flex h-2 w-2">
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-indigo-400 opacity-75" />
+                  <span className="relative inline-flex h-2 w-2 rounded-full bg-indigo-400" />
+                </span>
+                <span className="text-xs font-medium text-indigo-300">8 Career Paths · Job Guaranteed</span>
+              </motion.div>
+
+              <h1 className="mb-6 text-5xl font-bold tracking-tight text-white md:text-6xl lg:text-7xl">
+                Choose Your{' '}
+                <span className="bg-gradient-to-r from-indigo-400 via-purple-400 to-cyan-400 bg-clip-text text-transparent">
+                  Career Path
+                </span>
+              </h1>
+              
+              <p className="mx-auto mb-10 max-w-2xl text-lg text-slate-400 md:text-xl">
+                Learn real tools. Build real projects. Get job-ready.
+              </p>
+
+              <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
+                <Link
+                  href="#tracks"
+                  className="group relative inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 px-8 py-4 text-base font-semibold text-white transition-all hover:shadow-lg hover:shadow-indigo-500/30 hover:-translate-y-0.5"
+                >
+                  Explore Tracks
+                  <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                </Link>
+                <Link
+                  href="/auth/signup"
+                  className="group inline-flex items-center gap-2 rounded-xl border border-slate-700 bg-slate-800/50 px-8 py-4 text-base font-semibold text-white backdrop-blur-sm transition-all hover:border-slate-600 hover:bg-slate-800"
+                >
+                  Talk to a Mentor
+                  <Sparkles className="h-4 w-4 text-amber-400" />
+                </Link>
+              </div>
+            </motion.div>
+
+            {/* Floating Career Cards Preview */}
+            <motion.div
+              initial={{ opacity: 0, y: 40 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3, duration: 0.6 }}
+              className="relative mt-20 flex flex-wrap justify-center gap-4"
+            >
+              {[
+                { title: 'AI Engineer', color: 'violet' },
+                { title: 'Data Analyst', color: 'cyan' },
+                { title: 'DevOps', color: 'orange' },
+                { title: 'Salesforce', color: 'sky' },
+                { title: 'Cloud Engineer', color: 'emerald' },
+              ].map((item, index) => (
+                <motion.div
+                  key={item.title}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.4 + index * 0.1 }}
+                  className="group relative cursor-pointer"
+                  style={{
+                    transform: `translateY(${Math.sin(index * 30) * 10}px)`,
+                  }}
+                >
+                  <div 
+                    className="rounded-xl border border-slate-700/50 bg-slate-900/80 backdrop-blur-md px-5 py-3 transition-all duration-300 group-hover:scale-105"
+                    style={{
+                      boxShadow: `0 0 30px ${glowColors[item.color]}20, inset 0 1px 0 rgba(255,255,255,0.1)`,
+                    }}
+                  >
+                    <span className="text-sm font-medium text-slate-300">{item.title}</span>
+                  </div>
                 </motion.div>
               ))}
             </motion.div>
-          )}
-        </section>
+          </section>
+        </div>
 
-        {!loading && careerTracks.length > 0 && (
-          <section className="border-t border-slate-200 bg-white">
-            <div className="mx-auto max-w-7xl px-6 py-20 md:px-8">
-              <div className="mb-12 text-center">
-                <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-[#4F46E5]/10 px-4 py-1.5 text-xs font-semibold uppercase tracking-wider text-[#4F46E5]">
-                  <span className="h-2 w-2 rounded-full bg-[#4F46E5]" />
-                  Your Journey
-                </div>
-                <h2 className="text-3xl font-bold tracking-tight text-[#0F172A] md:text-4xl">
-                  From enrollment to career launch
-                </h2>
-                <p className="mt-4 text-lg text-slate-600">A clear path to measurable career growth</p>
-              </div>
-              
-              <div className="relative">
-                <div className="absolute left-1/2 top-0 bottom-0 hidden w-px bg-gradient-to-b from-transparent via-[#4F46E5]/30 to-transparent lg:block" />
-                
-                <div className="grid grid-cols-1 gap-8 lg:grid-cols-4 lg:gap-8">
-                  {processSteps.map((step, index) => (
-                    <div key={step.num} className={`relative lg:text-center ${index % 2 === 0 ? 'lg:pr-8' : 'lg:pl-8'}`}>
-                      <div className="mb-4 flex items-center gap-4 lg:mb-6 lg:justify-center">
-                        <div className="flex h-14 w-14 flex-shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-[#4F46E5] to-[#7C3AED] text-xl font-bold text-white shadow-lg shadow-indigo-500/25">
-                          {step.num}
+        {/* Career Tracks Grid */}
+        <section id="tracks" className="relative px-6 pb-24 md:px-8">
+          <div className="mx-auto max-w-7xl">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5 }}
+              className="mb-16 text-center"
+            >
+              <h2 className="mb-4 text-3xl font-bold tracking-tight text-white md:text-4xl">
+                Find Your Perfect Career Track
+              </h2>
+              <p className="mx-auto max-w-xl text-slate-400">
+                Each track is designed to get you hired. Pick one that matches your goals.
+              </p>
+            </motion.div>
+
+            <motion.div
+              variants={containerVariants}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{ once: true }}
+              className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3"
+            >
+              {careerTracksData.map((track, index) => (
+                <motion.div
+                  key={track.id}
+                  variants={cardVariants}
+                  onMouseEnter={() => setHoveredCard(track.id)}
+                  onMouseLeave={() => setHoveredCard(null)}
+                >
+                  <Link href={`/career-tracks/${track.id}`}>
+                    <div 
+                      className="group relative h-full cursor-pointer overflow-hidden rounded-2xl border border-slate-800 bg-slate-900/60 backdrop-blur-md p-6 transition-all duration-500 hover:border-slate-700"
+                      style={{
+                        boxShadow: hoveredCard === track.id 
+                          ? `0 0 40px ${glowColors[track.gradient]}30, 0 20px 40px rgba(0,0,0,0.4)`
+                          : '0 4px 24px rgba(0,0,0,0.3)',
+                      }}
+                    >
+                      {/* Gradient Background */}
+                      <div 
+                        className="absolute inset-0 opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+                        style={{
+                          background: `linear-gradient(135deg, ${glowColors[track.gradient]}10 0%, transparent 50%, ${glowColors[track.gradient]}05 100%)`,
+                        }}
+                      />
+
+                      {/* Glowing Border */}
+                      <div 
+                        className="absolute inset-0 rounded-2xl opacity-0 transition-opacity duration-500 group-hover:opacity-100"
+                        style={{
+                          background: `linear-gradient(135deg, ${glowColors[track.gradient]}40, transparent 50%, ${glowColors[track.gradient]}20)`,
+                          mask: 'linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0)',
+                          maskComposite: 'exclude',
+                          padding: '1px',
+                        }}
+                      />
+
+                      <div className="relative">
+                        {/* Header */}
+                        <div className="mb-5 flex items-start justify-between">
+                          <div className="flex items-center gap-4">
+                            <div 
+                              className={`flex h-14 w-14 items-center justify-center rounded-xl bg-gradient-to-br ${track.color}`}
+                            >
+                              <track.icon className="h-6 w-6 text-white" />
+                            </div>
+                            <div>
+                              <h3 className="text-xl font-bold text-white">{track.title}</h3>
+                              <p className="text-sm text-slate-400">{track.shortDesc}</p>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Description */}
+                        <p className="mb-5 text-sm leading-relaxed text-slate-400">
+                          {track.description}
+                        </p>
+
+                        {/* Tags */}
+                        <div className="mb-5 flex flex-wrap gap-2">
+                          <span className="inline-flex items-center gap-1 rounded-lg bg-emerald-500/10 border border-emerald-500/20 px-3 py-1 text-xs font-medium text-emerald-400">
+                            <CheckCircle2 className="h-3 w-3" />
+                            {track.outcome}
+                          </span>
+                          <span className="inline-flex items-center gap-1 rounded-lg bg-slate-800 border border-slate-700 px-3 py-1 text-xs font-medium text-slate-400">
+                            <Clock className="h-3 w-3" />
+                            {track.duration}
+                          </span>
+                          <span className={`inline-flex items-center gap-1 rounded-lg px-3 py-1 text-xs font-medium ${
+                            track.level === 'beginner' 
+                              ? 'bg-blue-500/10 border border-blue-500/20 text-blue-400'
+                              : track.level === 'intermediate'
+                              ? 'bg-amber-500/10 border border-amber-500/20 text-amber-400'
+                              : 'bg-red-500/10 border border-red-500/20 text-red-400'
+                          }`}>
+                            {track.level === 'beginner' ? 'Beginner Friendly' : track.level === 'intermediate' ? 'Intermediate' : 'Advanced'}
+                          </span>
+                        </div>
+
+                        {/* Stats */}
+                        <div className="mb-5 grid grid-cols-2 gap-3">
+                          <div className="rounded-xl border border-slate-800 bg-slate-950/50 p-3">
+                            <div className="mb-1 flex items-center gap-1">
+                              <DollarSign className="h-3 w-3 text-slate-500" />
+                              <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-500">Salary</p>
+                            </div>
+                            <p className="text-sm font-bold text-white">{track.earningPotential}</p>
+                          </div>
+                          <div className="rounded-xl border border-slate-800 bg-slate-950/50 p-3">
+                            <div className="mb-1 flex items-center gap-1">
+                              <Building2 className="h-3 w-3 text-slate-500" />
+                              <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-500">Companies</p>
+                            </div>
+                            <p className="text-sm font-bold text-white">{track.companies.length}+ Hiring</p>
+                          </div>
+                        </div>
+
+                        {/* Tools */}
+                        <div className="mb-5">
+                          <p className="mb-2 text-[10px] font-semibold uppercase tracking-wider text-slate-500">Tools You Will Learn</p>
+                          <div className="flex flex-wrap gap-1.5">
+                            {track.skills.slice(0, 4).map((skill) => (
+                              <span
+                                key={skill}
+                                className="rounded-md border border-slate-700 bg-slate-800/50 px-2.5 py-1 text-[11px] font-medium text-slate-300"
+                              >
+                                {skill}
+                              </span>
+                            ))}
+                            {track.skills.length > 4 && (
+                              <span className="rounded-md bg-slate-800 px-2.5 py-1 text-[11px] font-medium text-slate-500">
+                                +{track.skills.length - 4} more
+                              </span>
+                            )}
+                          </div>
+                        </div>
+
+                        {/* Projects Preview */}
+                        <div className="mb-5">
+                          <p className="mb-2 text-[10px] font-semibold uppercase tracking-wider text-slate-500">Projects You Will Build</p>
+                          <div className="flex gap-2">
+                            {track.projects.map((project, i) => (
+                              <div 
+                                key={project}
+                                className="flex-1 rounded-lg border border-slate-800 bg-slate-950/50 px-3 py-2 text-center"
+                              >
+                                <p className="text-xs font-medium text-slate-400">{project}</p>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+
+                        {/* CTA Button */}
+                        <div className="flex items-center justify-between border-t border-slate-800 pt-4">
+                          <span className="text-sm font-medium text-slate-400 group-hover:text-white transition-colors">
+                            View Career Track
+                          </span>
+                          <ChevronRight className="h-5 w-5 text-slate-500 transition-all group-hover:translate-x-1 group-hover:text-indigo-400" />
                         </div>
                       </div>
-                      <div className="lg:bg-white lg:p-6 lg:rounded-2xl lg:border lg:border-slate-100 lg:shadow-sm">
-                        <h3 className="mb-2 text-lg font-bold text-[#0F172A]">{step.title}</h3>
-                        <p className="text-sm text-slate-600 leading-relaxed">{step.desc}</p>
-                      </div>
                     </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </section>
-        )}
+                  </Link>
+                </motion.div>
+              ))}
+            </motion.div>
+          </div>
+        </section>
 
-        {!loading && careerTracks.length > 0 && (
-          <section className="relative overflow-hidden bg-[#0F172A] py-20">
-            <div className="absolute inset-0">
-              <div className="absolute top-0 left-1/4 h-64 w-64 rounded-full bg-[#4F46E5]/20 blur-3xl" />
-              <div className="absolute bottom-0 right-1/4 h-64 w-64 rounded-full bg-[#7C3AED]/20 blur-3xl" />
-            </div>
-            
-            <div className="relative mx-auto max-w-4xl px-6 text-center md:px-8">
+        {/* CTA Section */}
+        <section className="relative overflow-hidden px-6 py-24 md:px-8">
+          <div className="absolute inset-0">
+            <div className="absolute top-0 left-1/4 h-64 w-64 rounded-full bg-indigo-600/20 blur-3xl" />
+            <div className="absolute bottom-0 right-1/4 h-64 w-64 rounded-full bg-purple-600/20 blur-3xl" />
+          </div>
+
+          <div className="relative mx-auto max-w-4xl text-center">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.5 }}
+            >
               <h2 className="mb-6 text-3xl font-bold tracking-tight text-white md:text-4xl">
-                Ready to transform your career?
+                Ready to Transform Your Career?
               </h2>
-              <p className="mb-8 text-lg text-slate-300">
-                Join thousands of learners who have built real skills and real careers through UpskillBay.
+              <p className="mx-auto mb-8 max-w-xl text-lg text-slate-400">
+                Join thousands of learners who have built real skills and landed real jobs.
               </p>
               <div className="flex flex-col items-center justify-center gap-4 sm:flex-row">
-                {!session?.user ? (
-                  <>
-                    <Link
-                      href="/auth/signup"
-                      className="rounded-xl bg-gradient-to-r from-[#4F46E5] to-[#7C3AED] px-8 py-3.5 text-base font-semibold text-white shadow-lg shadow-indigo-500/25 transition-all hover:shadow-xl hover:shadow-indigo-500/30 hover:-translate-y-0.5"
-                    >
-                      Get Started Free
-                    </Link>
-                    <Link
-                      href="/career-tracks"
-                      className="rounded-xl border border-slate-600 px-8 py-3.5 text-base font-semibold text-white transition-all hover:bg-white/10"
-                    >
-                      Browse Tracks
-                    </Link>
-                  </>
-                ) : (
-                  <p className="text-lg font-medium text-white">You're signed in. Start exploring tracks above!</p>
-                )}
+                <Link
+                  href="/auth/signup"
+                  className="group inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 px-8 py-4 text-base font-semibold text-white transition-all hover:shadow-lg hover:shadow-indigo-500/30 hover:-translate-y-0.5"
+                >
+                  Get Started Free
+                  <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+                </Link>
+                <Link
+                  href="#tracks"
+                  className="inline-flex items-center gap-2 rounded-xl border border-slate-700 bg-slate-800/50 px-8 py-4 text-base font-semibold text-white backdrop-blur-sm transition-all hover:border-slate-600 hover:bg-slate-800"
+                >
+                  Browse All Tracks
+                </Link>
               </div>
-            </div>
-          </section>
-        )}
+            </motion.div>
+          </div>
+        </section>
       </main>
-      <Footer />
+      <Footer variant="dark" />
     </>
   );
 }

@@ -262,7 +262,7 @@ model TrackApplication {
   motivation        String   @db.Text
   
   agreedToTerms     Boolean  @default(false)
-  status            String   @default("pending") // pending, approved, rejected
+  status            String   @default("submitted") // submitted, under_review, shortlisted, approved, rejected
   
   user              User     @relation("trackApplications", fields: [userId], references: [id], onDelete: Cascade)
   
