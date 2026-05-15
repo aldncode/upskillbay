@@ -156,12 +156,12 @@ export default function CareerTrackCard({
             </div>
           </div>
 
-          {track.enrollments && track.enrollments.length > 0 && (
+          {(track.enrollments?.length ?? 0) > 0 && (
             <div className="mb-4 flex items-center gap-2 text-xs text-slate-500">
               <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 20 20">
                 <path d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" />
               </svg>
-              {track.enrollments.length} learners enrolled
+              {track.enrollments?.length} learners enrolled
             </div>
           )}
 

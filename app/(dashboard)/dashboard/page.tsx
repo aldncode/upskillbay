@@ -394,7 +394,7 @@ export default function Dashboard() {
             )}
           </motion.section>
 
-          {careerTracks.length > 0 && (
+          {(careerTracks?.length ?? 0) > 0 && (
             <motion.section variants={itemVariants} className="rounded-xl border border-slate-200 bg-white p-6">
               <div className="mb-6 flex items-center justify-between">
                 <div>
@@ -469,7 +469,7 @@ export default function Dashboard() {
                 </span>
                 Browse Projects
               </Link>
-              {profile?.portfolioLinks?.length > 0 && (
+              {(profile?.portfolioLinks?.length ?? 0) > 0 && (
                 <Link href={`/portfolio/${user?.id}`} className="flex items-center gap-3 rounded-xl border border-slate-200 p-3 text-sm font-medium text-slate-700 transition-all hover:border-slate-300 hover:bg-slate-50">
                   <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-slate-100">
                     <svg className="h-4 w-4 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">

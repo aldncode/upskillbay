@@ -82,9 +82,9 @@ export default function ProfilePage() {
 
   const careerComplete = !!(profile.interest && profile.experienceLevel && profile.goal);
   const skillsComplete = !!(
-    profile.skills.length > 0 && profile.toolsKnown.length > 0 && profile.availability
+    (profile.skills?.length ?? 0) > 0 && (profile.toolsKnown?.length ?? 0) > 0 && profile.availability
   );
-  const proofComplete = !!(profile.portfolioLinks.length > 0 || profile.pastWorkDescription);
+  const proofComplete = !!(((profile.portfolioLinks?.length ?? 0) > 0) || profile.pastWorkDescription);
   const hiringComplete = !!(profile.resumeURL || profile.linkedinURL || profile.location);
 
   return (
@@ -171,13 +171,13 @@ export default function ProfilePage() {
             title="Skills & Tools"
             description="Showcase your technical skills and tools expertise"
             isCompleted={skillsComplete}
-            completionPercent={skillsComplete ? 100 : (profile.skills.length > 0 || profile.toolsKnown.length > 0 || profile.availability ? 50 : 0)}
+            completionPercent={skillsComplete ? 100 : (((profile.skills?.length ?? 0) > 0 || (profile.toolsKnown?.length ?? 0) > 0 || profile.availability) ? 50 : 0)}
             icon="🛠️"
             link="/profile/setup?step=3"
           >
-            {(profile.skills.length > 0 || profile.toolsKnown.length > 0) && (
+            {((profile.skills?.length ?? 0) > 0 || (profile.toolsKnown?.length ?? 0) > 0) && (
               <div className="space-y-3 text-sm">
-                {profile.skills.length > 0 && (
+                {(profile.skills?.length ?? 0) > 0 && (
                   <div>
                     <p className="text-gray-400 mb-2">Skills</p>
                     <div className="flex flex-wrap gap-2">
@@ -192,7 +192,7 @@ export default function ProfilePage() {
                     </div>
                   </div>
                 )}
-                {profile.toolsKnown.length > 0 && (
+                {(profile.toolsKnown?.length ?? 0) > 0 && (
                   <div>
                     <p className="text-gray-400 mb-2">Tools</p>
                     <div className="flex flex-wrap gap-2">
@@ -225,7 +225,7 @@ export default function ProfilePage() {
           >
             {proofComplete && (
               <div className="space-y-3 text-sm">
-                {profile.portfolioLinks.length > 0 && (
+                {(profile.portfolioLinks?.length ?? 0) > 0 && (
                   <div>
                     <p className="text-gray-400 mb-2">Portfolio Links</p>
                     <div className="space-y-1">

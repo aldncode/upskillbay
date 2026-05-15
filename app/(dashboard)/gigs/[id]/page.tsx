@@ -94,7 +94,7 @@ export default function GigDetail({ params }: { params: { id: string } }) {
 
           <div className="card">
             <h2 className="text-2xl font-bold mb-4">Applicants</h2>
-            {gig.applications && gig.applications.length > 0 ? (
+            {(gig.applications?.length ?? 0) > 0 ? (
               <div className="space-y-3">
                 {gig.applications.map((app: any) => (
                   <div key={app.id} className="p-3 border rounded-lg">

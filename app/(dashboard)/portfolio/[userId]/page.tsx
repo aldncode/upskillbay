@@ -62,7 +62,7 @@ export default function Portfolio({ params }: { params: { userId: string } }) {
       <div className="card">
         <h2 className="text-3xl font-bold mb-6">Completed Works</h2>
 
-        {portfolio.submissions && portfolio.submissions.length > 0 ? (
+        {(portfolio.submissions?.length ?? 0) > 0 ? (
           <div className="space-y-6">
             {portfolio.submissions.map((submission: any) => (
               <div

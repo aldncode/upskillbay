@@ -91,7 +91,7 @@ export default function CapsuleDetail({ params }: { params: { id: string } }) {
           <p className="text-lg text-gray-600 mb-8">{capsule.description}</p>
 
           <h2 className="text-2xl font-bold mb-4">Tasks</h2>
-          {isEnrolled && capsule.tasks && capsule.tasks.length > 0 ? (
+          {isEnrolled && (capsule.tasks?.length ?? 0) > 0 ? (
             <div className="space-y-3">
               {capsule.tasks.map((task: any, idx: number) => (
                 <Link

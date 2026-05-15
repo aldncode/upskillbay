@@ -148,7 +148,7 @@ export default function CapsuleEditor() {
           {/* Tasks */}
           <div className="card">
             <h3 className="text-xl font-bold mb-4">Tasks ({capsule.tasks?.length || 0})</h3>
-            {capsule.tasks && capsule.tasks.length > 0 ? (
+            {(capsule.tasks?.length ?? 0) > 0 ? (
               <div className="space-y-3">
                 {capsule.tasks.map((task: any, idx: number) => (
                   <div key={task.id} className="p-4 border rounded-lg">
